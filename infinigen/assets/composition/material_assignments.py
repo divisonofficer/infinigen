@@ -5,6 +5,8 @@
 # - Meenal Parakh: initial assignment system, separate materials from implementations
 # - Alexander Raistrick: refactor
 
+import os
+
 from infinigen.assets.materials import (
     art,
     ceramic,
@@ -50,6 +52,17 @@ metals = [
     (metal.HammeredMetal, 0.7),
     (metal.BrushedBlackMetal, 0.3),
 ]
+
+# IR material enrichment is opt-in.  The global Infinigen distribution remains
+# byte-for-byte equivalent unless the wizard explicitly selects the profile.
+IR_MATERIAL_PROFILE = os.environ.get("INFINIGEN_IR_MATERIAL_PROFILE", "standard")
+if IR_MATERIAL_PROFILE == "principled_rich_v1":
+    metals = metals + [
+        (metal.CleanBrushedConductor, 1.5),
+        (metal.RoughGrainedConductor, 1.2),
+        (metal.PaintedMetalCoverage, 1.0),
+        (metal.WornMetalCoverage, 1.0),
+    ]
 
 metal_neutral = [
     # TODO: override parameters to be mostly black/white

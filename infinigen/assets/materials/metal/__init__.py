@@ -19,3 +19,9 @@ from .grained_and_polished_metal import GrainedMetal
 from .hammered_metal import HammeredMetal
 from .metal_basic import MetalBasic
 from .mirror import Mirror
+from .rich_metal import (
+    CleanBrushedConductor,
+    PaintedMetalCoverage,
+    RoughGrainedConductor,
+    WornMetalCoverage,
+)
