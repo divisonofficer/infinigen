@@ -18,6 +18,7 @@ from .base import TablewareFactory
 
 
 class KnifeFactory(TablewareFactory):
+    material_pool = "cutlery"
     x_end = 0.5
 
     def __init__(self, factory_seed, coarse=False):

@@ -18,6 +18,7 @@ from .base import TablewareFactory
 
 
 class ForkFactory(TablewareFactory):
+    material_pool = "cutlery"
     x_end = 0.15
     is_fragile = True
 

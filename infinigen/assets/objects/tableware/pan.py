@@ -26,6 +26,7 @@ from .base import TablewareFactory
 
 
 class PanFactory(TablewareFactory):
+    material_pool = "cookware"
     def __init__(self, factory_seed, coarse=False):
         super().__init__(factory_seed, coarse)
         with FixedSeed(factory_seed):

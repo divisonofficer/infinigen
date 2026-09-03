@@ -56,7 +56,7 @@ metals = [
 # IR material enrichment is opt-in.  The global Infinigen distribution remains
 # byte-for-byte equivalent unless the wizard explicitly selects the profile.
 IR_MATERIAL_PROFILE = os.environ.get("INFINIGEN_IR_MATERIAL_PROFILE", "standard")
-if IR_MATERIAL_PROFILE == "principled_rich_v1":
+if IR_MATERIAL_PROFILE in {"principled_rich_v1", "principled_rich_v2"}:
     metals = metals + [
         (metal.CleanBrushedConductor, 1.5),
         (metal.RoughGrainedConductor, 1.2),
@@ -282,6 +282,31 @@ cup = decorative_hard + [
     (plastic.PlasticTranslucent, 5.0),
     (ceramic.Glass, 3.0),
 ]
+
+# Every TablewareFactory drew its surface from `cup`, cutlery and cookware
+# included.  That pool is built for drinking vessels: metal carries a weight of
+# 2.0 against 22.0 of plastic, glass, marble and vase ceramic, so a fork was
+# metal well under a tenth of the time.  Measured over sixteen rendered scenes,
+# ForkFactory drew shader_glass eight times and KnifeFactory
+# shader_translucent_plastic five; a cooking pot came out translucent plastic.
+#
+# Under the standard profile these stay aliases of `cup`, so the global
+# Infinigen distribution is byte-for-byte what it was.  The IR profile is where
+# cutlery is allowed to be made of metal.
+cutlery = cup
+cookware = cup
+if IR_MATERIAL_PROFILE == "principled_rich_v2":
+    # Handles and grips keep a minority share -- a wooden-handled knife is real
+    # and the slot split (`guard_surface` already draws from `woods`) does not
+    # cover every asset -- but the blade decides the pool.
+    cutlery = metals + [
+        (wood.Wood, 0.6),
+        (plastic.Plastic, 0.4),
+    ]
+    cookware = metals + [
+        (ceramic.Ceramic, 0.8),      # enamelled pots are common and are dielectric
+        (plastic.Plastic, 0.3),
+    ]
 jar = [
     (ceramic.Glass, 8.0),
     (plastic.Plastic, 2.0),

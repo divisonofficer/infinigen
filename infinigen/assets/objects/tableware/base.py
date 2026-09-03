@@ -21,17 +21,22 @@ from infinigen.core.util.random import weighted_sample
 class TablewareFactory(AssetFactory):
     is_fragile = False
     allow_transparent = False
+    #: Which pool in ``material_assignments`` this piece draws its surface from.
+    #: Cutlery and cookware override it; everything else keeps the drinking
+    #: vessel pool it has always used, so the default draw is unchanged.
+    material_pool = "cup"
 
     def __init__(self, factory_seed, coarse=False):
         super().__init__(factory_seed, coarse)
         with FixedSeed(factory_seed):
             self.thickness = 0.01
 
-            surface_gen_class = weighted_sample(material_assignments.cup)
+            pool = getattr(material_assignments, self.material_pool)
+            surface_gen_class = weighted_sample(pool)
             surface_material_gen = surface_gen_class()
             self.surface = surface_material_gen()
 
-            inside_surface_gen_class = weighted_sample(material_assignments.cup)
+            inside_surface_gen_class = weighted_sample(pool)
             inside_surface_gen = inside_surface_gen_class()
             self.inside_surface = inside_surface_gen()
 
