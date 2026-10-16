@@ -59,6 +59,7 @@ FURNITURE = {
     "clinic_desk":    {"src": "proc:ClinicDeskFactory", "size": [1.2, 0.65, 0.75], "rooms": ["exam-room", "dental-room", "physio-room"]},
     "reception_desk": {"src": "proc:ReceptionDeskFactory", "size": [2.4, 0.75, 1.12], "rooms": ["clinic-reception", "pharmacy"]},
     "prep_table":     {"src": "proc:PrepTableFactory", "size": [0.7, 1.8, 1.3], "rooms": ["_internal"]},
+    "pallet_rack":    {"src": "proc:PalletRackFactory", "size": [1.1, 2.7, 4.4], "rooms": ["_internal"]},
     "clinic_low_table": {"src": "proc:ClinicLowTableFactory", "size": [1.1, 0.55, 0.42], "rooms": ["_internal"]},
     "exercise_mat":   {"src": "proc:ExerciseMatFactory", "size": [1.8, 0.6, 0.02], "rooms": ["_internal"]},
     "waiting_bench":  {"src": "proc:WaitingBenchFactory", "size": [2.2, 0.6, 0.85], "rooms": ["clinic-reception", "pharmacy"]},   # not exam rooms:

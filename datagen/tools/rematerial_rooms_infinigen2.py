@@ -82,7 +82,8 @@ WORK_FNS = {"wall": work_wall, "floor": work_floor}
 
 # Offices get painted walls (a dark mottled stone break room read wrong, user 2026-10-16): paint mostly, sometimes a wood-plank or
 # smooth-concrete feature wall; no granite/gravel/flaked/patterned. Floors: carpet, wood planks or plain tiles.
-OFFICE_ROOMS = {"office", "open-office", "meeting-room", "break-room", "factory-office"}
+OFFICE_ROOMS = {"office", "open-office", "meeting-room", "break-room", "factory-office", "hallway"}   # a floor's corridor:
+# painted like its offices, not the home wall list (floor B r9: 'crumpled-paper stucco', coherence 5, 3 of 3)
 
 
 def office_wall(rng, vec):

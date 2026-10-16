@@ -86,15 +86,24 @@ for name, parts in rd._rooms().items():                       # dental rooms are
         fronts = [o for o in bpy.data.objects if o.parent is None and any(k in o.name for k in ("CheckoutCounter", "CafeCounter", "ReceptionDesk"))
                   and x0 <= o.matrix_world.translation.x <= x1 and y0 <= o.matrix_world.translation.y <= y1]
         if fronts:
-            t = fronts[0].matrix_world.translation.copy(); v = Vector((c.x - t.x, c.y - t.y, 0))
-            if v.length > 1e-3:
-                v.normalize()
-                for dist in (6.0, 5.0, 4.0, 3.0, 2.5):
-                    cam_ = t + v * dist; cam_.x = min(max(cam_.x, x0 + 0.6), x1 - 0.6); cam_.y = min(max(cam_.y, y0 + 0.6), y1 - 0.6); cam_.z = room.z + 1.65
-                    if room.on_floor(cam_.x, cam_.y) and over_floor(cam_):
-                        views.append({"name": f"{name.replace('/', '-')}_wide5", "location": list(cam_), "target": [t.x, t.y, room.z + 1.0],
-                                      "hfov": HFOV, "res": [512, 384]})
-                        break
+            # from in front of the counter, fanned +-60 deg off its front, the first spot with a clear sightline to it: from across the
+            # room the view was 'head-on to a gondola' (floor I r15, 3 of 3: 'checkout only in close-ups')
+            F_ = fronts[0]; t = F_.matrix_world.translation.copy(); tz = Vector((t.x, t.y, room.z + 1.0))
+            fw = F_.matrix_world.to_3x3() @ Vector((1, 0, 0)); fw.z = 0
+            base = math.atan2(fw.y, fw.x) if fw.length > 1e-6 else math.atan2(c.y - t.y, c.x - t.x)
+            done_ = False
+            for dist in (3.5, 3.0, 4.5, 2.5):
+                for da in (0, 25, -25, 45, -45, 60, -60):
+                    a_ = base + math.radians(da)
+                    cam_ = Vector((t.x + math.cos(a_) * dist, t.y + math.sin(a_) * dist, room.z + 1.65))
+                    if not (x0 + 0.4 < cam_.x < x1 - 0.4 and y0 + 0.4 < cam_.y < y1 - 0.4) or not room.on_floor(cam_.x, cam_.y) or not over_floor(cam_):
+                        continue
+                    h = sc.ray_cast(deps, cam_, (tz - cam_).normalized(), distance=(tz - cam_).length + 0.5)
+                    if h[0] and (h[4] == F_ or h[4] in F_.children_recursive):
+                        views.append({"name": f"{name.replace('/', '-')}_wide5", "location": list(cam_), "target": list(tz), "hfov": HFOV, "res": [512, 384]})
+                        done_ = True; break
+                if done_:
+                    break
     if REFVIEWS:                                              # framed like the reference views: entrance -> counter wall, and the seating
         lab = LABEL or name.split('_')[0]
         views.insert(0, {"name": f"{lab}_ref_entrance", "location": [c.x, y0 + 0.7, room.z + 1.5], "target": [c.x, y1, room.z + 1.3], "hfov": HFOV, "res": [512, 384]})

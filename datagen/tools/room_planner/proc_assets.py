@@ -69,8 +69,8 @@ class BagFactory:
     """A bag left by its owner (front +X): a backpack (rounded body, front pocket, top handle) or a tote with two handles -- signs of
     use the critics kept asking for (floors D3/E3/F3 r10-r12: 'no bags, nothing left around', use 4-6 in every room)."""
     def __init__(self, seed):
-        r = random.Random(seed); self.r = r; self.kind = r.choice(("backpack", "backpack", "tote"))
-        self.c = r.choice(((0.08, 0.1, 0.16), (0.35, 0.08, 0.06), (0.12, 0.25, 0.18), (0.45, 0.38, 0.28), (0.05, 0.05, 0.05)))
+        r = random.Random(seed); self.r = r; self.kind = "backpack"   # no tote: a beige tote read as 'a sack-like blob' (floor D3 r14, 2/3)
+        self.c = r.choice(((0.08, 0.1, 0.16), (0.35, 0.08, 0.06), (0.12, 0.25, 0.18), (0.05, 0.05, 0.05)))
 
     def spawn_asset(self, i):
         fab = _flat(f"ir_bag_{int(self.c[0] * 100)}_{int(self.c[2] * 100)}", self.c, 0.8)
@@ -779,13 +779,15 @@ class ClinicWallItemFactory:
         if k == "cleaning_kit":                                  # a restroom being looked after: a yellow mop bucket with its mop leant on
             # the wall and a wet-floor A-frame (floors H r19 / I r14: restroom signs of use 5-6, 'clinically bare', 3 of 3)
             yel = _flat("ir_janitor_yellow", (0.85, 0.65, 0.05), 0.45); grey = _flat("ir_mop_grey", (0.55, 0.55, 0.55), 0.9)
-            pole = _flat("ir_mop_pole", (0.7, 0.72, 0.74), 0.3, 0.9); a_ = 0.22
+            pole = _flat("ir_mop_pole", (0.7, 0.72, 0.74), 0.3, 0.9); a_ = 0.2
             return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [
                 (yel, [("box", (0.2, -0.15, 0.15), (0.3, 0.4, 0.3), (0, 0, 0)), ("box", (0.2, 0.0, 0.32), (0.3, 0.1, 0.04), (0, 0, 0)),
-                       ("box", (0.12, 0.42, 0.3), (0.02, 0.3, 0.6), (0, a_, 0)), ("box", (0.36, 0.42, 0.3), (0.02, 0.3, 0.6), (0, -a_, 0))]),
+                       ("box", (0.18, 0.42, 0.29), (0.02, 0.3, 0.6), (0, a_, 0)), ("box", (0.30, 0.42, 0.29), (0.02, 0.3, 0.6), (0, -a_, 0))]),
+                # the two leaves meet at the top: 0.24 m apart they read as two or three loose signs (floor E3 r13, 3 of 3)
                 (grey, [("box", (0.2, -0.22, 0.31), (0.18, 0.18, 0.06), (0, 0, 0))]),
-                (pole, [("cyl", (0.12, -0.22, 0.75), (0.025, 0.025, 1.2), (-0.12, -0.08, 0))]),
-                (_flat("ir_ink", (0.05, 0.05, 0.06), 0.6), [("box", (0.0, 0.42, 0.38), (0.002, 0.18, 0.12), (0, a_, 0)) for _ in (0,)])])
+                # no mop pole: leant on the wall it read as 'a loose rod, debris' (floor F3 r16, 3 of 3)
+                (_flat("ir_ink", (0.05, 0.05, 0.06), 0.6), [("box", (0.18 - 0.012, 0.42, 0.36), (0.002, 0.16, 0.12), (0, a_, 0)),
+                                                             ("box", (0.30 + 0.012, 0.42, 0.36), (0.002, 0.16, 0.12), (0, -a_, 0))])])
         if k == "glove_holder":
             boxes = [(_flat(f"ir_glovebox_{j}", c, 0.6), [("box", (0.07, 0, 0.06 + j * 0.13), (0.12, 0.26, 0.11), (0, 0, 0))])
                      for j, c in enumerate(((0.3, 0.35, 0.75), (0.55, 0.3, 0.65), (0.85, 0.85, 0.88)))]
@@ -1069,7 +1071,9 @@ class AutoclaveFactory:
         return _prims(f"AutoclaveFactory({i}).spawn_asset({i})", [
             (steel, [("box", (0, 0, H / 2), (D, W, H), (0, 0, 0)),          # a box, not a rounded blob ('a chrome
                       ("box", (0.02, W / 2 + 0.2, 0.08), (0.3, 0.26, 0.16), (0, 0, 0))]),   # sphere like a speaker', E3 r10) + an ultrasonic bath
-            (door, [("cyl", (D / 2 + 0.01, -W * 0.08, H * 0.48), (H * 0.36, H * 0.36, 0.03), (0, math.pi / 2, 0))]),
+            # a square chamber door with a lever, not a round porthole: two round-door boxes read as 'a washer and dryer' (floor E3 r15, 3/3)
+            (door, [("box", (D / 2 + 0.008, -W * 0.08, H * 0.48), (0.016, W * 0.62, H * 0.62), (0, 0, 0)),
+                    ("box", (D / 2 + 0.03, -W * 0.08 + W * 0.26, H * 0.48), (0.03, 0.02, H * 0.3), (0, 0, 0))]),
             (disp, [("box", (D / 2 + 0.005, W * 0.33, H * 0.62), (0.01, W * 0.18, H * 0.16), (0, 0, 0))])])
 
 
@@ -1668,8 +1672,16 @@ class ClinicLowTableFactory:
         L, W, H = self.L, 0.55, 0.42
         top = _flat("ir_laminate_white", (0.88, 0.88, 0.86), 0.35); steel = _flat("ir_desk_frame", (0.75, 0.75, 0.76), 0.35, 0.8)
         legs = [("box", (sx * (W / 2 - 0.04), sy * (L / 2 - 0.04), H / 2 - 0.015), (0.03, 0.03, H - 0.03), (0, 0, 0)) for sx in (1, -1) for sy in (1, -1)]
+        # magazines fanned on the top and a leaflet pile on the shelf: a book_stack read as 'a tall pile of hardbacks, residential'
+        # (floor F3 r13, 3 of 3)
+        r = random.Random(int(L * 1000) + i)
+        mags = [(_flat(f"ir_magazine_{k}", c, 0.45), [("box", (r.uniform(-0.08, 0.08), y, H + 0.004 + 0.004 * k), (0.21, 0.28, 0.004), (0, 0, r.uniform(-0.5, 0.5)))])
+                for k, (y, c) in enumerate(zip((-L / 4, -L / 4 + 0.12, L / 4, L / 4 + 0.1),
+                                               ((0.75, 0.2, 0.2), (0.15, 0.4, 0.7), (0.9, 0.75, 0.2), (0.2, 0.55, 0.35))))]
         return _prims(f"ClinicLowTableFactory({i}).spawn_asset({i})", [(top, [("box", (0, 0, H - 0.015), (W, L, 0.03), (0, 0, 0))]),
-                                                                      (steel, legs + [("box", (0, 0, 0.12), (W - 0.1, L - 0.1, 0.015), (0, 0, 0))])])
+                                                                      (steel, legs + [("box", (0, 0, 0.12), (W - 0.1, L - 0.1, 0.015), (0, 0, 0))]),
+                                                                      (_flat("ir_leaflets", (0.92, 0.92, 0.9), 0.6), [("box", (0, 0.1, 0.15), (0.21, 0.3, 0.04), (0, 0, 0))])]
+                      + mags)
 
 
 class PrepTableFactory:
@@ -1698,6 +1710,34 @@ class PrepTableFactory:
             (plate, [("cyl", (-0.1, L / 2 - 0.12, H + 0.06), (0.24, 0.24, 0.12), (0, 0, 0))]),
             (tub, [("box", (0.0, y, 0.21 + 0.13), (0.4, 0.3, 0.26), (0, 0, 0)) for y in (-L / 4, L / 4)]),
             (lid, [("box", (0.0, y, 0.21 + 0.27), (0.42, 0.32, 0.02), (0, 0, 0)) for y in (-L / 4, L / 4)])])
+
+
+class PalletRackFactory:
+    """Heavy pallet racking, one 2.7 m bay (front +X): blue frames, orange beams at three levels, a pallet of cartons on every level
+    (floor J r13-r15: 'only 2 m boltless shelving under a 5 m roof -- a big stockroom, not a warehouse', 3 of 3)."""
+    def __init__(self, seed, H=4.0):                           # three levels, top load ~4.1 m: the hall walls are 4.8-5.4 m
+        self.r = random.Random(seed); self.H = H
+
+    def spawn_asset(self, i):
+        r, H, L, D = self.r, self.H, 2.7, 1.1
+        blue = _flat("ir_rack_blue", (0.05, 0.16, 0.42), 0.45, 0.6); orange = _flat("ir_rack_orange", (0.85, 0.32, 0.04), 0.45, 0.6)
+        wood = _flat("ir_pallet_wood", (0.55, 0.42, 0.26), 0.8); card = _flat("ir_carton", (0.62, 0.46, 0.28), 0.85)
+        wrap = _flat("ir_stretch_wrap", (0.8, 0.82, 0.84), 0.25, transmission=0.3)
+        posts = [("box", (sx * (D / 2 - 0.04), sy * (L / 2 - 0.04), H / 2), (0.08, 0.08, H), (0, 0, 0)) for sx in (1, -1) for sy in (1, -1)]
+        braces = [("box", (0, sy * (L / 2 - 0.04), z), (D - 0.1, 0.03, 0.03), (0, 0, 0)) for sy in (1, -1) for z in (0.4, 1.6, 2.8, 4.0) if z < H]
+        levels = [0.0, 1.45, 2.9] + ([4.1] if H > 4.3 else [])
+        beams = [("box", (sx * (D / 2 - 0.04), 0, z), (0.05, L - 0.1, 0.12), (0, 0, 0)) for sx in (1, -1) for z in levels[1:]]
+        pal, box, wr = [], [], []
+        for z in levels:
+            z0 = z + (0.06 if z > 0 else 0.0)
+            for y in (-0.62, 0.62):
+                pal.append(("box", (0, y, z0 + 0.07), (1.0, 1.15, 0.14), (0, 0, 0)))
+                h = r.uniform(0.5, 1.0) if z < levels[-1] else r.uniform(0.3, 0.6)
+                if r.random() < 0.85:
+                    box.append(("box", (0, y, z0 + 0.14 + h / 2), (0.95, 1.1, h), (0, 0, 0)))
+                    if r.random() < 0.5:
+                        wr.append(("box", (0, y, z0 + 0.14 + h / 2), (0.97, 1.12, h + 0.01), (0, 0, 0)))
+        return _prims(f"PalletRackFactory({i}).spawn_asset({i})", [(blue, posts + braces), (orange, beams), (wood, pal), (card, box)] + ([(wrap, wr)] if wr else []))
 
 
 class ExamTableFactory:
@@ -1775,19 +1815,23 @@ class DentalChairFactory:
                              ("rbox", (0.02, -W / 2 - 0.05, zs + 0.17), (0.42, 0.08, 0.07), (0, 0, 0)),
                              ("cyl", (0.65, -sd * 0.68, 0.52), (0.2, 0.2, 0.08), (0, 0, 0))]),          # stool seat
                        (white, [("box", (0, 0, 0.02), (0.75, 0.6, 0.04), (0, 0, 0)), ("rbox", (0.0, 0, 0.3), (0.34, 0.36, 0.56), (0, 0, 0)),
-                                ("cyl", (-0.05, sd * 0.58, 0.45), (0.1, 0.1, 0.9), (0, 0, 0)),
-                                ("cyl", (-0.05, sd * 0.58, 0.95), (0.15, 0.11, 0.12), (0, 0, 0))]),     # spittoon bowl
+                                ("cyl", (0.0, sd * 0.5, 0.72), (0.035, 0.035, 0.2), (0, 0, 0)),
+                                ("cyl", (0.0, sd * 0.5, 0.85), (0.09, 0.09, 0.07), (0, 0, 0))]),     # cuspidor: a small bowl on the chair
+                                # side, not a white cone on a floor post ('a lampshade', floor E3 r15, 2 of 3)
                        (steel, [("cyl", (x0 - 0.05, -sd * 0.32, 1.15), (0.03, 0.03, 0.9), (0, 0, 0)),     # a short lamp post on the chair: the
                                 ("box", (x0 - 0.05, -sd * 0.16, 1.6), (0.05, 0.32, 0.04), (0, 0, 0)),     # 2.1 m one read as 'a floor-to-ceiling
                                 ("box", ((x0 - 0.05 + tip_x + 0.15) / 2, 0, 1.6), (abs(tip_x + 0.2 - x0), 0.05, 0.04), (0, 0, 0)),   # pole' (E3 r10, 3/3)
                                 ("rbox", (tip_x + 0.15, 0, tip_z + 0.42), (0.3, 0.2, 0.08), (0, 0.5, 0)),     # lamp head
                                 ("cyl", (0.3, -sd * 0.75, 1.0), (0.02, 0.02, 0.5), (0, 0, 0)),             # monitor arm
-                                ("box", (0.3, -sd * 0.75, 1.32), (0.03, 0.42, 0.28), (0, 0, 0)),          # patient monitor
                                 ("cyl", (0.12, -sd * 0.6, 0.48), (0.025, 0.025, 0.96), (0, 0, 0)),
                                 ("box", (0.12, -sd * 0.45, 0.98), (0.45, 0.32, 0.03), (0, 0, 0)),          # instrument tray
                                 ("cyl", (0.65, -sd * 0.68, 0.24), (0.03, 0.03, 0.48), (0, 0, 0)),
                                 ("box", (0.65, -sd * 0.68, 0.01), (0.45, 0.45, 0.02), (0, 0, 0.4))]),
-                       (lamp, [("box", (tip_x + 0.15, 0, tip_z + 0.375), (0.24, 0.15, 0.005), (0, 0.5, 0))])])
+                       (lamp, [("box", (tip_x + 0.15, 0, tip_z + 0.375), (0.24, 0.15, 0.005), (0, 0.5, 0))]),
+                       # the patient monitor: a matte black body and a dark screen -- in chrome it mirrored the chair as 'a frosted
+                       # panel with teal blobs floating beside it' (floor E3 r13, 3 of 3)
+                       (_flat("ir_monitor_plastic", (0.03, 0.03, 0.035), 0.6), [("box", (0.3, -sd * 0.75, 1.32), (0.04, 0.42, 0.28), (0, 0, 0))]),
+                       (_flat("ir_screen_dark", (0.01, 0.015, 0.02), 0.2), [("box", (0.3 + 0.021, -sd * 0.75, 1.32), (0.002, 0.38, 0.24), (0, 0, 0))])])
 
 
 class WallBarsFactory:

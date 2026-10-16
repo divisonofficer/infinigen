@@ -177,12 +177,25 @@ def main() -> int:
         x0, x1 = min(p.x for p in pts), max(p.x for p in pts); y0, y1 = min(p.y for p in pts), max(p.y for p in pts)
         zc = fz + 2.8
         pa._parts_object(f"DropCeilingFactory({n_drop}).spawn_asset({n_drop})", [(tile, [((x0 + x1) / 2, (y0 + y1) / 2, zc + 0.015, x1 - x0, y1 - y0, 0.03)])])
-        for o in bpy.data.objects:
+        moved = []
+        for o in list(bpy.data.objects):
             if o.parent is not None or not (o.type == "LIGHT" or "Ceiling" in o.name or "LampFactory" in o.name):
                 continue
             t = o.matrix_world.translation
             if x0 <= t.x <= x1 and y0 <= t.y <= y1 and t.z > zc:
                 o.location.z -= (t.z - (zc - 0.06))
+                if o.type == "LIGHT":
+                    moved.append(o.matrix_world.translation.copy())
+        # a bare light under the tiles glowed 'from nowhere' (floor J r14: office and break-room ceilings, 3 of 3): a flush panel at each
+        fix_xy = [o.matrix_world.translation.xy for o in bpy.data.objects if o.type == "MESH" and "Ceiling" in o.name.split("(")[0]
+                  and not o.name.startswith("DropCeiling")]
+        led = pa._flat("ir_led_panel", (0.95, 0.95, 0.93), 0.3)
+        bb = led.node_tree.nodes["Principled BSDF"]
+        bb.inputs["Emission Color"].default_value = (1.0, 0.98, 0.95, 1); bb.inputs["Emission Strength"].default_value = 4.0
+        for k, q in enumerate(moved):
+            if not any((q.xy - f).length < 0.6 for f in fix_xy):
+                pa._parts_object(f"CeilingLightFactory(drop{n_drop}_{k}).spawn_asset(d{n_drop}_{k})", [(led, [(q.x, q.y, zc - 0.012, 0.6, 0.6, 0.025)])])
+                fix_xy.append(q.xy.copy())
         n_drop += 1
     stats["drop_ceilings"] = n_drop
     # lights buried in architecture: a ceiling fixture placed after the exposed ducts/beams ended up inside a duct, 2 cm of metal under

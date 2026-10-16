@@ -55,15 +55,17 @@ def main() -> int:
         if room_venues and room["type"] in ("utility", "closet") and room["id"] not in room_venues:
             # floors: service rooms no venue covers get a fixed fit-out (floor E: the sterilisation room rendered empty)
             clinic = any(v in ("clinic-reception", "exam-room", "dental-room", "physio-room") for v in room_venues.values())
-            furn = ([{"id": "run", "category": "medical_cabinet", "relation": "against_wall"},          # sterilisation / supply: counter
-                     {"id": "racks", "category": "supply_shelf", "relation": "against_wall", "away_from": "run", "count": 2}]   # white shelving
+            furn = ([{"id": "run", "category": "medical_cabinet", "relation": "against_wall"},          # sterilisation: a dirty-to-clean
+                     {"id": "run2", "category": "medical_cabinet", "relation": "against_wall", "away_from": "run"}]   # counter and a second
+                    # closed run, no open box racks (floor E3 r14: 'a stockroom with a kitchenette', fn 5, 3 of 3)
                     if clinic and room["type"] == "utility" else
                     [{"id": "lockers", "category": "locker", "relation": "against_wall", "count": 2},
                      {"id": "bench", "category": "changing_bench", "relation": "in_front_of", "target": "lockers", "gap_m": 0.6},
                      {"id": "mirror", "category": "mirror", "relation": "against_wall", "away_from": "lockers"}]
                     if room["type"] == "closet" else
                     [{"id": "racks", "category": "storage_rack", "relation": "against_wall", "count": 2}])
-            stock = ([{"category": "cardboard_box", "on": "racks", "fill": True}] +
+            stock = ([{"category": "autoclave", "on": "run", "count": 2}] if furn[0]["category"] == "medical_cabinet" and clinic and
+                     room["type"] == "utility" else []) + ([{"category": "cardboard_box", "on": "racks", "fill": True}] +
                      ([{"category": "autoclave", "on": "run", "count": 2}] if furn[0]["category"] == "medical_cabinet" else [])   # two units
                      if any(f["id"] == "racks" for f in furn) else   # every level
                                                                  # (floor E3 r3: one box tried, 'no fit', a bare rack)
@@ -86,6 +88,13 @@ def main() -> int:
                     "furniture": [{"id": "wc", "category": "wc", "relation": "against_wall", "avoid_windows": True},
                                   {"id": "basin", "category": "wash_basin", "relation": "against_wall", "near_to": "wc", "count": n_basin}]}
             # (an open WC with its basin on the far wall read as 'a toilet alone in an empty room' -- floor A2 r4; fixtures go together)
+            clinic = any(v in ("clinic-reception", "exam-room", "dental-room", "physio-room") for v in room_venues.values())
+            if room.get("area_m2", 0) >= 18 and room_venues and not clinic:
+                # a big staff washroom on a work floor: lockers and a bench on the free walls (floor J r13: one WC in 24.9 m2, 'an unfinished
+                # shell', completeness 5, 3 of 3; stalls read as loose panels on every floor)
+                plan["furniture"] += [{"id": "lockers", "category": "locker", "relation": "against_wall", "away_from": "wc", "count": 2},
+                                      {"id": "bench", "category": "changing_bench", "relation": "in_front_of", "target": "lockers", "gap_m": 0.6}]
+                plan["lived_in"] += [{"category": "towel_stack", "on": "bench"}]
             out["rooms"][room["id"]] = {"plan": plan, "room": room}
             continue
         if room["type"] not in types:
