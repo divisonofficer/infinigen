@@ -25,6 +25,11 @@ def random_door_factory():
         LiteDoorFactory,
     ]
     door_probs = np.array([4, 2, 3, 3])
+    # robomituba: ROBOMITUBA_DOOR_STYLE=office -> commercial doors only (lite = vision-panel, glass panel); louver/panel doors read as a
+    # house (user 2026-10-16). Unset: upstream mix.
+    import os
+    if os.environ.get("ROBOMITUBA_DOOR_STYLE") == "office":
+        door_probs = np.array([0, 2, 0, 3])
     return np.random.choice(door_factories, p=door_probs / door_probs.sum())
 
 

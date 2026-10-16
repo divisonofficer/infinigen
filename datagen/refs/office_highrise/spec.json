@@ -1,0 +1,66 @@
+{
+ "brief": "Bright open-plan office on a high floor with full-height glazing and thin dark mullions looking over a blue-glass city skyline. A long white trestle-leg desk with black moulded chairs sits in the foreground, and a second desk with a monitor sits further back near the window. A tufted emerald-green velvet sofa and a small round coffee table form a lounge corner on the right. Tall potted ficus and bamboo plants soften the glass and white walls. A double-height atrium with white mezzanine balustrades, a timber slat ceiling and a dark bookshelf wall lies behind. Mood: airy, sunlit, corporate-modern. Desk surfaces hold a closed laptop, tablet, takeaway coffee cup, mesh pen pot, small succulent, calculator, papers and a blue lanyard with ID badge. Warm wood floor with sun stripes, and a patterned rug in the lounge.",
+ "wall": "paint",
+ "wall_srgb": [
+  0.95,
+  0.95,
+  0.96
+ ],
+ "floor": "wood",
+ "counter_front": "white_panel",
+ "counter_top": "white_stone",
+ "backbar": "oak_slat",
+ "fixture": "flush",
+ "must_have": [
+  {
+   "category": "desk",
+   "count": 3,
+   "where": "long white trestle desks in the foreground and mid-ground, parallel to the window wall"
+  },
+  {
+   "category": "desk_chair",
+   "count": 6,
+   "where": "black moulded chairs around the foreground desk and the desk behind"
+  },
+  {
+   "category": "floor_plant",
+   "count": 4,
+   "where": "tall ficus and bamboo near the window on the left and by the green sofa on the right"
+  },
+  {
+   "category": "workstation_pod",
+   "count": 1,
+   "where": "monitor desk near the window in the mid-ground"
+  },
+  {
+   "category": "filing_cabinet",
+   "count": 1,
+   "where": "low white unit in front of the window"
+  }
+ ],
+ "not_reproducible": "The city skyline outside the window, the billboard, tufted emerald velvet sofa and coffee table, laptops, tablet, coffee cup, calculator, lanyard, papers, pen pot, small desk succulents, mezzanine balustrades, and the bookshelf wall. No people appear in the photos.",
+ "wall_rgb": [
+  0.89,
+  0.89,
+  0.9114
+ ],
+ "reference_ids": [
+  "55adf7d9d4b33916",
+  "7d14558420eb63d5",
+  "aec18f38df5d4cbb",
+  "cc38651bb70f706a"
+ ],
+ "venue": "open-office",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/office_highrise/photo.png",
+  "/jarvis/project/robomituba/data/venue_refs/office_highrise/synth_view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/office_highrise/synth_view2.png",
+  "/jarvis/project/robomituba/data/venue_refs/office_highrise/synth_view3.png"
+ ],
+ "synthetic_views": [
+  "synth_view1.png",
+  "synth_view2.png",
+  "synth_view3.png"
+ ],
+ "provenance_note": "photo.png is the real photo; synth_view*.png are Codex imagegen views generated from it (user 2026-10-16): synthetic reference, not a real multi-view observation. See sources.json."
+}

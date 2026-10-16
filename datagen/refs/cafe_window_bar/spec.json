@@ -1,0 +1,76 @@
+{
+ "brief": "A sunlit corner cafe with floor-to-ceiling black-framed windows along the street side. A long butcher-block window bar runs the full width of the glass with bar stools facing out. Behind it, a middle zone of rectangular wooden cafe tables with dark leather-seated wood chairs fills the polished concrete floor. The service counter sits on the left with a concrete front, a warm wood top and an espresso machine. Behind it, open wood shelves are lit warmly and hold jars, ceramics and plants. On the right, a grey upholstered banquette with cushions runs along a dark slate-grey wall hung with large black-and-white framed prints. Globe pendants hang from an exposed concrete ceiling. Potted plants stand on the window bar and tables, with big floor plants in the corners. The mood is warm, relaxed and industrial-natural, with dappled light from the street trees.",
+ "wall": "paint",
+ "wall_srgb": [
+  0.27,
+  0.29,
+  0.31
+ ],
+ "floor": "concrete",
+ "counter_front": "concrete",
+ "counter_top": "butcher_block",
+ "backbar": "walnut_slat",
+ "fixture": "pendant",
+ "must_have": [
+  {
+   "category": "window_bar",
+   "count": 1,
+   "where": "full width along the street-facing glass"
+  },
+  {
+   "category": "bar_stool",
+   "count": 5,
+   "where": "along the window bar"
+  },
+  {
+   "category": "counter",
+   "count": 1,
+   "where": "left side, with espresso machine"
+  },
+  {
+   "category": "backbar_shelf",
+   "count": 2,
+   "where": "behind the counter, open wood shelves with jars and plants"
+  },
+  {
+   "category": "cafe_table",
+   "count": 6,
+   "where": "middle of the floor and along the banquette"
+  },
+  {
+   "category": "cafe_chair",
+   "count": 14,
+   "where": "around the tables"
+  },
+  {
+   "category": "sofa",
+   "count": 1,
+   "where": "long banquette along the right wall"
+  },
+  {
+   "category": "floor_plant",
+   "count": 3,
+   "where": "corners and by the window and banquette"
+  },
+  {
+   "category": "menu_board",
+   "count": 1,
+   "where": "on the window bar"
+  }
+ ],
+ "not_reproducible": "People (the woman drinking coffee, the barista), the laptop, cups and saucers, the street, cars and trees outside, the buildings, string lights outside, framed black-and-white photographs, small jars and ceramics",
+ "wall_rgb": [
+  0.0593,
+  0.0684,
+  0.0783
+ ],
+ "reference_ids": [
+  "41304d87b1a80544",
+  "f427e47805a345cc"
+ ],
+ "venue": "cafe",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/cafe_window_bar/photo.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_window_bar/multiview.webp"
+ ]
+}

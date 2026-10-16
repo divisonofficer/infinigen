@@ -62,7 +62,10 @@ class DoorCasingFactory(AssetFactory):
             selection = ((np.abs(z_) > 0.5) & (np.abs(x) < w / 2 + self.margin / 2)) | (
                 (np.abs(x_) > 0.5) & (z < s + self.margin / 2)
             )
-        obj.data.edges.foreach_set("bevel_weight", selection)
+        # robomituba: Blender 4.x removed MeshEdge.bevel_weight; the weight is the "bevel_weight_edge" attribute (the old call crashed
+        # every casing, which is why upstream ships casing_chance=0)
+        attr = obj.data.attributes.get("bevel_weight_edge") or obj.data.attributes.new("bevel_weight_edge", "FLOAT", "EDGE")
+        attr.data.foreach_set("value", selection.astype(np.float32))
         bevel(obj, self.extrude, limit_method="WEIGHT")
         return obj
 

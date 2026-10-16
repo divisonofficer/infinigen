@@ -1,0 +1,61 @@
+"""Plan every room of a scene with Claude.
+
+    python -m room_planner.plan_scene rooms.json --out plans.json [--seed N] [--types living-room,bedroom,dining-room] [--dry-run]
+
+Needs ANTHROPIC_API_KEY for a live call; --dry-run prints the first request instead. Plans are cached (client.CACHE).
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from room_planner import client  # noqa: E402
+
+PLANNED = ("living-room", "bedroom", "dining-room", "warehouse", "garage", "office", "open-office", "meeting-room", "break-room", "cafe", "grocery")
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("rooms", type=Path)
+    ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--types", default=",".join(PLANNED))
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--venue", help="relabel every room as this type (a single-room layout used as a cafe / grocery store)")
+    ap.add_argument("--style", help="venue style preset (room_planner/styles.py), e.g. cafe: nordic_bakery, industrial_brick")
+    ap.add_argument("--reference", type=Path, help="venue spec from room_planner.reference: its brief, must-haves and images steer the plan")
+    a = ap.parse_args()
+    types = set(a.types.split(","))
+    doc = json.loads(a.rooms.read_text())
+    spec = json.loads(a.reference.read_text()) if a.reference else None
+    images = spec["images"] if spec else None
+    out = {"scene": doc["scene"], "model": client.MODEL, "prompt_version": client.PROMPT_VERSION, "seed": a.seed, "rooms": {},
+           "venue": a.venue, "style": a.style, "style_spec": spec}
+    for room in doc["rooms"]:
+        if a.venue:
+            room = {**room, "type": a.venue}
+        if a.style:
+            from room_planner import styles
+            room = {**room, "style": styles.get(a.venue, a.style)["brief"]}
+        if a.reference:
+            room = {**room, "style": spec["brief"], "must_have": spec.get("must_have", []), "reference_ids": spec["reference_ids"]}
+        if room["type"] not in types:
+            continue
+        payload = {k: v for k, v in room.items() if not k.startswith("_")}
+        payload["existing"] = [{k: v for k, v in e.items() if not k.startswith("_")} for e in room["existing"]]
+        plan = client.plan_room(payload, a.seed, dry_run=a.dry_run, images=images)
+        if a.dry_run:
+            print(json.dumps(plan["request"], indent=1)[:6000])
+            return 0
+        out["rooms"][room["id"]] = {"plan": plan, "room": room}        # the realizer needs the room's origin and object names
+        print(json.dumps({"room": room["id"], "furniture": len(plan.get("furniture", [])), "lived_in": len(plan.get("lived_in", [])),
+                          "occupant": plan.get("occupant")}, ensure_ascii=False), flush=True)
+    a.out.write_text(json.dumps(out, indent=1, ensure_ascii=False))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,4 @@
+{"photo.png": {"kind": "real_photo", "from": "/tmp/orca-paste-1792134218722-73978508-223e-460e-9371-bfae29fa1859.png"},
+ "synth_view1.png": {"kind": "synthetic_view", "note": "Codex imagegen from photo.png (user 2026-10-16): a synthetic reference, not a real multi-view observation", "from": "/root/.codex/generated_images/01a14385-b76d-7541-a429-184a34cd6497/exec-30be27f9-7f2f-48ab-884c-0fb9fc9d1275.png"},
+ "synth_view2.png": {"kind": "synthetic_view", "note": "Codex imagegen from photo.png", "from": "/root/.codex/generated_images/01a14385-b76d-7541-a429-184a34cd6497/exec-070cdad3-6fa1-4c74-92ed-8ad5f47377c0.png"},
+ "synth_view3.png": {"kind": "synthetic_view", "note": "Codex imagegen from photo.png", "from": "/root/.codex/generated_images/01a14385-b76d-7541-a429-184a34cd6497/exec-c34dd496-81d5-40bc-9f05-5256a8f43a2a.png"}}

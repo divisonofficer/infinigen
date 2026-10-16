@@ -1,0 +1,64 @@
+{
+ "brief": "Open-plan office with a long polished-concrete floor running along a full-height glazed window wall with roller blinds. At left, a glass-walled meeting room with thin black steel mullions holds a long meeting table and about eight black mesh task chairs. Beyond it, rows of white desks with monitors and mobile white filing pedestals line the window side, with more desks receding toward the back. Large potted palms and leafy plants in grey stone planters stand in the foreground and along the far wall. The ceiling is white and exposed, with ducted AC cassettes and slim linear pendant lights hung on rods. The mood is bright, airy, modern and corporate. Surfaces hold monitors, keyboards and a few small desk accessories.",
+ "wall": "paint",
+ "wall_srgb": [
+  0.9,
+  0.9,
+  0.9
+ ],
+ "floor": "concrete",
+ "counter_front": "white_panel",
+ "counter_top": "white_stone",
+ "backbar": "matte_black",
+ "fixture": "pendant",
+ "must_have": [
+  {
+   "category": "meeting_table",
+   "count": 1,
+   "where": "inside the glass meeting room at left"
+  },
+  {
+   "category": "desk_chair",
+   "count": 10,
+   "where": "8 around the meeting table, others at the desks"
+  },
+  {
+   "category": "desk",
+   "count": 6,
+   "where": "in rows along the window wall and toward the back"
+  },
+  {
+   "category": "workstation_pod",
+   "count": 2,
+   "where": "mid-ground, along the window side"
+  },
+  {
+   "category": "filing_cabinet",
+   "count": 3,
+   "where": "white mobile pedestals beside the desks"
+  },
+  {
+   "category": "floor_plant",
+   "count": 5,
+   "where": "two large palms in the foreground left, others along the far wall"
+  },
+  {
+   "category": "bookshelf",
+   "count": 1,
+   "where": "far back wall on the right"
+  }
+ ],
+ "not_reproducible": "People, the city view outside the windows, window blinds, glass partition walls with black frames, ceiling AC cassettes, monitors, computers and desk accessories.",
+ "wall_rgb": [
+  0.7874,
+  0.7874,
+  0.7874
+ ],
+ "reference_ids": [
+  "a2a49df301607c18"
+ ],
+ "venue": "open-office",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/office_glass_meeting/photo.jpg"
+ ]
+}
