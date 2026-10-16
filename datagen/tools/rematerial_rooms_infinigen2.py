@@ -39,6 +39,9 @@ def wet_wall(rng, vec):
 
 
 WET_FNS = {"wall": wet_wall, "floor": tiles.tile_indoor_ground_rand}
+# a commercial restroom (floor scenes, 2026-10-16): pale paint and plain light floor -- the random wall tile gave a pink diagonal
+# tile in the dental floor's restroom
+WET_FNS_WORK = {"wall": lambda rng, vec: _paint((0.8, 0.82, 0.82))(rng, vec), "floor": fl.concrete.concrete_rand}   # _paint is defined below
 
 # Workplaces stand on concrete (a carpet-patterned warehouse read wrong, user 2026-10-16); half get a scratch/splat overlay.
 WORK_ROOMS = {"warehouse", "garage", "utility"}
@@ -81,6 +84,7 @@ def office_floor(rng, vec):
 
 
 OFFICE_FNS = {"wall": office_wall, "floor": office_floor}
+_SHARED_FLOOR = {}
 
 
 def cafe_wall(rng, vec):
@@ -322,12 +326,18 @@ if a.style:
     from room_planner import styles as _styles
     _st = json.load(open(a.style)) if a.style.endswith(".json") else _styles.get(a.venue, a.style)   # preset name or spec file
     STYLE_FNS = {"wall": style_walls(_st), "floor": STYLE_FLOORS[_st.get("floor", "wood")]}
+    if a.venue in ("open-office", "office", "meeting-room") and _st.get("floor", "wood") == "wood":   # a work floor is carpet tile or
+        STYLE_FNS["floor"] = office_floor     # concrete whatever the photo shows (office r8: high-rise parquet 'residential', 3 of 3)
     if isinstance(_st, dict) and _st.get("architecture"):      # a style kit: other walls / feature wall / floor tone together
         KIT = _st
         if _st.get("venue") in ("warehouse", "garage"):         # block/concrete, not plaster (warehouse r9/r11: 'packing reads as an office')
             for k_ in ("other_walls", "feature_wall"):
                 if _st["architecture"].get(k_) in ("paint_light", "paint_dark", "shelving"):
                     _st["architecture"][k_] = "concrete"
+        if _st.get("venue") in ("clinic-reception", "exam-room", "dental-room", "physio-room") and _st.get("wall_rgb"):
+            # walls cooled 85% toward a clinical pale grey-white (clinic r23: the reference's warm tan read as a hotel lobby, 3 of 3).
+            # Here, before kit_finish: it bakes the colour into the paint function when called (r24/r25 overrode it after: no effect)
+            _st["wall_rgb"] = [round(0.15 * c + 0.85 * w, 4) for c, w in zip(_st["wall_rgb"], (0.74, 0.79, 0.82))]
         STYLE_FNS = {"wall": kit_finish(_st["architecture"]["other_walls"], _st), "floor": kit_floor(_st)}
 targets = sorted((o for o in bpy.data.objects if o.type == "MESH" and PAT.match(o.name)), key=lambda o: o.name)
 rng = np.random.default_rng(a.seed)
@@ -337,10 +347,18 @@ for o in targets:
     (r,) = rng.spawn(1)
     before = [s.material.name for s in o.material_slots if s.material]
     room_type = PAT.match(o.name).group("room").split("_")[0]
-    fns = (STYLE_FNS if STYLE_FNS and room_type not in WET_ROOMS else
+    fns = (WET_FNS_WORK if room_type == "restroom" else       # 'restroom' only exists on commercial floors (homes use 'bathroom')
+           STYLE_FNS if STYLE_FNS and room_type not in WET_ROOMS else
            VENUE_FNS[a.venue] if a.venue in VENUE_FNS and room_type not in WET_ROOMS else WET_FNS if room_type in WET_ROOMS
            else WORK_FNS if room_type in WORK_ROOMS else OFFICE_FNS if room_type in OFFICE_ROOMS else FNS)
-    mat = fns[part](r, pf.nodes.shader.uv_map(uv_map="m_uv"))
+    # one floor finish for every office-type room on a scene (floor B: each private office drew its own carpet -- pink, green
+    # stripes -- 'patched together', 3 of 3); the first such room's material is reused
+    shared = part == "floor" and fns is OFFICE_FNS and room_type in ("office", "meeting-room", "open-office")
+    mat = _SHARED_FLOOR.get("office") if shared else None
+    if mat is None:
+        mat = fns[part](r, pf.nodes.shader.uv_map(uv_map="m_uv"))
+        if shared:
+            _SHARED_FLOOR["office"] = mat
     pf.ops.object.set_material(pf.types.MeshObject(o), material=mat)
     after = [s.material.name for s in o.material_slots if s.material]
     rewired = sum(rewire_to_planar(s.material) for s in o.material_slots if s.material)
@@ -354,16 +372,12 @@ for o in targets:
         frgb = KIT["floor_rgb"]
         if conc:                                                 # concrete is near neutral: the kit reads it beige off a warm-lit photo
             lum = 0.2126 * frgb[0] + 0.7152 * frgb[1] + 0.0722 * frgb[2]   # (café K: 'matte beige, carpet-like' vs grey polished concrete)
-            frgb = [0.4 * c + 0.6 * lum for c in frgb]
+            frgb = [0.15 * c + 0.85 * lum for c in frgb]   # 85% (cafe r4: 60% left the industrial concrete 'beige carpet', 3 of 3)
         nf = sum(finish_floor(sl.material, frgb, 0.22 if conc else 0.6, tint=1.0 if conc else 0.55, mottle=0.14 if conc else 0.0)
                  for sl in o.material_slots)
         print(f"[kit] floor finish {'polished concrete' if conc else 'matte tinted wood'}: {nf} BSDFs", flush=True)
     if KIT is not None and KIT.get("venue") in ("clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy") and KIT["architecture"].get("feature_wall") in ("wood_panel", "brick"):
         KIT["architecture"]["feature_wall"] = "paint_light"      # washable walls in a clinic (clinic r10: wood-plank wall read as a lounge)
-    if KIT is not None and KIT.get("venue") in ("clinic-reception", "exam-room", "dental-room", "physio-room") and KIT.get("wall_rgb"):
-        # walls cooled 85% toward a clinical pale grey-white (clinic r23: the reference's warm tan read as a hotel lobby, 3 of 3;
-        # r24 at 60%: still tan under 3800 K light and the reference exposure)
-        KIT["wall_rgb"] = [round(0.15 * c + 0.85 * w, 4) for c, w in zip(KIT["wall_rgb"], (0.74, 0.79, 0.82))]
     if KIT is not None and part == "wall" and KIT["architecture"]["feature_wall"] != KIT["architecture"]["other_walls"]:
         (r2,) = rng.spawn(1)
         fm = kit_finish(KIT["architecture"]["feature_wall"], KIT)(r2, pf.nodes.shader.uv_map(uv_map="m_uv"))

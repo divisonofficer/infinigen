@@ -229,6 +229,7 @@ class Cell:
     ldk: bool = False
     is_corridor: bool = False
     name: str = ""
+    venue: str = ""     # room_planner venue for this room on a floor scene (clinic / cafe floors); "" = its own type
 
 
 def partition_widths(span: float, rng: random.Random, n: int | None = None):
@@ -946,6 +947,99 @@ def validate_plan_shapely(plan: dict):
 # --- top-level entry -------------------------------------------------------
 
 
+# ---- non-home floors (user 2026-10-16: "층단위씬 -- 사무실이나 병원 이런데는 방이 여러개인게 자연스럽고, 카페도 화장실 창고 등이
+# 딸려있을수있고"). The public room (reception, café dining) is a circulation cell: it takes the street entrance and opens onto the
+# corridor; every other room hangs off the corridor (or the dining room) by a door. Each cell names the room_planner venue it runs.
+CLINIC_PROGRAMMES = {
+    "gp": [("exam-room", "office"), ("exam-room", "office"), ("exam-room", "office"), ("exam-room", "office"),
+           ("", "break-room"), ("", "restroom")],
+    "dental": [("dental-room", "office"), ("dental-room", "office"), ("dental-room", "office"), ("", "utility"),
+               ("", "break-room"), ("", "restroom")],
+    "physio": [("exam-room", "office"), ("exam-room", "office"), ("", "restroom"), ("", "closet")],
+}
+
+
+def build_clinic(rng: random.Random, kind: str):
+    W = q(rng.choice([18.0, 20.0, 22.0])); H = q(rng.choice([11.0, 12.0, 13.0])); Wr = q(rng.choice([6.0, 6.5]))
+    ys = q(H / 2 - CW / 2)
+    yr = q(ys + CW + rng.choice([1.5, 2.0]))     # reception: the front of the block only, a manager's office behind it (floor F: a
+    cells = [Cell((0.0, 0.0, Wr, yr), "office", is_corridor=True, venue="clinic-reception"),  # full-depth 8 x 12 m reception read as
+             Cell((0.0, yr, Wr, H), "office")]                                                # 'a vast empty hall', 3 of 3)
+    cells.append(Cell((Wr, ys, W, q(ys + CW)), "hallway", is_corridor=True))
+    prog = list(CLINIC_PROGRAMMES[kind])
+    above, below = (Wr, q(ys + CW), W, H), (Wr, 0.0, W, ys)
+    if kind == "physio":                                    # one side is the gym, the other the small rooms
+        cells.append(Cell(below, "office", venue="physio-room"))
+        bands = [(above, len(prog))]
+    else:
+        n_up = (len(prog) + 1) // 2
+        bands = [(above, n_up), (below, len(prog) - n_up)]
+    for rect, n in bands:
+        for r in balanced_cut_band(rect, "x", n, rng):
+            venue, rtype = prog.pop(0)
+            cells.append(Cell(r, rtype, venue=venue))
+    return cells, W, H
+
+
+def build_cafe(rng: random.Random, large: bool):
+    W = q(rng.choice([16.0, 18.0, 20.0] if large else [12.0, 13.0, 14.0])); H = q(rng.choice([11.0, 12.0] if large else [10.0, 11.0]))
+    Hd = q(H - rng.choice([3.5, 4.0]))
+    cells = [Cell((0.0, 0.0, W, Hd), "break-room", is_corridor=True, venue="cafe")]       # dining: entrance + doors to the back
+    back = [("break-room", "kitchen"), ("warehouse", "utility"), ("", "restroom")] + ([("", "restroom")] if large else [])   # back kitchen
+    # takes the staff-pantry rules (counter run, fridge): the solver that would fit a kitchen is off on floor scenes
+    for r in balanced_cut_band((0.0, Hd, W, H), "x", len(back), rng):
+        venue, rtype = back.pop(0)
+        cells.append(Cell(r, rtype, venue=venue))
+    return cells, W, H
+
+
+OFFICE_FLOOR_PROGRAMMES = {   # native office types: no venue map needed (the office rules key on the room type)
+    "open": [("meeting-room", 2), ("office", 2), ("break-room", 1), ("restroom", 1)],          # F1: open plan + glass rooms
+    "loft": [("meeting-room", 1), ("office", 2), ("break-room", 1), ("restroom", 1)],          # F3: start-up loft (small booths)
+}
+
+
+def build_office_floor(rng: random.Random, kind: str):
+    """F1/F3: the open office is the hub (street entrance, doors to every room); the rooms fill one long band along its back."""
+    if kind == "corridor":                                                            # F2: corridor offices
+        W = q(rng.choice([20.0, 22.0, 24.0])); H = q(rng.choice([11.0, 12.0]))
+        ys = q(H / 2 - CW / 2)
+        cells = [Cell((0.0, ys, W, q(ys + CW)), "hallway", is_corridor=True)]
+        prog = ["office"] * 6 + ["meeting-room", "break-room", "restroom"]
+        rng.shuffle(prog)
+        n_up = (len(prog) + 1) // 2
+        for rect, n in (((0.0, q(ys + CW), W, H), n_up), ((0.0, 0.0, W, ys), len(prog) - n_up)):
+            for r in balanced_cut_band(rect, "x", n, rng):
+                cells.append(Cell(r, prog.pop(0)))
+        return cells, W, H
+    W = q(rng.choice([20.0, 22.0, 24.0] if kind == "open" else [16.0, 18.0])); H = q(rng.choice([14.0, 15.0, 16.0] if kind == "open" else [12.0, 13.0]))
+    Hb = q(rng.choice([4.0, 4.5]))
+    cells = [Cell((0.0, 0.0, W, q(H - Hb)), "open-office", is_corridor=True)]
+    prog = [t for t, n in OFFICE_FLOOR_PROGRAMMES[kind] for _ in range(n)]
+    rng.shuffle(prog)
+    for r in balanced_cut_band((0.0, q(H - Hb), W, H), "x", len(prog), rng):
+        cells.append(Cell(r, prog.pop(0)))
+    return cells, W, H
+
+
+def build_hub_floor(rng: random.Random, kind: str):
+    """F9/F10: a public hub (sales floor / warehouse hall: street entrance, doors to every room) and a back band of service rooms."""
+    if kind == "shop":
+        W = q(rng.choice([14.0, 16.0])); H = q(rng.choice([11.0, 12.0])); Hb = 3.5
+        hub = Cell((0.0, 0.0, W, q(H - Hb)), "break-room", is_corridor=True, venue="convenience")
+        back = [("warehouse", "utility"), ("", "break-room"), ("", "restroom")]
+    else:                                                    # warehouse hall with a site office
+        W = q(rng.choice([22.0, 24.0, 26.0])); H = q(rng.choice([14.0, 16.0])); Hb = 4.0
+        hub = Cell((0.0, 0.0, W, q(H - Hb)), "warehouse", is_corridor=True, venue="warehouse")   # venue: the kit's packing brief
+        # stays in the hall (floor J: an unscoped brief planned the site office as a packing bay; the office rules then emptied it)
+        back = [("", "office"), ("", "break-room"), ("", "restroom")]
+    cells = [hub]
+    for r in balanced_cut_band((0.0, q(H - Hb), W, H), "x", len(back), rng):
+        venue, rtype = back.pop(0)
+        cells.append(Cell(r, rtype, venue=venue))
+    return cells, W, H
+
+
 def build_floor_plan(seed: int, archetype: str, target_rooms: int | None = None) -> dict:
     """Deterministically build a VALID Infinigen floor-plan dict for (seed,
     archetype). Retries with perturbed sub-seeds if a draw yields a sliver."""
@@ -962,6 +1056,14 @@ def build_floor_plan(seed: int, archetype: str, target_rooms: int | None = None)
             cells, W, H, _topology = build_modern_office(rng)
         elif archetype == WIDE_GLASS_OFFICE_ARCHETYPE:
             cells, W, H, _work_bays = build_wide_glass_office(rng)
+        elif archetype.startswith("clinic_"):
+            cells, W, H = build_clinic(rng, archetype.split("_", 1)[1])
+        elif archetype in ("office_open", "office_corridor", "office_loft"):
+            cells, W, H = build_office_floor(rng, archetype.split("_", 1)[1])
+        elif archetype in ("shop_floor", "warehouse_floor"):
+            cells, W, H = build_hub_floor(rng, archetype.split("_")[0])
+        elif archetype in ("cafe_small", "cafe_large"):
+            cells, W, H = build_cafe(rng, archetype == "cafe_large")
         elif archetype == "single_room":
             raise ValueError("single_room requires build_single_room_plan(seed, room_type)")
         else:
@@ -969,6 +1071,9 @@ def build_floor_plan(seed: int, archetype: str, target_rooms: int | None = None)
         plan = emit(cells, W, H, rng)
         errs = validate_plan(plan)
         if not errs:
+            venues = {c.name: c.venue for c in cells if c.venue}
+            if venues:                                       # infinigen_gen moves this to room_venues.json (the solver never sees it)
+                plan["room_venues"] = venues
             return plan
     raise ValueError(
         f"floorplan_gen: no valid plan for seed={seed} archetype={archetype}: {errs}")

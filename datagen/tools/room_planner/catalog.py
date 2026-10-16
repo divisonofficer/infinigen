@@ -10,7 +10,7 @@ FURNITURE = {
     "armchair":       {"src": "abo:armchair",    "size": [0.85, 0.85, 0.9], "rooms": ["living-room", "bedroom", "cafe", "boutique"]},
     "dining_chair":   {"src": "copy:dining",     "size": [0.45, 0.5, 0.85], "rooms": ["dining-room", "kitchen"]},
     "conference_chair": {"src": "inf:OfficeChairFactory", "size": [0.6, 0.6, 1.0], "rooms": ["meeting-room", "office"]},
-    "desk_chair":     {"src": "inf:OfficeChairFactory", "size": [0.6, 0.6, 1.0], "rooms": ["bedroom", "living-room", "office", "open-office", "meeting-room", "clinic-reception", "exam-room", "dental-room", "pharmacy"]},
+    "desk_chair":     {"src": "inf:OfficeChairFactory", "size": [0.6, 0.6, 1.0], "rooms": ["bedroom", "living-room", "office", "open-office", "meeting-room", "clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},
     # tables
     "coffee_table":   {"src": "abo:coffee",      "size": [1.1, 0.6, 0.45], "rooms": ["living-room"]},
     "side_table":     {"src": "abo:side",        "size": [0.5, 0.5, 0.6], "rooms": ["living-room", "bedroom"]},
@@ -52,11 +52,15 @@ FURNITURE = {
     "banquette_row":  {"src": "zone:banquette_row", "size": [3.0, 1.9, 1.0], "rooms": ["cafe"]},
     "banquette":      {"src": "proc:BanquetteFactory", "size": [3.0, 0.55, 1.0], "rooms": ["_internal"]},
     # clinics and shops (non-home 20, 2026-10-16)
-    "clinic_desk":    {"src": "proc:ClinicDeskFactory", "size": [1.2, 0.65, 0.75], "rooms": ["exam-room", "dental-room"]},
+    "clinic_desk":    {"src": "proc:ClinicDeskFactory", "size": [1.2, 0.65, 0.75], "rooms": ["exam-room", "dental-room", "physio-room"]},
     "reception_desk": {"src": "proc:ReceptionDeskFactory", "size": [2.4, 0.75, 1.12], "rooms": ["clinic-reception", "pharmacy"]},
     "waiting_bench":  {"src": "proc:WaitingBenchFactory", "size": [2.2, 0.6, 0.85], "rooms": ["clinic-reception", "pharmacy", "exam-room"]},
     "exam_table":     {"src": "proc:ExamTableFactory", "size": [0.65, 1.9, 0.9], "rooms": ["exam-room", "physio-room"]},
-    "medical_cabinet": {"src": "proc:MedicalCabinetFactory", "size": [3.0, 0.6, 2.2], "rooms": ["exam-room", "dental-room"]},
+    "toilet":         {"src": "proc:ToiletStallFactory", "size": [1.5, 0.95, 1.95], "rooms": ["restroom"]},   # floor scenes: a cubicle
+    "wash_basin":     {"src": "proc:WashBasinFactory", "size": [0.45, 0.6, 1.9], "rooms": ["restroom"]},
+    "locker":         {"src": "proc:LockerFactory", "size": [0.5, 1.4, 1.8], "rooms": ["closet"]},
+    "changing_bench": {"src": "proc:ChangingBenchFactory", "size": [0.35, 1.3, 0.47], "rooms": ["closet"]},
+    "medical_cabinet": {"src": "proc:MedicalCabinetFactory", "size": [3.0, 0.6, 2.2], "rooms": ["exam-room", "dental-room", "physio-room"]},
     "privacy_curtain": {"src": "proc:PrivacyCurtainFactory", "size": [1.6, 2.2, 2.35], "rooms": ["exam-room", "physio-room"]},
     "dental_chair":   {"src": "proc:DentalChairFactory", "size": [0.9, 1.9, 2.0], "rooms": ["dental-room"]},
     "wall_bars":      {"src": "proc:WallBarsFactory", "size": [0.95, 0.12, 2.4], "rooms": ["physio-room"]},

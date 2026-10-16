@@ -28,6 +28,8 @@ def main() -> int:
     ap.add_argument("--venue", help="relabel every room as this type (a single-room layout used as a cafe / grocery store)")
     ap.add_argument("--style", help="venue style preset (room_planner/styles.py), e.g. cafe: nordic_bakery, industrial_brick")
     ap.add_argument("--reference", type=Path, help="venue spec from room_planner.reference: its brief, must-haves and images steer the plan")
+    ap.add_argument("--room-venues", type=Path, help="{room name: venue} json: a multi-room floor whose rooms take venue rules (clinic, "
+                                                     "cafe); rooms not in the map keep their own type (user 2026-10-16: floor scenes)")
     a = ap.parse_args()
     types = set(a.types.split(","))
     doc = json.loads(a.rooms.read_text())
@@ -35,14 +37,38 @@ def main() -> int:
     images = spec.get("images") if spec else None  # hand-written briefs carry no images
     out = {"scene": doc["scene"], "model": client.MODEL, "prompt_version": client.PROMPT_VERSION, "seed": a.seed, "rooms": {},
            "venue": a.venue, "style": a.style, "style_spec": spec}
+    room_venues = json.loads(a.room_venues.read_text()) if a.room_venues else {}
+    out["room_venues"] = room_venues
     for room in doc["rooms"]:
         if a.venue:
             room = {**room, "type": a.venue}
+        if room.get("id") in room_venues or room.get("name") in room_venues:
+            room = {**room, "type": room_venues.get(room.get("id")) or room_venues[room.get("name")]}
         if a.style:
             from room_planner import styles
             room = {**room, "style": styles.get(a.venue, a.style)["brief"]}
-        if a.reference:
+        if a.reference and (not room_venues or room["type"] == spec.get("venue")):   # on a floor the kit's brief and must-haves belong
             room = {**room, "style": spec["brief"], "must_have": spec.get("must_have", []), "reference_ids": spec.get("reference_ids", [])}
+            # to its own venue's room (floor G: the café brief put a coffee bar and tables in the storage room, reception's in exam rooms)
+        if room_venues and room["type"] in ("utility", "closet") and room["id"] not in room_venues:
+            # floors: service rooms no venue covers get a fixed fit-out (floor E: the sterilisation room rendered empty)
+            clinic = any(v in ("clinic-reception", "exam-room", "dental-room", "physio-room") for v in room_venues.values())
+            furn = ([{"id": "run", "category": "medical_cabinet", "relation": "against_wall"}] if clinic and room["type"] == "utility" else
+                    [{"id": "lockers", "category": "locker", "relation": "against_wall", "count": 2},
+                     {"id": "bench", "category": "changing_bench", "relation": "in_front_of", "target": "lockers", "gap_m": 0.6}]
+                    if room["type"] == "closet" else
+                    [{"id": "racks", "category": "storage_rack", "relation": "against_wall", "count": 2}])
+            stock = [{"category": "cardboard_box", "on": "racks"}] if furn[0]["id"] == "racks" else []   # racks are stocked, not bare
+            out["rooms"][room["id"]] = {"plan": {"occupant": "staff", "tidiness": 0.8, "lived_in": stock, "furniture": furn, "fixed": True}, "room": room}
+            continue
+        if room["type"] == "restroom":
+            # floors: a restroom gets fixed sanitary ware, no LLM call (the solver that would fit it is off on floors, 2026-10-16)
+            n_wc = 1 if room.get("area_m2", 0) < 8 else 2      # two toilets side by side in a small room read as a jumble (floor F)
+            plan = {"occupant": "staff and visitors", "tidiness": 0.8, "lived_in": [], "fixed": True,
+                    "furniture": [{"id": "wc", "category": "toilet", "relation": "against_wall", "count": n_wc},
+                                  {"id": "basin", "category": "wash_basin", "relation": "against_wall"}]}
+            out["rooms"][room["id"]] = {"plan": plan, "room": room}
+            continue
         if room["type"] not in types:
             continue
         payload = {k: v for k, v in room.items() if not k.startswith("_")}

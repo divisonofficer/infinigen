@@ -231,6 +231,11 @@ def _gen_office_modern_glass_v2(seed: int) -> dict:
     return build_floor_plan(int(seed), WIDE_GLASS_OFFICE_ARCHETYPE)
 
 
+def _gen_floor(archetype: str):
+    """Non-home floors (2026-10-16): clinic_gp / clinic_dental / clinic_physio / cafe_small / cafe_large (floorplan_gen)."""
+    return lambda seed: build_floor_plan(int(seed), archetype)
+
+
 # ``apartment_natural_v1`` deliberately has no JSON builder. Leaving
 # ``Solver.floor_plan`` unset selects Infinigen's native FloorPlanSolver instead
 # of PredefinedFloorPlanSolver. Keep it distinct from ``gen_apartment`` so
@@ -256,6 +261,16 @@ FLOOR_PLANS = {
     "gen_office": _gen_office,
     "gen_office_modern_hybrid_v1": _gen_office_modern_hybrid_v1,
     "gen_office_modern_glass_v2": _gen_office_modern_glass_v2,
+    "gen_clinic_gp": _gen_floor("clinic_gp"),
+    "gen_clinic_dental": _gen_floor("clinic_dental"),
+    "gen_clinic_physio": _gen_floor("clinic_physio"),
+    "gen_office_open": _gen_floor("office_open"),
+    "gen_office_corridor": _gen_floor("office_corridor"),
+    "gen_office_loft": _gen_floor("office_loft"),
+    "gen_shop_floor": _gen_floor("shop_floor"),
+    "gen_warehouse_floor": _gen_floor("warehouse_floor"),
+    "gen_cafe_small": _gen_floor("cafe_small"),
+    "gen_cafe_large": _gen_floor("cafe_large"),
     # Handled specially because it needs the explicit --room-type argument.
     "single_room": None,
 }
@@ -506,6 +521,9 @@ def main() -> int:
                       if preset.floor_plan_key == "single_room"
                       else FLOOR_PLANS[preset.floor_plan_key](args.seed))
         floor_plan_json = (out / "floor_plan.json").resolve()
+        room_venues = floor_plan.pop("room_venues", None)   # floor scenes: per-room venue map for room_planner, not for the solver
+        if room_venues:
+            (out / "room_venues.json").write_text(json.dumps(room_venues, indent=2), encoding="utf-8")
         floor_plan_json.write_text(json.dumps(floor_plan, indent=2), encoding="utf-8")
 
     # Record the decoded preset (camera profile etc. are metadata-only for now).

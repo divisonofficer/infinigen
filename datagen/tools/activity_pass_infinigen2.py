@@ -515,7 +515,9 @@ def main() -> int:
                 for ob in [o, *o.children_recursive]:
                     for sl in getattr(ob, "material_slots", []):
                         m = sl.material
-                        if m and m.use_nodes and any(n.type == "TEX_IMAGE" and (n.image is None or not n.image.has_data) for n in m.node_tree.nodes):
+                        if m and (m.name.startswith("shader_text") or m.use_nodes and any(   # Infinigen's text screen: empty (magenta)
+                                n.type == "TEX_IMAGE" and (n.image is None or not n.image.has_data) for n in m.node_tree.nodes)):   # or a
+                            # colourful random graphic (clinic r27) -- both read wrong in a clinic
                             sl.material = scr
     stats.update(art)
     bpy.ops.wm.save_as_mainfile(filepath=a.out, compress=True)

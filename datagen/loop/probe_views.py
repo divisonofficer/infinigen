@@ -15,7 +15,9 @@ import os
 HFOV = float(os.environ.get("PROBE_HFOV", "85"))             # style QA (non-home 20): 60-65 deg, like the reference photos
 LABEL = os.environ.get("PROBE_LABEL")                         # e.g. 'cafe' instead of the borrowed layout's 'break-room'
 REFVIEWS = os.environ.get("PROBE_REFVIEWS") == "1"
-for name, parts in rd._rooms().items():
+_rooms_all = {n: pa for n, pa in rd._rooms().items() if "floor" in pa}
+_multi = len(_rooms_all) > 1                                  # a floor scene: label by the full room id (floor E: reception and three
+for name, parts in rd._rooms().items():                       # dental rooms are all 'office_0/x' and their views collided)
     if "floor" not in parts: continue
     room = fr.Room(name, parts, sc, deps); x0, x1, y0, y1 = room.box; c = Vector(((x0 + x1) / 2, (y0 + y1) / 2, room.z))
     for k, (px, py) in enumerate(((x0 + 0.6, y0 + 0.6), (x1 - 0.6, y1 - 0.6), (x0 + 0.6, y1 - 0.6), (x1 - 0.6, y0 + 0.6))):
@@ -30,7 +32,7 @@ for name, parts in rd._rooms().items():
                 if not hit[0] and not low[0] and over_floor(cam):                                   # a box pile filled wide1's bottom half)            # or under it (clinic r19: a wide shot from above the reception desk)
                     break
                 cam = cam + Vector((d.x, d.y, 0)).normalized() * 0.4
-            views.append({"name": f"{LABEL or name.split('_')[0]}_wide{k}", "location": list(cam), "target": list(tgt), "hfov": HFOV, "res": [512, 384]})
+            views.append({"name": f"{LABEL or (name.replace('/', '-') if _multi else name.split('_')[0])}_wide{k}", "location": list(cam), "target": list(tgt), "hfov": HFOV, "res": [512, 384]})
     if REFVIEWS:                                              # framed like the reference views: entrance -> counter wall, and the seating
         lab = LABEL or name.split('_')[0]
         views.insert(0, {"name": f"{lab}_ref_entrance", "location": [c.x, y0 + 0.7, room.z + 1.5], "target": [c.x, y1, room.z + 1.3], "hfov": HFOV, "res": [512, 384]})
