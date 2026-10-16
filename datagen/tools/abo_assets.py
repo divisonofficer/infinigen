@@ -81,6 +81,7 @@ def _import(entry: dict, name: str) -> bpy.types.Object:
         bpy.ops.object.join()
     o = bpy.context.view_layer.objects.active
     o.name = name
+    o.rotation_mode = "XYZ"                           # the glTF importer leaves QUATERNION, which ignores rotation_euler writes
     k = max(entry["extent_m"]) / max(max(o.dimensions), 1e-6)     # some GLBs carry a node scale the index does not
     if not 0.8 < k < 1.25:                                         # (a 0.33 m storage cube imported at 1.93 m): trust the index
         o.data.transform(Matrix.Scale(k, 4))

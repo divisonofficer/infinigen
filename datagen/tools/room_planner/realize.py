@@ -267,6 +267,7 @@ class RoomRealizer:
         chair0, cfront = self.task_chair
         if chair0 is None:
             return
+        placed_seats = []
         if True:
             for sx, sy, syaw in P.get("seats", []):
                 p = P.matrix_world @ Vector((sx, sy, 0))
@@ -274,10 +275,12 @@ class RoomRealizer:
                 c.name = f"{rd._factory(chair0.name)}(pod).spawn_asset({self.stats['furniture_added']})"
                 yaw = P.matrix_world.to_euler().z + syaw
                 if fr._place(c, p.x, p.y, yaw, self.room, self.obstacles, cfront):
-                    self._unsquare(c, cfront)
+                    placed_seats.append((c, self.obstacles[-1]))
                     self.stats["furniture_added"] += 1
                 else:
                     bpy.data.objects.remove(c, do_unlink=True)
+        for c, box in placed_seats:                              # all neat first, then turned
+            self._unsquare(c, cfront, box, P)
         chair0.location = (1e4, 1e4, 0)
 
     def zone_meeting_set(self, it) -> bool:
@@ -402,7 +405,8 @@ class RoomRealizer:
         placed = 0
         self.row_k = getattr(self, "row_k", {})
         model = None                                             # copies of one item share one model (matching chairs, one rack type)
-        for k in range(n):
+        turn_later = []                                          # seats: all placed neat first, then turned (turning each at once
+        for k in range(n):                                       # blocked the next seat's spot: 4 of 7 meeting chairs, r5)
             self.row_k[it["id"]] = k
             if model is not None and not model[0].children:
                 o = model[0].copy(); o.data = model[0].data; bpy.context.scene.collection.objects.link(o)
@@ -426,7 +430,7 @@ class RoomRealizer:
             spots = spots if natural else [self._posed(x, y, yaw, pose) for x, y, yaw in spots] + spots
             if any(fr._place(o, x, y, yaw, self.room, zone, front) for x, y, yaw in spots):
                 if natural:
-                    self._unsquare(o, front)
+                    turn_later.append((o, front, self.obstacles[-1]))
                 model = model or (o, front)
                 placed += 1
                 self.stats["furniture_added"] += 1
@@ -450,6 +454,9 @@ class RoomRealizer:
                 self.spare = getattr(self, "spare", {})
                 self.spare.setdefault(it["category"], []).append((o, front))
                 break
+        host = self.ids.get(it.get("target"), (None,))[0]
+        for o_, f_, box in turn_later:
+            self._unsquare(o_, f_, box, host)
         return placed > 0
 
     def _shrink_place(self, o, front, it, zone) -> bool:
@@ -478,37 +485,56 @@ class RoomRealizer:
         if pose == "pulled_out":
             d = self.rng.uniform(0.15, 0.35)
             return x - math.cos(yaw) * d, y - math.sin(yaw) * d, yaw + sgn * math.radians(self.rng.uniform(10, 25))
-        if pose == "natural":                                    # a used seat: turned either way, often pulled back (user 2026-10-16:
-            k = self.rng.random()                                # 'chairs all facing one way look awkward, rotate them randomly')
-            ang = self.rng.uniform(15, 60) if k < 0.7 else self.rng.uniform(60, 150) if k < 0.8 else self.rng.uniform(5, 15)
-            d = self.rng.uniform(0.1, 0.45) if self.rng.random() < 0.6 else 0.0
+        if pose in ("natural", "natural_small", "natural_mid", "natural_big"):
+            # a used seat (user 2026-10-16: 'why do the chairs always face one place?'): small / medium / big turns, the big ones
+            # sideways or turned right round and rolled out from the desk -- someone just got up
+            cls = pose[8:] if pose != "natural" else self.rng.choices(("small", "mid", "big"), (0.35, 0.30, 0.35))[0]
+            ang = {"small": (5, 25), "mid": (25, 70), "big": (70, 180)}[cls]
+            ang = self.rng.uniform(*ang)
+            d = self.rng.uniform(0.3, 0.6) if cls == "big" else self.rng.uniform(0.1, 0.4) if self.rng.random() < 0.6 else 0.0
             return x - math.cos(yaw) * d, y - math.sin(yaw) * d, yaw + sgn * math.radians(ang)
         return x, y, yaw
 
-    def _unsquare(self, o, front):
+    def _unsquare(self, o, front, own=None, host=None):
         """A seat that already stands neat is turned (and often pulled back) in place, kept only if clear. Placing neat first keeps
         every seat; turning first cost half the chairs, because a turned chair's box hit its neighbour (user 2026-10-16: 'chairs all
         facing one way look awkward, rotate them randomly')."""
-        f0 = fr.footprint(o)
-        if f0 in self.obstacles:
-            self.obstacles.remove(f0)
+        # called right after a successful fr._place, which appended this seat's box last; fr.footprint(o) differs from that box in z,
+        # so looking it up by value never matched and every turn hit the seat's own box (r5: 0 of 7 chairs turned)
+        f0 = own if own is not None else self.obstacles[-1]
+        self.obstacles.remove(f0)
         m0 = o.matrix_world.copy()
         loc0, rz0 = o.location.copy(), o.rotation_euler.z
         fwd = m0.to_3x3() @ Vector((*front, 0)); fwd.z = 0; fwd.normalize()
-        for _ in range(6):
-            x, y, yaw = self._posed(loc0.x, loc0.y, _yaw(fwd), "natural")
+        hb = fr.footprint(host) if host is not None else None
+        cls = self.rng.choices(("big", "mid", "small"), (0.35, 0.30, 0.35))[0]
+        order = {"big": ("big", "big", "big", "mid", "mid", "small"), "mid": ("mid", "mid", "mid", "small", "small", "small"),
+                 "small": ("small",) * 6}[cls]                  # the drawn class first, then smaller turns before neat
+        for c_ in order:
+            x, y, yaw = self._posed(loc0.x, loc0.y, _yaw(fwd), "natural_" + c_)
             o.location.x, o.location.y = x, y
             o.rotation_euler.z = rz0 + (yaw - _yaw(fwd))
             bpy.context.view_layer.update()
             f = fr.footprint(o)
             cs = [(f[0] + 0.05, f[2] + 0.05), (f[1] - 0.05, f[2] + 0.05), (f[0] + 0.05, f[3] - 0.05), (f[1] - 0.05, f[3] - 0.05)]
-            if all(self.room.on_floor(cx, cy) for cx, cy in cs) and not any(fr._overlap(f, b) for b in self.obstacles):
+            # seats may overlap 8 cm box-to-box (a turned chair's box is far bigger than the chair; with the normal 5 cm margin every
+            # turn in a tight row hit a neighbour and the row stayed at 0 deg)
+            # its own table/desk may overlap 20 cm (a chair tucks under the top; with 5 cm every turn at a table was refused)
+            seats = getattr(self, "seat_boxes", set())
+            def margin(b):
+                if hb is not None and all(abs(b[i] - hb[i]) < 0.03 for i in range(4)):
+                    return -0.2
+                return -0.08 if b in seats else 0.05
+            if all(self.room.on_floor(cx, cy) for cx, cy in cs) and \
+                    not any(fr._overlap(f, b, margin(b)) for b in self.obstacles):
                 self.obstacles.append(f)
+                self.seat_boxes = seats | {f}
                 self.stats["seats_turned"] = self.stats.get("seats_turned", 0) + 1
                 return True
         o.location, o.rotation_euler.z = loc0, rz0
         bpy.context.view_layer.update()
         self.obstacles.append(f0)
+        self.seat_boxes = getattr(self, "seat_boxes", set()) | {f0}
         return False
 
     def adjust(self, it):
@@ -983,6 +1009,12 @@ class RoomRealizer:
             return rt in tab.get(c, {}).get("rooms", default)
         drop = [f["category"] for f in plan.get("furniture", []) if not ok(f["category"], catalog.FURNITURE, [])] + \
                [f["category"] for f in plan.get("lived_in", []) if not ok(f["category"], catalog.LIVED_IN, ["home"])]
+        lined = [f for f in plan.get("furniture", []) if f["category"] in SEATS and rt in ("office", "open-office", "meeting-room")
+                 and f.get("relation") in ("row", "against_wall", "corner", "near_window")]
+        if lined:                                                # a row of task chairs along a wall reads as a waiting room and
+            _log(f"wall-lined seats dropped: {[f['id'] for f in lined]}")   # can't be turned (r5 high-rise c04: 4 chairs at 0 deg)
+            plan = {**plan, "furniture": [f for f in plan.get("furniture", []) if f not in lined]}
+            self.stats["lined_seats_dropped"] = len(lined)
         if drop:
             _log(f"off-vocabulary for {rt}: {drop}")
             for c in drop:

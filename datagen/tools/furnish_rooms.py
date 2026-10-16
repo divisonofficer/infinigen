@@ -155,6 +155,9 @@ def _place(o, x, y, yaw, room, obstacles, front_axis):
                ((f[0] + f[1]) / 2, (f[2] + f[3]) / 2)]
     if any(_overlap(f, b) for b in obstacles) or not all(room.on_floor(cx, cy) for cx, cy in corners):
         return False
+    # glTF-imported assets (ABO/HSSD/Poly Haven via abo_assets) come in with rotation_mode QUATERNION, where rotation_euler is
+    # ignored: every such chair, desk and sofa kept its import orientation (r5, 2026-10-16: all chairs faced one world direction)
+    o.rotation_mode = "XYZ"
     o.rotation_euler = (0, 0, rz)
     o.location = (dx, dy, room.z - f0[4] + 0.002)
     bpy.context.view_layer.update()

@@ -244,9 +244,9 @@
     "*"
    ],
    "applied_to": "realizer",
-   "status": "proposed",
-   "rule": "Seats in a set (around a table, at pods, at desks) default to a natural pose: turned 8-35 deg either way and a third pulled back 5-30 cm, with the neat spot as fallback. Perfect rows look staged.",
-   "evidence": "user 2026-10-16 on r3: '의자 배치가 많이 일렬로 가지런해서 아쉽다 ... 회전을 좀 해있어야 자연스럽지'"
+   "status": "validated",
+   "rule": "Seats in a set are placed neat first, then each is turned in place: 35% small (5-25 deg), 30% medium (25-70), 35% big (70-180, pulled 0.3-0.6 m back). Neighbours may overlap 8 cm box-to-box and the seat's own table 20 cm. Office seats lined up along walls are dropped.",
+   "evidence": "user 2026-10-16 on r3: '의자 배치가 많이 일렬로 가지런해서 아쉽다 ... 회전을 좀 해있어야 자연스럽지' | r5 2026-10-16: measured world yaw vs desk: meeting 0/5/9/12/65/90/169, open office 26 chairs median 20 deg with 6 over 60; user: '의자 해결은 된거같아'"
   },
   {
    "id": "desk-clutter",
@@ -270,6 +270,16 @@
    "status": "proposed",
    "rule": "A private office uses a procedural office desk (top, modesty panel, pedestal, monitor, keyboard), a task chair and 2 matching conference chairs as guest chairs. ABO pools for bookcase/filing exclude ladder shelves and nightstands.",
    "evidence": "2026-10-16 office loop r3 (loop_office_r3.jpg): open 6-7, meeting 7-8, private 3-8, pantry 5-8; private office C1 3, C6 3"
+  },
+  {
+   "id": "gltf-rotation-mode",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "generator",
+   "status": "validated",
+   "rule": "Imported glTF assets (ABO/HSSD/Poly Haven) are in rotation_mode QUATERNION, where rotation_euler is ignored. Set XYZ at import and in fr._place. Verify orientation from matrix_world only.",
+   "evidence": "r5 2026-10-16: every ABO chair had world yaw 0 while rotation_euler varied; v2.1 kr_35718226 had 8 of 35 ABO pieces facing wrong (dressers backwards); after the fix world yaws span -145..173"
   }
  ]
 }
