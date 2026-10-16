@@ -15,7 +15,7 @@ from pathlib import Path
 from . import catalog
 
 MODEL = os.environ.get("ROOM_PLANNER_MODEL", "claude-sonnet-5-5")
-PROMPT_VERSION = "room-plan-v11"                                # v9: office system (pods, meeting set, pantry) (v8: retail)
+PROMPT_VERSION = "room-plan-v16"                                # v9: office system (pods, meeting set, pantry) (v8: retail)
 NO_FORCED_TOOL = {"claude-sonnet-5-5", "claude-opus-5-5"}      # measured 2026-10-15 (haiku-5-5, sonnet-5 accept it)
 CACHE = Path(os.environ.get("ROOM_PLANNER_CACHE", "/jarvis/project/robomituba/out/room_planner_cache"))
 
@@ -146,13 +146,14 @@ Rules:
   * meeting-room: ONE `meeting_set` (it brings the conference table, matching chairs, wall display, whiteboard and speakerphone);
     add a plant at most; nothing else.
   * office (private): 1 office_desk facing the door or under the window with 1 desk_chair, 2 conference_chairs as guest chairs in
-    front of the desk (facing it), a filing_cabinet and a bookshelf behind it, a whiteboard, a plant; nothing else.
+    front of the desk (facing it), one or two filing_cabinets behind it, a whiteboard, a plant; nothing else.
   * break-room (pantry): ONE `pantry_run` against a wall (cabinets, sink, microwave, coffee, fridge), a high break_table with
     bar_stools or a break_table with 4 break_chairs, a floor_plant; nothing else (no sofa, coffee table or lamp).
 - If the room JSON has a `style`, it describes the look the owner chose: follow it (which pieces, how many, where).
 - A cafe is built around its service zone: place ONE `coffee_bar` (against_wall, usually the back wall opposite the glass) -- it
   brings the back-bar shelf (stocked), the counter in front of it, the espresso machine and cakes; put a beverage_fridge beside it
-  and a menu_board on a free wall. Do not add a separate counter or backbar_shelf. Pilasters/columns already in the room are
+  (it also hangs a menu board). Do not add a separate counter or backbar_shelf. Where the style has a banquette, use ONE
+  `banquette_row` (a fixed bench along a wall with its small tables and chairs), never a sofa. Pilasters/columns already in the room are
   structure: furnish around them (a table group between two pilasters, the banquette along a wall bay). Seating is 4-8 table groups spread over the floor
   with 0.9 m aisles: a cafe_table with 2-4 cafe_chairs `around` it; one wall can be a banquette (a sofa against the wall) with 2-3
   cafe_tables in front of it and chairs opposite. No sofas or armchairs elsewhere -- at most 2 armchairs, and only if the
@@ -163,6 +164,23 @@ Rules:
   than 4 m2 -- put a table group, a plant cluster or a banquette there.
 - A shop-front cafe (a window spanning most of one wall) has a window_bar along that glass (`row` on that wall, gap_m 0) with
   bar_stools in front of it (`row`, gap_m 0.45), and small plants and cups on the bar.
+- A clinic is clean, bright and orderly:
+  * clinic-reception: a reception_desk facing the entrance with a desk_chair behind it, 2-4 waiting_bench rows along the walls facing
+    the desk (beam seating along walls IS right here), filing_cabinets behind the desk,
+    1-2 floor_plants.
+  * exam-room: an exam_table along one wall with a privacy_curtain beside it, a medical_cabinet (cabinets + sink) on another wall, a
+    clinic_desk with a desk_chair and one waiting_bench seat for the patient, a filing_cabinet; nothing residential.
+  * dental-room: ONE dental_chair in the middle of the room facing away from the door, a medical_cabinet run along a wall, a clinic_desk
+    with a desk_chair in a corner.
+  * physio-room: 2-3 exam_tables (treatment beds) in a row with privacy_curtains between them, wall_bars on a free wall,
+    parallel_bars and 1-2 exercise_bikes, 1-2 exercise_sets on the open floor, a whiteboard.
+- A shop is a sales floor:
+  * convenience: 2-3 double-sided gondola aisles, wall_gondolas along the walls, a row of 3-5 beverage_fridges along the back wall, a
+    counter with a register by the door, a chest_freezer.
+  * boutique: clothing_racks along the walls and in a loose row, 2-3 display_tables in the middle, a mirror near the fitting_room (1-2)
+    at the back, a counter with a register, an armchair by the fitting room, wall_gondolas for shoes and bags.
+  * pharmacy: a reception_desk as the dispensing counter with a backbar_shelf behind it, gondola aisles of over-the-counter goods,
+    wall_gondolas, a waiting_bench by the counter, a beverage_fridge.
 - A grocery store is a sales floor, not a stockroom: 2-4 double-sided `gondola` aisles through the middle of the floor (`row`s
   parallel to the long wall, `gap_m` about 2.2, 3.9, 5.6 ... so aisles are 1.2-1.5 m), `wall_gondola` rows along the side walls,
   beverage_fridges along the back wall and 1-2 chest_freezers, a checkout `counter` with a `register` on it next to the door and

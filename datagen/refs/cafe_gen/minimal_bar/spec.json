@@ -1,0 +1,69 @@
+{
+ "brief": "A bright, airy corner cafe with a floor-to-ceiling black-framed glazed storefront and glass door looking onto a tree-lined brick street. A long sage-green fluted counter with a pale stone top runs along the right wall, carrying an espresso machine, grinder, pastry display case, POS and cup stacks. Behind it, white vertical-tile wall carries three oak open shelves with cups, bottles, coffee jars and bags, trailing plants and a blank framed menu board. A slim oak window bar with two wooden stools sits along the glass. The front-left dining zone has several round oak ccafé tables with bentwood-style oak chairs and cream cushions, plus olive trees and potted plants. Mood is calm, Scandinavian, sunlit and fresh, with dappled light on polished concrete and white dome pendants plus track spots.",
+ "wall": "tile",
+ "floor": "concrete",
+ "counter_front": "sage_fluted",
+ "counter_top": "white_stone",
+ "backbar": "oak_slat",
+ "fixture": "pendant",
+ "wall_srgb": [
+  0.95,
+  0.93,
+  0.89
+ ],
+ "must_have": [
+  {
+   "category": "coffee_bar",
+   "count": 1,
+   "where": "on counter, espresso machine and grinder"
+  },
+  {
+   "category": "menu_board",
+   "count": 1,
+   "where": "large blank framed board on tile wall above the back counter"
+  },
+  {
+   "category": "window_bar",
+   "count": 1,
+   "where": "oak ledge along the storefront glass"
+  },
+  {
+   "category": "bar_stool",
+   "count": 2,
+   "where": "at the window bar"
+  },
+  {
+   "category": "cafe_table",
+   "count": 4,
+   "where": "round oak tables in front-left dining zone near window"
+  },
+  {
+   "category": "cafe_chair",
+   "count": 8,
+   "where": "oak chairs with cream cushions around the round tables"
+  },
+  {
+   "category": "floor_plant",
+   "count": 3,
+   "where": "olive trees and large potted plants by the window and left wall"
+  }
+ ],
+ "not_reproducible": "Street, trees and brick buildings outside, dappled sunlight, pastries, food and cups, coffee beans, the street view, the glass door detailing, the trailing plants, and the framed art on the left wall.",
+ "wall_rgb": [
+  0.89,
+  0.8481,
+  0.7678
+ ],
+ "reference_ids": [
+  "5bc5049fa06ac868",
+  "9b1669f974b5836d",
+  "506fc91dea5cc8ac"
+ ],
+ "venue": "cafe",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/minimal_bar/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/minimal_bar/view2.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/minimal_bar/view3.png"
+ ],
+ "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/minimal_bar/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact."
+}

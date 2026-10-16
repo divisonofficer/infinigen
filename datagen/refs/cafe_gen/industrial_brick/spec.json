@@ -1,0 +1,59 @@
+{
+ "brief": "Long, narrow industrial cafe with exposed brick side walls, black ceiling with silver ductwork and track lights. Floor-to-ceiling steel-framed windows run along the left wall, with a timber window-bar ledge and black metal stools facing the street. The center holds one long reclaimed-wood communal table with black metal chairs; small round bistro tables with bentwood chairs sit along the right brick wall. At the back, a matte black counter with a wood top carries an espresso machine, grinders and a lit pastry case. Behind it are a chalkboard menu, open shelves with cups and coffee bags, and a warm backlit tile splash. Mood is warm, moody and inviting. Black dome pendants hang overhead, and potted plants, small flower vases, framed black-and-white prints, and coffee cups with croissants are on the tables.",
+ "wall": "brick",
+ "floor": "concrete",
+ "counter_front": "matte_black",
+ "counter_top": "butcher_block",
+ "backbar": "matte_black",
+ "fixture": "pendant",
+ "must_have": [
+  {
+   "category": "coffee_bar",
+   "count": 1,
+   "where": "on the back counter: espresso machine and two grinders"
+  },
+  {
+   "category": "menu_board",
+   "count": 1,
+   "where": "large chalkboard on the back wall above the counter"
+  },
+  {
+   "category": "window_bar",
+   "count": 1,
+   "where": "along the left window wall, long timber ledge"
+  },
+  {
+   "category": "bar_stool",
+   "count": 7,
+   "where": "along the window bar, black metal stools"
+  },
+  {
+   "category": "cafe_table",
+   "count": 4,
+   "where": "3 small round bistro tables on the right brick wall, 1 long communal reclaimed-wood table in center"
+  },
+  {
+   "category": "cafe_chair",
+   "count": 18,
+   "where": "10 black metal chairs at the communal table, 8 bentwood chairs at the round tables"
+  },
+  {
+   "category": "floor_plant",
+   "count": 6,
+   "where": "corners, beside the window and along the brick walls"
+  }
+ ],
+ "not_reproducible": "Street view and trees outside, people, food and pastries, coffee cups, espresso machine detail, glass pastry case contents, framed photographs, duct work, track lighting, cash register",
+ "reference_ids": [
+  "f5b417c94104e3ba",
+  "d1364d07c512cc0b",
+  "0fab30cc16f56efa"
+ ],
+ "venue": "cafe",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/industrial_brick/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/industrial_brick/view2.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/industrial_brick/view3.png"
+ ],
+ "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/industrial_brick/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact."
+}

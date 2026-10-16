@@ -255,6 +255,35 @@ def exterior(hdr: str, rng, stats):
     stats["exterior"] = Path(hdr).name
 
 
+def office_doors(rng, stats):
+    """Commercial doors (critic r2-r5: maroon / green / dark rustic leaves in panel frames read as a house): every door leaf gets one
+    neutral finish (white, light oak or grey), every casing brushed aluminium. Handles share the leaf material."""
+    leaf_rgb = rng.choice(((0.86, 0.86, 0.84), (0.62, 0.5, 0.36), (0.5, 0.51, 0.52)))
+    leaf = _mat("ir_office_door_leaf", leaf_rgb, 0.45)
+    frame = _mat("ir_office_door_frame", (0.7, 0.7, 0.72), 0.35)
+    frame.node_tree.nodes["Principled BSDF"].inputs["Metallic"].default_value = 1.0
+    n = 0
+    for o in bpy.data.objects:
+        f = o.name.split("(")[0]
+        if o.type != "MESH" or "Door" not in f:
+            continue
+        m = frame if "Casing" in f else leaf
+        for sl in o.material_slots:
+            sl.material = m
+        if not o.material_slots:
+            o.data.materials.append(m)
+        n += 1
+    stats["office_doors"] = n
+    w = 0                                                    # window frames / blinds: wood read as curtains in a house (critic r6)
+    for o in bpy.data.objects:
+        if o.type == "MESH" and "Window" in o.name.split("(")[0]:
+            for sl in o.material_slots:
+                if sl.material and "glass" not in sl.material.name.lower():
+                    sl.material = frame
+            w += 1
+    stats["office_windows"] = w
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("blend"); ap.add_argument("--out", required=True); ap.add_argument("--seed", type=int, default=0)
@@ -277,6 +306,8 @@ def main() -> int:
         accent = _mat("ir_arch_accent", pal["accent"], 0.8)
         stats["accent"] = accent_wall(room, accent, rng, stats)
         build(room, rng, pal, stats, a.seed, track=not a.no_track, archetype=a.archetype)
+    if a.archetype.startswith("office"):
+        office_doors(rng, stats)
     if a.exterior:
         exterior(a.exterior, rng, stats)
     bpy.ops.wm.save_as_mainfile(filepath=a.out, compress=True)

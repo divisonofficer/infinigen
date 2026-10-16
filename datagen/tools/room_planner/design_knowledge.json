@@ -280,6 +280,61 @@
    "status": "validated",
    "rule": "Imported glTF assets (ABO/HSSD/Poly Haven) are in rotation_mode QUATERNION, where rotation_euler is ignored. Set XYZ at import and in fr._place. Verify orientation from matrix_world only.",
    "evidence": "r5 2026-10-16: every ABO chair had world yaw 0 while rotation_euler varied; v2.1 kr_35718226 had 8 of 35 ABO pieces facing wrong (dressers backwards); after the fix world yaws span -145..173"
+  },
+  {
+   "id": "door-zone-from-casing",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "realizer",
+   "status": "validated",
+   "rule": "Door clearance is the casing (opening) footprint plus 0.9 m, never the leaf. An open leaf, or a leaf mesh whose box spans its baked swing, made the zone 1.8 m deep.",
+   "evidence": "2026-10-16 office r6 (loop_office_r6.jpg): open 7-8, high-rise 5-9, meeting 7, private 5-7, pantry 6-7; meeting table moved from against the far wall to centred; chairs 3 -> 8 in replay"
+  },
+  {
+   "id": "room-sized-meeting-table",
+   "rooms": [
+    "meeting-room"
+   ],
+   "applied_to": "realizer",
+   "status": "validated",
+   "rule": "The meeting table is sized to the room: W = short side - door clearance - 2 chair zones - aisle (0.9-1.3 m), L = long side - 2 m (1.8-3.6 m). It is shifted away from the nearest door so both long sides seat.",
+   "evidence": "2026-10-16 office r6 (loop_office_r6.jpg): open 7-8, high-rise 5-9, meeting 7, private 5-7, pantry 6-7; replay 3 -> 8 chairs, both sides seated"
+  },
+  {
+   "id": "wall-mounted-categories",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "realizer",
+   "status": "proposed",
+   "rule": "Whiteboards and wall displays always go through the wall mount (lifted to 0.9 m), even when the plan lists them as ordinary furniture.",
+   "evidence": "2026-10-16 office r6 (loop_office_r6.jpg): open 7-8, high-rise 5-9, meeting 7, private 5-7, pantry 6-7; private-office whiteboard measured standing on the floor (z 0.16)"
+  },
+  {
+   "id": "procedural-office-seating",
+   "rooms": [
+    "office",
+    "open-office",
+    "meeting-room"
+   ],
+   "applied_to": "catalog",
+   "status": "proposed",
+   "rule": "Desk and conference chairs are Infinigen OfficeChairFactory, wheeled variant only (seeds are re-drawn until the params have 'Leg Wheel Width'). Filing is a procedural steel filer. ABO name filters never kept dressers, sled, gaming or lounge chairs out.",
+   "evidence": "2026-10-16 office r6 (loop_office_r6.jpg): open 7-8, high-rise 5-9, meeting 7, private 5-7, pantry 6-7; r3-r5 critics flagged ABO chairs and dressers every round; r6 critic flagged single-post shell chairs"
+  },
+  {
+   "id": "office-shell-finishes",
+   "rooms": [
+    "office",
+    "open-office",
+    "meeting-room",
+    "break-room"
+   ],
+   "applied_to": "architecture",
+   "status": "proposed",
+   "rule": "Office archetypes recolour every door leaf to one neutral finish and every casing and window frame to brushed aluminium.",
+   "evidence": "2026-10-16 office r6 (loop_office_r6.jpg): open 7-8, high-rise 5-9, meeting 7, private 5-7, pantry 6-7; maroon doors, green frames and wood window frames read as residential"
   }
  ]
 }

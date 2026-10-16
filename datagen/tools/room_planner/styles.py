@@ -15,7 +15,7 @@ CAFE = {
         "brief": "Nordic bakery-cafe: a white wood-panelled counter with glass cake domes and baskets of bread on it, wine glasses "
                  "on the back shelves with bottles and stacked plates, a drinks fridge beside the counter, light and calm.",
         "counter_front": "white_panel", "counter_top": "butcher_block", "backbar": "oak_slat",
-        "wall": "paint", "wall_rgb": [0.86, 0.84, 0.79], "floor": "wood", "fixture": "pendant"},
+        "wall": "paint", "wall_rgb": [0.86, 0.84, 0.79], "floor": "wood", "fixture": "pendant", "clutter_exclude": ["wine_glass"]},
     "industrial_brick": {
         "brief": "Industrial brick cafe: exposed red brick, chalkboard menu boards, a row of black metal pendants, a long communal "
                  "table (break_table) with mixed chairs plus small tables, two velvet armchairs in a corner, plants on the tables, "
@@ -31,12 +31,15 @@ CAFE = {
         "brief": "Bright chain cafe: a red brick counter, a long banquette (sofa) along one wall with a row of small tables and "
                  "metal cafe chairs opposite, a few mustard upholstered chairs, plants hanging and standing, a wood feature wall.",
         "counter_front": "brick_red", "counter_top": "steel", "backbar": "matte_black",
-        "wall": "paint", "wall_rgb": [0.66, 0.64, 0.6], "floor": "wood", "fixture": "pendant"},
+        "wall": "paint", "wall_rgb": [0.66, 0.64, 0.6], "floor": "wood", "fixture": "pendant",
+        # the style's signature, added by the realizer when the plan leaves it out (cafe r1: 'no banquette in any tile')
+        "require": [{"id": "req_banquette", "category": "banquette_row", "relation": "against_wall"}]},
     "floral_moody": {
         "brief": "Moody floral cafe: a black counter with a glass cake display, flowers in vases on every table and the counter, "
                  "dark wood panelling, warm low light, a chandelier over the counter.",
         "counter_front": "matte_black", "counter_top": "black_stone", "backbar": "walnut_slat",
-        "wall": "paint", "wall_rgb": [0.1, 0.17, 0.13], "floor": "wood", "fixture": "chandelier"},
+        "wall": "paint", "wall_rgb": [0.1, 0.17, 0.13], "floor": "wood", "fixture": "chandelier",
+        "table_extra": [["vase", 4]]},                            # flowers on every table (cafe r1: 'no florals')
 }
 
 STYLES = {"cafe": CAFE}

@@ -1,0 +1,72 @@
+{
+ "brief": "Bright Scandinavian-style daylit cafe with a full-height glazed storefront and a wood-framed glass door at the front. A tall window bar with wooden stools runs along the glass. The dining zone in the middle and foreground has round marble-top and square oak tables with woven-seat oak chairs on a light wood plank floor. The long white vertical-panel service counter with a white stone top runs along the back and right, with an espresso machine, two grinders, cake domes and a glass pastry case at the right end. Behind it, oak open shelves hold cups, jars and coffee bags under a large framed blackboard menu. White dome pendants and track spots hang overhead. Potted olive trees, a fiddle-leaf fig, trailing plants and small flower vases soften the white walls. Warm, airy, calm mood.",
+ "wall": "paint",
+ "wall_srgb": [
+  0.96,
+  0.94,
+  0.9
+ ],
+ "floor": "wood",
+ "counter_front": "white_panel",
+ "counter_top": "white_stone",
+ "backbar": "oak_slat",
+ "fixture": "pendant",
+ "must_have": [
+  {
+   "category": "coffee_bar",
+   "count": 1,
+   "where": "on counter: espresso machine and two grinders"
+  },
+  {
+   "category": "menu_board",
+   "count": 1,
+   "where": "large blackboard above back shelves"
+  },
+  {
+   "category": "cafe_table",
+   "count": 5,
+   "where": "dining floor; round marble and square oak tables"
+  },
+  {
+   "category": "cafe_chair",
+   "count": 12,
+   "where": "woven-seat oak chairs around the tables"
+  },
+  {
+   "category": "window_bar",
+   "count": 1,
+   "where": "long high ledge along the front window"
+  },
+  {
+   "category": "bar_stool",
+   "count": 5,
+   "where": "at the window bar"
+  },
+  {
+   "category": "floor_plant",
+   "count": 3,
+   "where": "olive tree, fiddle-leaf fig by the window and the counter"
+  }
+ ],
+ "not_reproducible": "Street view, trees, cars and buildings outside; pastries, baked goods and bread baskets; glass pastry case contents; cups, books, flowers and vases; hanging vines; people; cash register; blackboard writing.",
+ "wall_rgb": [
+  0.9114,
+  0.8689,
+  0.7874
+ ],
+ "reference_ids": [
+  "9d37d716b4ba4ad2",
+  "8a1f354fad7e538a",
+  "809ea16acf42ddb0"
+ ],
+ "venue": "cafe",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/nordic_bakery/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/nordic_bakery/view2.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/nordic_bakery/view3.png"
+ ],
+ "clutter_exclude": [
+  "wine_glass"
+ ],
+ "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/nordic_bakery/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact."
+}

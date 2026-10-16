@@ -160,7 +160,7 @@ def _add_missing(rooms, by_room, tops, chosen, rng, stats):
             continue
         area = len(pts) * 0.25                               # 0.5 m grid cells
         from room_planner import proc_assets
-        n = max(1, round(area / (6.0 if proc_assets.VENUE == "grocery" else M2_PER_FIXTURE)))   # a sales floor is bright and even
+        n = max(1, round(area / (6.0 if proc_assets.VENUE in ("grocery", "convenience", "pharmacy", "clinic-reception", "exam-room", "dental-room", "physio-room", "boutique") else M2_PER_FIXTURE)))   # a sales floor is bright and even
         picks = _spread(pts, n)
         # The wall mesh's top is the ceiling. A ray up from the floor hit a desk first in a furnished office (ceiling read as 0.75 m,
         # no fixture fit, the open office stayed dark; 2026-10-16).

@@ -14,7 +14,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from room_planner import client  # noqa: E402
 
-PLANNED = ("living-room", "bedroom", "dining-room", "warehouse", "garage", "office", "open-office", "meeting-room", "break-room", "cafe", "grocery")
+PLANNED = ("living-room", "bedroom", "dining-room", "warehouse", "garage", "office", "open-office", "meeting-room", "break-room", "cafe", "grocery",
+           "clinic-reception", "exam-room", "dental-room", "physio-room", "convenience", "boutique", "pharmacy")
 
 
 def main() -> int:

@@ -13,9 +13,12 @@ for name, parts in rd._rooms().items():
     room = fr.Room(name, parts, sc, deps); x0, x1, y0, y1 = room.box; c = Vector(((x0 + x1) / 2, (y0 + y1) / 2, room.z))
     for k, (px, py) in enumerate(((x0 + 0.6, y0 + 0.6), (x1 - 0.6, y1 - 0.6), (x0 + 0.6, y1 - 0.6), (x1 - 0.6, y0 + 0.6))):
         if room.on_floor(px, py):
-            views.append({"name": f"{name.split('_')[0]}_wide{k}", "location": [px, py, room.z + 1.7], "target": [c.x, c.y, room.z + (1.5 if k % 2 else 0.9)], "hfov": 85.0, "res": [512, 384]})
+            views.append({"name": f"{name.split('_')[0]}_wide{k}", "location": [px, py, room.z + 1.7], "target": [c.x, c.y, room.z + (1.6 if k % 2 else 1.25)], "hfov": 85.0, "res": [512, 384]})
 objs = [o for o in rd._tops() if rd._factory(o.name) not in ("CeilingLightFactory",) and "Door" not in o.name and "Window" not in o.name]
-rng.shuffle(objs)
+big = [o for o in objs if max(o.dimensions) >= 0.5]          # close-ups on furniture/equipment, not desk clutter (clinic r1 critic)
+small = [o for o in objs if o not in big]
+rng.shuffle(big); rng.shuffle(small)
+objs = big + small
 for o in objs:
     if sum(v["name"].startswith("c") for v in views) >= n_close: break
     f = fr.footprint(o); t = Vector(((f[0] + f[1]) / 2, (f[2] + f[3]) / 2, (f[4] + f[5]) / 2))

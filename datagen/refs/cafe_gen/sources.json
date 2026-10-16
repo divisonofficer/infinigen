@@ -1,0 +1,62 @@
+{
+ "chain_banquette/view1.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "chain_banquette/view2.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "chain_banquette/view3.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "floral_moody/view1.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "floral_moody/view2.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "floral_moody/view3.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "industrial_brick/view1.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "industrial_brick/view2.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "industrial_brick/view3.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "minimal_bar/view1.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "minimal_bar/view2.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "minimal_bar/view3.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "nordic_bakery/view1.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "nordic_bakery/view2.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ },
+ "nordic_bakery/view3.png": {
+  "kind": "synthetic_view",
+  "note": "Codex imagegen (user-approved request 2026-10-16), text-to-image from a style brief: a synthetic design reference, not a real photo"
+ }
+}

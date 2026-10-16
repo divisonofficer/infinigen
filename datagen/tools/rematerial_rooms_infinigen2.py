@@ -123,7 +123,15 @@ STYLE_FLOORS = {"wood": fl.wood_planks.wood_planks_rand, "concrete": fl.concrete
 #: --venue relabels a single-room layout (plan_scene --venue): its rooms get that venue's finishes
 VENUE_FNS = {"cafe": {"wall": cafe_wall, "floor": cafe_floor},
              "grocery": {"wall": _paint((0.88, 0.88, 0.86)), "floor": tiles.tile_indoor_ground_rand},   # a sales floor, not a stockroom
-             "break-room": {"wall": office_wall, "floor": fl.concrete.concrete_rand}}   # office pantry: not carpet (r2), not glossy green herringbone tile (r3)
+             "break-room": {"wall": office_wall, "floor": fl.concrete.concrete_rand},
+             # non-home 20 (2026-10-16): clinics pale and washable, sales floors white and tiled, boutiques warm
+             # clinics: pale sheet vinyl (clinic r1: random tile gave burgundy hexagons and green marble); sales floors: tile
+             **{k: {"wall": _paint(c), "floor": _paint(f)} for k, c, f in (
+                 ("clinic-reception", (0.9, 0.92, 0.92), (0.72, 0.74, 0.73)), ("exam-room", (0.88, 0.92, 0.93), (0.78, 0.8, 0.8)),
+                 ("dental-room", (0.85, 0.92, 0.93), (0.74, 0.78, 0.79)), ("physio-room", (0.9, 0.91, 0.88), (0.62, 0.66, 0.68)))},
+             **{k: {"wall": _paint(c), "floor": tiles.tile_indoor_ground_rand} for k, c in (
+                 ("convenience", (0.9, 0.9, 0.88)), ("pharmacy", (0.92, 0.94, 0.93)))},
+             "boutique": {"wall": _paint((0.9, 0.87, 0.82)), "floor": fl.wood_planks.wood_planks_rand}}   # office pantry: not carpet (r2), not glossy green herringbone tile (r3)
 
 
 def planar_group():

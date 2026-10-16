@@ -338,10 +338,13 @@ def obstacles(everything):
         f = footprint(o)
         (flat if f[5] - f[4] < 0.05 else obst).append(f)
     doors = []                                                  # door swing / passage kept clear of everything
-    for o in everything:
-        if "Door" in rd._factory(o.name):
-            f = footprint(o)
-            doors.append((f[0] - DOOR_CLEAR_M, f[1] + DOOR_CLEAR_M, f[2] - DOOR_CLEAR_M, f[3] + DOOR_CLEAR_M, f[4], f[5]))
+    # measured from the casing (the opening), not the leaf: an open leaf -- or a leaf mesh whose box spans its baked swing -- made the
+    # zone 1.8 m deep and pushed meeting tables against the far wall (office r6, 2026-10-16). Leaves only where a door has no casing.
+    door_objs = [o for o in everything if "Door" in rd._factory(o.name)]
+    casings = [o for o in door_objs if "Casing" in rd._factory(o.name)]
+    for o in casings or door_objs:
+        f = footprint(o)
+        doors.append((f[0] - DOOR_CLEAR_M, f[1] + DOOR_CLEAR_M, f[2] - DOOR_CLEAR_M, f[3] + DOOR_CLEAR_M, f[4], f[5]))
     return obst + doors, flat + doors
 
 

@@ -707,6 +707,11 @@ def build_single_room(rng: random.Random, room_type: str):
     ceiling = SINGLE_ROOM_LARGE_TYPES.get(
         room_type, min(SINGLE_ROOM_AREA_CAP_M2, max(anchors) * SINGLE_ROOM_AREA_GROWTH))
     low = min(anchors)
+    # venues borrow a room type's layout but need their own floor area (cafe loop r1, 2026-10-16: a cafe on the break-room profile
+    # was 13.5 m2 and held only its bar): ROBOMITUBA_SINGLE_ROOM_AREA="lo,hi" overrides the sampled area
+    import os
+    if os.environ.get("ROBOMITUBA_SINGLE_ROOM_AREA"):
+        low, ceiling = (float(v) for v in os.environ["ROBOMITUBA_SINGLE_ROOM_AREA"].split(","))
     target = rng.uniform(low, max(low, ceiling))
     w0, d0 = rng.choice(profile["sizes"])
     aspect = rng.uniform(1.0 / SINGLE_ROOM_ASPECT_JITTER, SINGLE_ROOM_ASPECT_JITTER)

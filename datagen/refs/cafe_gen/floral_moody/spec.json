@@ -1,0 +1,65 @@
+{
+ "brief": "A narrow, moody Parisian-style café with dark wood-panelled walls and a long matte-black raised-panel service counter with a veined black stone top along the right. The counter carries a glass pastry case, twin grinders, an espresso machine and many vases of flowers and tea lights. The left side is a tall street window with a wooden window ledge and round-seat wooden stools, and an olive tree in a pot stands beside it. Round bistro tables with bentwood chairs run down the middle on dark plank flooring, with worn Persian runners in the aisle. A large crystal chandelier hangs over the counter, with small pendants and wall sconces. Backbar shelves of dark wood hold coffee bags, jars, bottles and stacked cups under a big framed blackboard menu. The mood is warm, candlelit and intimate.",
+ "wall": "wood_panel",
+ "floor": "wood",
+ "counter_front": "matte_black",
+ "counter_top": "black_stone",
+ "backbar": "walnut_slat",
+ "fixture": "chandelier",
+ "must_have": [
+  {
+   "category": "coffee_bar",
+   "count": 1,
+   "where": "on the counter: espresso machine and two grinders"
+  },
+  {
+   "category": "menu_board",
+   "count": 1,
+   "where": "large framed blackboard above the backbar"
+  },
+  {
+   "category": "cafe_table",
+   "count": 7,
+   "where": "round bistro tables down the middle and back of the room"
+  },
+  {
+   "category": "cafe_chair",
+   "count": 14,
+   "where": "bentwood chairs around the round tables"
+  },
+  {
+   "category": "window_bar",
+   "count": 1,
+   "where": "wooden ledge along the street window on the left"
+  },
+  {
+   "category": "bar_stool",
+   "count": 4,
+   "where": "round-seat wooden stools at the window ledge"
+  },
+  {
+   "category": "floor_plant",
+   "count": 4,
+   "where": "potted olive trees by the window and back wall, and small plants near the counter"
+  }
+ ],
+ "not_reproducible": "Street view and cars outside, cut flowers and vases, candles, pastries and food, crystal chandelier detail, framed oil painting, Persian rugs, coffee grinders and cup detail, notebook and pen, sconce lamps, table lamp.",
+ "reference_ids": [
+  "1d8e4dd1bf57ec31",
+  "051cfad87a88e4cb",
+  "60183fd4333b0321"
+ ],
+ "venue": "cafe",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/floral_moody/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/floral_moody/view2.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/floral_moody/view3.png"
+ ],
+ "table_extra": [
+  [
+   "vase",
+   4
+  ]
+ ],
+ "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/floral_moody/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact."
+}

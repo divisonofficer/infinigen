@@ -1,0 +1,76 @@
+{
+ "brief": "Long, narrow corner cafe with a storefront glass wall and door along one side and a warm wood-plank feature wall on the other. A continuous tan leather banquette runs the length of the plank wall, with a row of small square wood-top pedestal tables and black metal bistro chairs in front. Toward the window, round wood tables sit with mustard velvet chairs, and a long wood window bar with wooden stools runs under the glazing. At the back is a brick-fronted counter with a pale concrete top, an espresso machine, two grinders and a lit pastry case. Open shelves above hold jars and cups, with a large chalkboard menu in the middle. The mood is warm and golden, with black pendants and track lighting on an exposed white ceiling. Hanging and potted plants are everywhere, and the floor is polished grey concrete. Surfaces hold coffee cups, croissants, small bud vases and notebooks.",
+ "wall": "wood_panel",
+ "floor": "concrete",
+ "counter_front": "brick_red",
+ "counter_top": "white_stone",
+ "backbar": "oak_slat",
+ "fixture": "pendant",
+ "must_have": [
+  {
+   "category": "coffee_bar",
+   "count": 1,
+   "where": "on the counter: espresso machine and two grinders"
+  },
+  {
+   "category": "menu_board",
+   "count": 1,
+   "where": "large chalkboard on the back wall between the shelves"
+  },
+  {
+   "category": "banquette_row",
+   "count": 1,
+   "where": "long tan leather banquette along the wood plank wall"
+  },
+  {
+   "category": "cafe_table",
+   "count": 6,
+   "where": "4 square tables along the banquette, 2 round tables near the windows"
+  },
+  {
+   "category": "cafe_chair",
+   "count": 10,
+   "where": "3 black metal bistro chairs on the banquette side, 8 mustard upholstered chairs at the round tables (2 tables of 4)"
+  },
+  {
+   "category": "window_bar",
+   "count": 1,
+   "where": "long wood shelf along the storefront glazing"
+  },
+  {
+   "category": "bar_stool",
+   "count": 4,
+   "where": "under the window bar"
+  },
+  {
+   "category": "floor_plant",
+   "count": 5,
+   "where": "near the windows and by the plank wall"
+  },
+  {
+   "category": "beverage_fridge",
+   "count": 1,
+   "where": "pastry display case on the counter"
+  }
+ ],
+ "not_reproducible": "People, the street and trees outside, hanging plants and vines, framed mountain art, food and pastries, cups, flowers, throw pillows, and the exposed ducts and track lighting.",
+ "reference_ids": [
+  "32e32579d1f8e569",
+  "a9f330462cd8cea2",
+  "410dec1d3912dc83"
+ ],
+ "venue": "cafe",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/chain_banquette/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/chain_banquette/view2.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/chain_banquette/view3.png"
+ ],
+ "require": [
+  {
+   "id": "req_banquette",
+   "category": "banquette_row",
+   "relation": "against_wall"
+  }
+ ],
+ "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/chain_banquette/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact."
+}

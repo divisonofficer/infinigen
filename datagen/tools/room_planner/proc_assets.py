@@ -602,32 +602,423 @@ class OfficeDeskFactory:
                               (black, mons + [(0.08, 0, 0.755, 0.15, 0.44, 0.015)]), (screen, scr)])
 
 
-class PantryRunFactory:
-    """Office pantry (front +X): base cabinets + worktop with an inset sink and tap, upper cabinets at 1.45-2.15 m; 2.4-3.6 m long."""
+class FilingCabinetFactory:
+    """Steel office filing cabinet (front +X): a 2-4 drawer lateral or vertical filer with recessed pulls (critic r3-r5: ABO 'filing'
+    pools kept returning wooden dressers and nightstands)."""
     def __init__(self, seed):
         r = random.Random(seed)
-        self.L = r.choice((2.4, 3.0, 3.6)); self.c = r.choice(((0.9, 0.9, 0.88), (0.35, 0.38, 0.4), (0.6, 0.48, 0.34)))
+        self.lateral = r.random() < 0.5; self.n = r.choice((2, 3, 4)) if self.lateral else r.choice((3, 4))
+        self.c = r.choice(((0.82, 0.82, 0.8), (0.55, 0.56, 0.57), (0.18, 0.18, 0.19)))
+
+    def spawn_asset(self, i):
+        W, D = (0.9, 0.5) if self.lateral else (0.47, 0.62)
+        H = 0.36 * self.n + 0.05
+        body = _flat(f"ir_filer_{int(self.c[0] * 100)}", self.c, 0.35, 0.6); pull = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
+        gaps = [(D / 2 + 0.001, 0, 0.05 + k * 0.36, 0.002, W - 0.02, 0.006) for k in range(1, self.n)]
+        pulls = [(D / 2 + 0.008, 0, 0.05 + (k + 0.75) * 0.36, 0.012, W * 0.45, 0.025) for k in range(self.n)]
+        return _parts_object(f"FilingCabinetFactory({i}).spawn_asset({i})", [(body, [(0, 0, H / 2, D, W, H)]), (pull, gaps + pulls)])
+
+
+# ---- clinics and shops (non-home 20, 2026-10-16) -----------------------------------------------------------------------------------
+class ReceptionDeskFactory:
+    """Reception / pharmacy desk (front +X = the visitor side): a work surface at 0.75 m behind a 1.1 m transaction ledge, a modesty
+    front, a monitor on the staff side. 2.0-3.2 m long."""
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.L = r.choice((2.0, 2.4, 2.8, 3.2)); self.front = r.choice(((0.9, 0.9, 0.88), (0.62, 0.5, 0.36), (0.35, 0.45, 0.55)))
 
     def spawn_asset(self, i):
         L = self.L
+        front = _flat(f"ir_reception_front_{int(self.front[2] * 100)}", self.front, 0.5); top = _flat("ir_counter_top_white_stone", (0.86, 0.85, 0.82), 0.25)
+        work = _flat("ir_desk_top_88", (0.88, 0.87, 0.84), 0.45); black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
+        screen = _flat("ir_pos_screen", (0.02, 0.03, 0.05), 0.15)
+        return _parts_object(f"ReceptionDeskFactory({i}).spawn_asset({i})",
+                             [(front, [(0.33, 0, 0.55, 0.04, L, 1.1)] + [(0.0, sy * (L / 2 - 0.02), 0.37, 0.66, 0.04, 0.74) for sy in (1, -1)]),
+                              (top, [(0.3, 0, 1.115, 0.3, L + 0.04, 0.03)]), (work, [(-0.05, 0, 0.745, 0.7, L - 0.04, 0.03)]),
+                              (black, [(-0.2, -L / 4, 0.82, 0.2, 0.22, 0.012), (-0.2, -L / 4, 0.92, 0.03, 0.05, 0.2)]),
+                              (screen, [(-0.18, -L / 4, 1.07, 0.02, 0.54, 0.32)])])
+
+
+class WaitingBenchFactory:
+    """Beam seating (front +X): 3-5 moulded seats on a steel beam with two legs -- waiting rooms line these up along walls."""
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.n = r.choice((3, 4, 4, 5)); self.c = r.choice(((0.15, 0.35, 0.55), (0.55, 0.55, 0.56), (0.12, 0.12, 0.13), (0.6, 0.2, 0.15)))
+
+    def spawn_asset(self, i):
+        n, w = self.n, 0.56
+        L = n * w
+        seat = _flat(f"ir_bench_seat_{int(self.c[2] * 100)}", self.c, 0.45); steel = _flat("ir_desk_frame", (0.75, 0.75, 0.76), 0.35, 0.8)
+        seats = [(0.0, -L / 2 + (k + 0.5) * w, 0.45, 0.46, w - 0.06, 0.05) for k in range(n)]
+        backs = [(-0.22, -L / 2 + (k + 0.5) * w, 0.68, 0.04, w - 0.08, 0.4) for k in range(n)]
+        frame = [(-0.05, 0, 0.4, 0.06, L, 0.05)] + [(-0.05, sy * (L / 2 - 0.15), 0.2, 0.05, 0.05, 0.4) for sy in (1, -1)]
+        frame += [(-0.05, sy * (L / 2 - 0.15), 0.01, 0.5, 0.06, 0.02) for sy in (1, -1)]
+        return _parts_object(f"WaitingBenchFactory({i}).spawn_asset({i})", [(seat, seats + backs), (steel, frame)])
+
+
+class ExamTableFactory:
+    """Examination / treatment couch (front +X): padded top at 0.7 m with a raised head section, a cabinet base, a paper roll, a step."""
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.c = r.choice(((0.15, 0.3, 0.45), (0.12, 0.12, 0.13), (0.45, 0.6, 0.62), (0.75, 0.75, 0.73)))
+
+    def spawn_asset(self, i):
+        pad = _flat(f"ir_exam_pad_{int(self.c[2] * 100)}", self.c, 0.55); base = _flat("ir_pantry_cab_90", (0.9, 0.9, 0.88), 0.45)
+        paper = _flat("ir_paper", (0.86, 0.86, 0.84), 0.7); steel = _flat("ir_desk_frame", (0.75, 0.75, 0.76), 0.35, 0.8)
+        return _prims(f"ExamTableFactory({i}).spawn_asset({i})",
+                      [(base, [("box", (0, 0, 0.3), (0.55, 1.5, 0.6), (0, 0, 0)), ("box", (0.42, 0.55, 0.12), (0.3, 0.45, 0.24), (0, 0, 0))]),
+                       (pad, [("box", (0, -0.2, 0.66), (0.62, 1.4, 0.1), (0, 0, 0)), ("box", (0, 0.72, 0.8), (0.62, 0.55, 0.1), (-0.5, 0, 0))]),
+                       (paper, [("box", (0, -0.1, 0.715), (0.5, 1.6, 0.004), (0, 0, 0))]),
+                       (steel, [("cyl", (0, -0.98, 0.72), (0.06, 0.06, 0.52), (0, math.pi / 2, math.pi / 2))])])
+
+
+class PrivacyCurtainFactory:
+    """Ceiling-hung privacy curtain (front +X): an L-shaped track at 2.3 m with a pleated fabric panel down to 0.3 m off the floor."""
+    def __init__(self, seed, L=2.2, D=1.6):
+        r = random.Random(seed)
+        self.L, self.D = L, D; self.c = r.choice(((0.55, 0.7, 0.72), (0.7, 0.75, 0.82), (0.82, 0.82, 0.8)))
+
+    def spawn_asset(self, i):
+        L, D = self.L, self.D
+        fab = _flat(f"ir_curtain_{int(self.c[1] * 100)}", self.c, 0.9); rail = _flat("ir_desk_frame", (0.75, 0.75, 0.76), 0.35, 0.8)
+        drawn = random.Random(i).uniform(0.35, 0.55)          # half drawn back (clinic r3: a closed curtain hid the couch in every view)
+        pleats = [(0.0, L / 2 - (k + 0.5) * 0.07, 1.3, 0.04 + 0.02 * (k % 2), 0.065, 2.0) for k in range(int(L * drawn / 0.07))]
+        side = [(-D / 2 + (k + 0.5) * 0.12, L / 2, 1.3, 0.11, 0.03 + 0.02 * (k % 2), 2.0) for k in range(int(D / 0.12 * 0.5))]
+        return _parts_object(f"PrivacyCurtainFactory({i}).spawn_asset({i})",
+                             [(fab, pleats + side), (rail, [(0, 0, 2.33, 0.03, L, 0.03), (-D / 4, L / 2, 2.33, D / 2, 0.03, 0.03)])])
+
+
+class DentalChairFactory:
+    """Dental treatment unit (front +X = the patient's feet). The upholstery is one chained shape: a level seat, a backrest whose lower
+    edge sits on the seat's back edge (reclined 32 deg), a headrest continuing it, a leg rest dropping from the seat's front edge -- each
+    part positioned from its joint, so nothing floats (clinic r2: 'the chair comes apart'). A base column, armrests, an operating lamp on a
+    post arching over the headrest, an instrument tray on a swing arm, a spittoon, and a dentist's stool."""
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.c = r.choice(((0.2, 0.45, 0.6), (0.85, 0.85, 0.85), (0.55, 0.75, 0.65), (0.12, 0.12, 0.13), (0.65, 0.3, 0.45)))
+        self.side = r.choice((1, -1))
+
+    def spawn_asset(self, i):
+        sd, W = self.side, 0.56
+        up = _flat(f"ir_dental_{int(self.c[1] * 100)}_{int(self.c[2] * 100)}", self.c, 0.35); white = _flat("ir_ac_white", (0.86, 0.86, 0.85), 0.4)
+        steel = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0); lamp = _flat("ir_led_panel", (1.0, 1.0, 1.0), 0.3)
+        zs, x0, x1, t = 0.6, -0.25, 0.3, 0.13                    # seat: x from x0 (back edge) to x1 (front edge) at height zs
+        a, Lb = math.radians(32), 0.68                          # backrest: up from (x0, zs) at angle a
+        bx, bz = x0 - math.cos(a) * Lb / 2, zs + math.sin(a) * Lb / 2
+        hx, hz = x0 - math.cos(a) * (Lb + 0.13), zs + math.sin(a) * (Lb + 0.13)     # headrest continues the backrest
+        c, Ll = math.radians(28), 0.62                          # leg rest: down from (x1, zs) at angle c
+        lx, lz = x1 + math.cos(c) * Ll / 2, zs - math.sin(c) * Ll / 2
+        tip_x, tip_z = hx - math.cos(a) * 0.16, hz + math.sin(a) * 0.16
+        return _prims(f"DentalChairFactory({i}).spawn_asset({i})",
+                      [(up, [("box", ((x0 + x1) / 2, 0, zs), (x1 - x0, W, t), (0, 0, 0)),
+                             ("box", (bx, 0, bz), (Lb, W, t), (0, a, 0)),
+                             ("box", (hx, 0, hz), (0.26, 0.3, 0.1), (0, a, 0)),
+                             ("box", (lx, 0, lz), (Ll, W - 0.06, t), (0, c, 0)),
+                             ("box", (0.02, W / 2 + 0.05, zs + 0.17), (0.42, 0.08, 0.07), (0, 0, 0)),
+                             ("box", (0.02, -W / 2 - 0.05, zs + 0.17), (0.42, 0.08, 0.07), (0, 0, 0)),
+                             ("cyl", (0.65, -sd * 0.68, 0.52), (0.2, 0.2, 0.08), (0, 0, 0))]),          # stool seat
+                       (white, [("box", (0, 0, 0.02), (0.75, 0.6, 0.04), (0, 0, 0)), ("box", (0.0, 0, 0.3), (0.34, 0.36, 0.56), (0, 0, 0)),
+                                ("cyl", (-0.05, sd * 0.58, 0.45), (0.1, 0.1, 0.9), (0, 0, 0)),
+                                ("cyl", (-0.05, sd * 0.58, 0.95), (0.15, 0.11, 0.12), (0, 0, 0))]),     # spittoon bowl
+                       (steel, [("cyl", (x0 - 0.05, -sd * 0.32, 1.38), (0.03, 0.03, 1.4), (0, 0, 0)),     # lamp post on the chair (r3: no floor pole)
+                                ("box", (x0 - 0.05, -sd * 0.16, 2.08), (0.05, 0.32, 0.04), (0, 0, 0)),     # boom over the head
+                                ("box", ((x0 - 0.05 + tip_x + 0.15) / 2, 0, 2.08), (abs(tip_x + 0.2 - x0), 0.05, 0.04), (0, 0, 0)),
+                                ("box", (tip_x + 0.15, 0, tip_z + 0.75), (0.3, 0.2, 0.08), (0, 0.5, 0)),     # lamp head
+                                ("cyl", (0.12, -sd * 0.6, 0.48), (0.025, 0.025, 0.96), (0, 0, 0)),
+                                ("box", (0.12, -sd * 0.45, 0.98), (0.45, 0.32, 0.03), (0, 0, 0)),          # instrument tray
+                                ("cyl", (0.65, -sd * 0.68, 0.24), (0.03, 0.03, 0.48), (0, 0, 0)),
+                                ("box", (0.65, -sd * 0.68, 0.01), (0.45, 0.45, 0.02), (0, 0, 0.4))]),
+                       (lamp, [("box", (tip_x + 0.15, 0, tip_z + 0.705), (0.24, 0.15, 0.005), (0, 0.5, 0))])])
+
+
+class WallBarsFactory:
+    """Physio wall bars (front +X): two uprights, 10-14 round rungs, 0.9 m wide, 2.4 m tall; stands against a wall."""
+    def __init__(self, seed):
+        self.n = random.Random(seed).randint(10, 14)
+
+    def spawn_asset(self, i):
+        wood = _flat("ir_wallbars_wood", (0.72, 0.56, 0.36), 0.5)
+        parts = [("box", (0, sy * 0.45, 1.2), (0.08, 0.05, 2.4), (0, 0, 0)) for sy in (1, -1)]
+        parts += [("cyl", (0, 0, 0.2 + k * 2.1 / self.n), (0.017, 0.017, 0.9), (math.pi / 2, 0, 0)) for k in range(self.n)]
+        return _prims(f"WallBarsFactory({i}).spawn_asset({i})", [(wood, parts)])
+
+
+class ExerciseSetFactory:
+    """Physio floor kit (front +X): a rolled-out mat, a gym ball, a couple of dumbbells on the mat."""
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.mc = r.choice(((0.2, 0.45, 0.6), (0.55, 0.3, 0.55), (0.25, 0.55, 0.35))); self.bc = r.choice(_BRIGHT)
+
+    def spawn_asset(self, i):
+        mat = _flat(f"ir_mat_{int(self.mc[0] * 100)}", self.mc, 0.8); ball = _flat(f"ir_gymball_{int(self.bc[0] * 100)}", self.bc, 0.35)
+        black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
+        return _prims(f"ExerciseSetFactory({i}).spawn_asset({i})",
+                      [(mat, [("box", (0, 0, 0.004), (0.6, 1.8, 0.008), (0, 0, 0))]),
+                       (ball, [("cyl", (0.05, 1.3, 0.33), (0.33, 0.33, 0.62), (0, 0, 0))]),
+                       (black, [("cyl", (0.1, -0.5 + k * 0.25, 0.04), (0.04, 0.04, 0.3), (0, math.pi / 2, 0)) for k in range(2)])])
+
+
+class ParallelBarsFactory:
+    """Physio parallel walking bars (front +X): two 2.4-3.0 m steel handrails at 0.9 m on four posts, on a low platform."""
+    def __init__(self, seed):
+        self.L = random.Random(seed).choice((2.4, 3.0))
+
+    def spawn_asset(self, i):
+        L = self.L
+        steel = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0); base = _flat("ir_mat_20", (0.2, 0.45, 0.6), 0.8)
+        posts = [("cyl", (sx * 0.3, sy * (L / 2 - 0.1), 0.47), (0.02, 0.02, 0.9), (0, 0, 0)) for sx in (1, -1) for sy in (1, -1)]
+        rails = [("cyl", (sx * 0.3, 0, 0.92), (0.02, 0.02, L), (math.pi / 2, 0, 0)) for sx in (1, -1)]
+        return _prims(f"ParallelBarsFactory({i}).spawn_asset({i})", [(steel, posts + rails), (base, [("box", (0, 0, 0.02), (0.9, L + 0.1, 0.04), (0, 0, 0))])])
+
+
+class ExerciseBikeFactory:
+    """Upright exercise bike (front +X): a frame, a flywheel housing, a saddle, handlebars and a console."""
+    def __init__(self, seed):
+        self.c = random.Random(seed).choice(((0.1, 0.1, 0.1), (0.85, 0.85, 0.85), (0.6, 0.1, 0.1)))
+
+    def spawn_asset(self, i):
+        body = _flat(f"ir_bike_{int(self.c[0] * 100)}", self.c, 0.4, 0.3); black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
+        return _prims(f"ExerciseBikeFactory({i}).spawn_asset({i})",
+                      [(body, [("cyl", (0.3, 0, 0.32), (0.25, 0.25, 0.1), (math.pi / 2, 0, 0)), ("box", (0.05, 0, 0.45), (0.12, 0.08, 0.7), (0, 0.5, 0)),
+                               ("box", (0.4, 0, 1.0), (0.15, 0.18, 0.1), (0, -0.4, 0))]),
+                       (black, [("box", (0, 0, 0.03), (0.95, 0.5, 0.06), (0, 0, 0)), ("box", (-0.25, 0, 0.88), (0.25, 0.18, 0.07), (0, 0, 0)),
+                                ("cyl", (-0.2, 0, 0.6), (0.025, 0.025, 0.55), (0, 0.3, 0)), ("cyl", (0.4, 0, 0.75), (0.025, 0.025, 0.5), (0, -0.2, 0)),
+                                ("box", (0.42, 0, 0.98), (0.05, 0.5, 0.03), (0, 0, 0))])])
+
+
+class ClothingRackFactory:
+    """Boutique clothing rail (front +X): a 1.2-1.6 m chrome rail at 1.5 m on two feet, 10-16 garments on hangers in a palette."""
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.L = r.choice((1.2, 1.4, 1.6)); self.n = r.randint(10, 16); self.r = r
+        self.pal = r.choice((((0.85, 0.82, 0.75), (0.2, 0.25, 0.35), (0.6, 0.45, 0.3)), ((0.1, 0.1, 0.1), (0.8, 0.8, 0.78), (0.55, 0.15, 0.15)),
+                             ((0.7, 0.75, 0.65), (0.85, 0.75, 0.7), (0.35, 0.4, 0.3))))
+
+    def spawn_asset(self, i):
+        L, r = self.L, self.r
+        chrome = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0)
+        groups = [(chrome, [(0, 0, 1.5, 0.03, L, 0.03), (0, L / 2 - 0.02, 0.75, 0.03, 0.03, 1.5), (0, -L / 2 + 0.02, 0.75, 0.03, 0.03, 1.5),
+                            (0, L / 2 - 0.02, 0.01, 0.45, 0.04, 0.02), (0, -L / 2 + 0.02, 0.01, 0.45, 0.04, 0.02)])]
+        for c in self.pal:
+            garments = []
+            for k in range(self.n):
+                if r.random() < 1 / len(self.pal):
+                    y = -L / 2 + 0.08 + (k + 0.5) * (L - 0.16) / self.n
+                    h = r.uniform(0.6, 1.05)
+                    garments.append((0, y, 1.47 - h / 2, r.uniform(0.38, 0.48), 0.03, h))
+            if garments:
+                groups.append((_flat(f"ir_garment_{int(c[0] * 100)}_{int(c[1] * 100)}", c, 0.85), garments))
+        return _parts_object(f"ClothingRackFactory({i}).spawn_asset({i})", groups)
+
+
+class DisplayTableFactory:
+    """Boutique display table (front +X): a 1.2-1.6 m wood or white table with stacks of folded clothes and a pair of shoes."""
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.L = r.choice((1.2, 1.4, 1.6)); self.top = r.choice(((0.62, 0.5, 0.36), (0.9, 0.9, 0.88), (0.15, 0.15, 0.15))); self.r = r
+
+    def spawn_asset(self, i):
+        L, r = self.L, self.r
+        top = _flat(f"ir_disp_top_{int(self.top[0] * 100)}", self.top, 0.45); steel = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
+        stacks = []
+        for k in range(r.randint(3, 5)):
+            c = r.choice(_BRIGHT + ((0.85, 0.82, 0.75), (0.2, 0.25, 0.35)))
+            h = 0.03 * r.randint(2, 6)
+            stacks.append((_flat(f"ir_folded_{int(c[0] * 100)}_{int(c[2] * 100)}", c, 0.85),
+                           [(r.uniform(-0.15, 0.15), -L / 2 + (k + 0.5) * L / 5.2, 0.76 + h / 2, 0.32, 0.26, h)]))
+        return _parts_object(f"DisplayTableFactory({i}).spawn_asset({i})",
+                             [(top, [(0, 0, 0.74, 0.8, L, 0.04)]), (steel, [(0, sy * (L / 2 - 0.05), 0.36, 0.7, 0.04, 0.72) for sy in (1, -1)])] + stacks)
+
+
+class MirrorFactory:
+    """Free-standing full-length mirror (front +X), 0.6 x 1.8 m, black or brass frame, leaning slightly."""
+    def __init__(self, seed):
+        self.f = random.Random(seed).choice(((0.03, 0.03, 0.03), (0.7, 0.55, 0.3)))
+
+    def spawn_asset(self, i):
+        frame = _flat(f"ir_mirror_frame_{int(self.f[0] * 100)}", self.f, 0.3, 1.0); glass = _flat("ir_mirror", (0.95, 0.95, 0.95), 0.02, 1.0)
+        return _prims(f"MirrorFactory({i}).spawn_asset({i})",
+                      [(frame, [("box", (0, 0, 0.92), (0.04, 0.64, 1.84), (0, -0.08, 0))]), (glass, [("box", (0.021, 0, 0.92), (0.005, 0.56, 1.76), (0, -0.08, 0))])])
+
+
+class FittingRoomFactory:
+    """Fitting room cubicle (front +X): two side panels and a back panel 1.0 x 1.2 m, 2.2 m high, a curtain across the front, a hook."""
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.c = r.choice(((0.85, 0.8, 0.72), (0.3, 0.3, 0.32), (0.55, 0.15, 0.15)))
+
+    def spawn_asset(self, i):
+        wall = _flat("ir_fitting_wall", (0.9, 0.9, 0.88), 0.5); fab = _flat(f"ir_curtain_{int(self.c[0] * 100)}", self.c, 0.85)
+        rail = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
+        pleats = [(0.6, -0.5 + (k + 0.5) * 0.1, 1.15, 0.03 + 0.02 * (k % 2), 0.09, 1.95) for k in range(8)]
+        return _parts_object(f"FittingRoomFactory({i}).spawn_asset({i})",
+                             [(wall, [(0, -0.52, 1.1, 1.2, 0.04, 2.2), (0, 0.52, 1.1, 1.2, 0.04, 2.2), (-0.58, 0, 1.1, 0.04, 1.08, 2.2)]),
+                              (fab, pleats), (rail, [(0.6, 0, 2.15, 0.02, 1.0, 0.02)])])
+
+
+class MenuBoardFactory:
+    """Café menu board (front +X): a 1.2-1.8 m black chalkboard or light board in a wood/black frame with rows of chalk 'text' lines
+    and price columns; hung on the wall above the bar (cafe r2: no café had one)."""
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.W = r.choice((1.2, 1.5, 1.8)); self.dark = r.random() < 0.7; self.r = r
+
+    def spawn_asset(self, i):
+        W, H, r = self.W, 0.8, self.r
+        board = _flat("ir_chalkboard" if self.dark else "ir_menu_light", (0.04, 0.05, 0.05) if self.dark else (0.9, 0.88, 0.82), 0.8)
+        frame = _flat("ir_menu_frame", (0.35, 0.24, 0.15) if self.dark else (0.05, 0.05, 0.05), 0.5)
+        ink = _flat("ir_chalk" if self.dark else "ir_menu_ink", (0.85, 0.85, 0.8) if self.dark else (0.08, 0.08, 0.08), 0.9)
+        lines = []
+        for col in (-1, 1):
+            for k in range(6):
+                z = H - 0.14 - k * 0.1
+                lines.append((0.012, col * W / 4 - 0.04, z, 0.002, W * r.uniform(0.18, 0.3), 0.022))
+                lines.append((0.012, col * W / 4 + W / 6, z, 0.002, 0.07, 0.022))
+        lines.append((0.012, 0, H - 0.06, 0.002, W * 0.35, 0.04))          # heading
+        return _parts_object(f"MenuBoardFactory({i}).spawn_asset({i})",
+                             [(frame, [(0, 0, H / 2, 0.025, W + 0.06, H + 0.06)]), (board, [(0.008, 0, H / 2, 0.01, W, H)]), (ink, lines)])
+
+
+class BanquetteFactory:
+    """Fixed café banquette (front +X): an upholstered bench at 0.46 m with a tall back, 2.0-3.6 m long, on a plinth."""
+    def __init__(self, seed, L=None):
+        r = random.Random(seed)
+        self.L = L or r.choice((2.0, 2.4, 3.0, 3.6))
+        self.c = r.choice(((0.45, 0.12, 0.1), (0.12, 0.3, 0.25), (0.55, 0.42, 0.25), (0.15, 0.15, 0.17), (0.7, 0.55, 0.2)))
+
+    def spawn_asset(self, i):
+        L = self.L
+        up = _flat(f"ir_banquette_{int(self.c[0] * 100)}_{int(self.c[1] * 100)}", self.c, 0.75); plinth = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
+        n = max(2, int(L / 0.6))
+        backs = [(-0.2, -L / 2 + (k + 0.5) * L / n, 0.75, 0.12, L / n - 0.02, 0.55) for k in range(n)]      # tufted back panels
+        return _parts_object(f"BanquetteFactory({i}).spawn_asset({i})",
+                             [(up, [(0.02, 0, 0.4, 0.5, L, 0.12)] + backs), (plinth, [(0, 0, 0.17, 0.5, L - 0.04, 0.34)])])
+
+
+class CounterStoolFactory:
+    """Commercial counter stool (front +X): a 0.62 m seat (round or square, polypropylene or upholstered) on a four-leg steel frame with
+    a foot ring and a low back (pantry r8: ABO wooden saddle stools read as a farmhouse)."""
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.c = r.choice(((0.1, 0.1, 0.1), (0.85, 0.85, 0.83), (0.2, 0.4, 0.55), (0.75, 0.45, 0.15), (0.55, 0.57, 0.58)))
+        self.frame = r.choice(((0.03, 0.03, 0.03), (0.75, 0.75, 0.76)))
+
+    def spawn_asset(self, i):
+        seat = _flat(f"ir_stool_seat_{int(self.c[0] * 100)}_{int(self.c[2] * 100)}", self.c, 0.45)
+        steel = _flat(f"ir_stool_frame_{int(self.frame[0] * 100)}", self.frame, 0.35, 1.0)
+        legs = [("box", (sx * 0.15, sy * 0.15, 0.31), (0.025, 0.025, 0.62), (sy * 0.08, -sx * 0.08, 0)) for sx in (1, -1) for sy in (1, -1)]
+        ring = [("box", (0, sy * 0.165, 0.25), (0.34, 0.02, 0.02), (0, 0, 0)) for sy in (1, -1)] + \
+               [("box", (sx * 0.165, 0, 0.25), (0.02, 0.34, 0.02), (0, 0, 0)) for sx in (1, -1)]
+        return _prims(f"CounterStoolFactory({i}).spawn_asset({i})",
+                      [(steel, legs + ring), (seat, [("box", (0, 0, 0.635), (0.38, 0.38, 0.04), (0, 0, 0)), ("box", (-0.18, 0, 0.78), (0.03, 0.34, 0.2), (0, -0.15, 0))])])
+
+
+class DrinkCansFactory:
+    """Drink cans stacked on a counter (user 2026-10-16: 'cans of drinks piled up in the pantry'): a 2-layer block of 6-12 cans per
+    layer in 1-3 brand colours, sometimes a cardboard tray under them."""
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.nx, self.ny, self.layers = r.choice((2, 3)), r.choice((3, 4)), r.choice((1, 2, 2))
+        self.cols = r.sample(_BRIGHT + ((0.75, 0.75, 0.78), (0.05, 0.05, 0.05)), r.randint(1, 3)); self.tray = r.random() < 0.5; self.r = r
+
+    def spawn_asset(self, i):
+        d, h, r = 0.067, 0.122, self.r
+        rim = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0)
+        groups, by = [], {}
+        for lz in range(self.layers):
+            for ix in range(self.nx):
+                for iy in range(self.ny):
+                    if lz and r.random() < 0.25:
+                        continue                                # an upper layer with gaps: some already taken
+                    c = r.choice(self.cols)
+                    by.setdefault(c, []).append(("cyl", ((ix - (self.nx - 1) / 2) * d, (iy - (self.ny - 1) / 2) * d, 0.01 + h / 2 + lz * h),
+                                                 (d / 2, d / 2 - 0.002, h), (0, 0, 0)))
+        for c, parts in by.items():
+            groups.append((_flat(f"ir_can_{int(c[0] * 100)}_{int(c[1] * 100)}_{int(c[2] * 100)}", c, 0.25, 0.6), parts))
+        if self.tray:
+            groups.append((_flat("ir_cardboard_tray", (0.55, 0.42, 0.28), 0.8), [("box", (0, 0, 0.012), (self.nx * d + 0.01, self.ny * d + 0.01, 0.024), (0, 0, 0))]))
+        groups.append((rim, [("cyl", (0, 0, 0.001), (0.001, 0.001, 0.001), (0, 0, 0))]))
+        return _prims(f"DrinkCansFactory({i}).spawn_asset({i})", groups)
+
+
+class SnackBasketFactory:
+    """A wire / wicker basket of snack bags and bars on the pantry counter (user 2026-10-16: 'some snack bags')."""
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.r = r; self.wire = r.random() < 0.5
+
+    def spawn_asset(self, i):
+        r = self.r
+        basket = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0) if self.wire else _flat("ir_wicker", (0.6, 0.45, 0.28), 0.8)
+        W, D, H = 0.36, 0.26, 0.12
+        groups = [(basket, [("box", (0, 0, 0.005), (D, W, 0.01), (0, 0, 0)), ("box", (D / 2, 0, H / 2), (0.01, W, H), (0, 0, 0)),
+                            ("box", (-D / 2, 0, H / 2), (0.01, W, H), (0, 0, 0)), ("box", (0, W / 2, H / 2), (D, 0.01, H), (0, 0, 0)),
+                            ("box", (0, -W / 2, H / 2), (D, 0.01, H), (0, 0, 0))])]
+        for k in range(r.randint(4, 7)):
+            c = r.choice(_BRIGHT)
+            groups.append((_flat(f"ir_snack_{int(c[0] * 100)}_{int(c[2] * 100)}", c, 0.3, 0.4),
+                           [("box", (r.uniform(-0.07, 0.07), -W / 2 + 0.05 + k * (W - 0.1) / 6, 0.09 + r.uniform(0, 0.04)),
+                             (0.04, 0.14, 0.2), (r.uniform(-0.5, 0.5), r.uniform(-0.3, 0.3), r.uniform(-0.3, 0.3)))]))
+        return _prims(f"SnackBasketFactory({i}).spawn_asset({i})", groups)
+
+
+class PantryRunFactory:
+    """Office pantry run (front +X): base cabinets + worktop, upper cabinets at 1.45-2.15 m, an inset sink under a tall gooseneck tap, an
+    under-counter glass-door drinks fridge stocked with rows of cans, and a full-height stainless fridge column closing one end. The
+    fridge is part of the run (pantry r9: a separate fridge stood in the middle of the floor; the 5 mm sink did not read)."""
+    def __init__(self, seed, L=None):
+        r = random.Random(seed)
+        self.L = L or r.choice((2.4, 3.0, 3.6)); self.c = r.choice(((0.9, 0.9, 0.88), (0.35, 0.38, 0.4), (0.6, 0.48, 0.34)))
+        self.r = r; self.fridge = True
+
+    def spawn_asset(self, i):
+        L, r = self.L, self.r
+        Lc = L - 0.7 if self.fridge else L                       # cabinets; the last 0.7 m is the fridge column
+        y0 = -L / 2                                             # cabinet run from y0 to y0 + Lc, fridge column after it
         cab = _flat(f"ir_pantry_cab_{int(self.c[0] * 100)}", self.c, 0.45); top = _flat("ir_counter_top_white_stone", (0.86, 0.85, 0.82), 0.25)
         steel = _flat("ir_steel", (0.62, 0.62, 0.64), 0.2, 1.0); gap = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
-        base = [(0, 0, 0.45, 0.6, L, 0.9)]
-        doors = [(0.301, -L / 2 + (k + 0.5) * 0.6, 0.45, 0.002, 0.004, 0.8) for k in range(1, int(L / 0.6))]
-        upper = [(-0.13, 0, 1.8, 0.34, L, 0.7)]
-        sink_y = -L / 2 + 0.9
+        glass = _flat("ir_fridge_glass", (0.85, 0.9, 0.92), 0.05, transmission=0.85)
+        base = [(0, y0 + Lc / 2, 0.45, 0.6, Lc, 0.9)]
+        doors = [(0.301, y0 + k * 0.6, 0.45, 0.002, 0.004, 0.8) for k in range(1, int(Lc / 0.6))]
+        upper = [(-0.13, y0 + Lc / 2, 1.8, 0.34, Lc, 0.7)]
+        sink_y = y0 + 0.75
+        fz = y0 + Lc + 0.35                                      # fridge column centre
+        bev_y = y0 + Lc - 0.35                                   # under-counter drinks fridge: last 0.6 m of the base run
+        cans = []
+        for row, zc in enumerate((0.18, 0.42, 0.66)):            # three shelves of cans seen through the glass door
+            for k in range(7):
+                cans.append((0.18, bev_y - 0.24 + k * 0.08, zc + 0.06, 0.066, 0.066, 0.12))
+        can_cols = [(0.75, 0.12, 0.1), (0.1, 0.35, 0.7), (0.15, 0.55, 0.25), (0.95, 0.7, 0.1)]
+        can_groups = []
+        for j, c in enumerate(can_cols):
+            part = cans[j::len(can_cols)]
+            can_groups.append((_flat(f"ir_can_{int(c[0] * 100)}_{int(c[1] * 100)}_{int(c[2] * 100)}", c, 0.25, 0.6), part))
+        if not self.fridge:                                      # clinic cabinets: base + uppers + sink only
+            return _parts_object(f"{type(self).__name__}({i}).spawn_asset({i})",
+                                 [(cab, base + upper), (top, [(0.01, y0 + Lc / 2, 0.92, 0.62, Lc + 0.02, 0.04)]), (gap, doors),
+                                  (steel, [(0.02, sink_y, 0.945, 0.44, 0.56, 0.012), (-0.22, sink_y, 1.17, 0.04, 0.04, 0.46),
+                                           (-0.08, sink_y, 1.39, 0.3, 0.035, 0.035), (0.06, sink_y, 1.32, 0.035, 0.035, 0.14)]),
+                                  (gap, [(0.02, sink_y, 0.95, 0.36, 0.48, 0.006)])])
         return _parts_object(f"PantryRunFactory({i}).spawn_asset({i})",
-                             [(cab, base + upper), (top, [(0.01, 0, 0.92, 0.62, L + 0.02, 0.04)]), (gap, doors),
-                              (steel, [(0.02, sink_y, 0.945, 0.44, 0.56, 0.012), (-0.2, sink_y, 1.1, 0.04, 0.04, 0.32),
-                                       (-0.1, sink_y, 1.25, 0.22, 0.035, 0.035)]),
-                              (gap, [(0.02, sink_y, 0.95, 0.36, 0.48, 0.006)])])   # dark basin inside a raised rim: the sink reads (critic r2)
+                             [(cab, base + upper), (top, [(0.01, y0 + Lc / 2, 0.92, 0.62, Lc + 0.02, 0.04)]), (gap, doors),
+                              (steel, [(0.02, sink_y, 0.945, 0.44, 0.56, 0.012),                                 # sink rim
+                                       (-0.22, sink_y, 1.17, 0.04, 0.04, 0.46),                                  # gooseneck: riser
+                                       (-0.08, sink_y, 1.39, 0.3, 0.035, 0.035),                                 # arch over the bowl
+                                       (0.06, sink_y, 1.32, 0.035, 0.035, 0.14),                                 # spout down
+                                       (0.0, fz, 1.0, 0.66, 0.68, 2.0),                                          # fridge column
+                                       (0.31, bev_y, 0.43, 0.02, 0.58, 0.84)]),                                  # drinks fridge frame
+                              (gap, [(0.02, sink_y, 0.95, 0.36, 0.48, 0.006),                                    # dark basin
+                                     (0.335, fz - 0.28, 1.15, 0.03, 0.03, 0.9), (0.331, fz, 1.32, 0.002, 0.66, 0.004),   # fridge handle, door split
+                                     (0.0, bev_y, 0.43, 0.5, 0.54, 0.8)]),                                       # dark fridge interior
+                              (glass, [(0.322, bev_y, 0.43, 0.006, 0.54, 0.78)])] + can_groups)
 
 
 class ConferenceTableFactory:
-    """Conference table (front +X): a 2.4-3.6 x 1.1-1.3 m top on two pedestal bases with a cable box in the middle."""
-    def __init__(self, seed):
+    """Conference table (front +X): a 2.4-3.6 x 1.1-1.3 m top on two pedestal bases with a cable box in the middle. L/W fixed by the
+    caller when the room decides (meeting_set sizes it so both long sides seat)."""
+    def __init__(self, seed, L=None, W=None):
         r = random.Random(seed)
-        self.L = r.choice((2.4, 3.0, 3.6)); self.W = r.uniform(1.1, 1.3)
+        self.L = L or r.choice((2.4, 3.0, 3.6)); self.W = W or r.uniform(1.1, 1.3)
         self.top = r.choice(((0.88, 0.87, 0.84), (0.45, 0.32, 0.2), (0.15, 0.15, 0.15)))
 
     def spawn_asset(self, i):
@@ -645,7 +1036,7 @@ class BreakTableFactory(ConferenceTableFactory):
     a 1.05 m high table for bar stools."""
     def __init__(self, seed):
         r = random.Random(seed)
-        self.L = r.choice((1.4, 1.6, 1.8)); self.W = 0.8; self.H = 1.05   # high table for bar stools (critic r1+r2)
+        self.L = r.choice((1.4, 1.6, 1.8)); self.W = 0.8; self.H = 0.92   # counter height: matches counter stools (r5: 1.06 table vs 0.94 stools)
         self.top = r.choice(((0.92, 0.92, 0.9), (0.15, 0.15, 0.15), (0.62, 0.5, 0.36)))
 
 
@@ -670,3 +1061,17 @@ class GlassPartitionFactory:
                        (0.03, y + 0.3, 1.05, 0.03, 0.02, 0.5)]   # pull handle
             panes.append((0, y, 1.06, 0.012, 0.9, 2.04))
         return _parts_object(f"GlassPartitionFactory({i}).spawn_asset({i})", [(glass, panes), (steel, frames)])
+
+
+class MedicalCabinetFactory(PantryRunFactory):
+    """Clinic cabinet run (base + upper, sink): the pantry run in white laminate."""
+    def __init__(self, seed, L=None):
+        super().__init__(seed, L)
+        self.c = (0.9, 0.9, 0.88); self.fridge = False
+
+
+class ClinicDeskFactory(OfficeDeskFactory):
+    """A small single-monitor clinic desk (clinic r1: the dual-monitor office desk was the hero of the exam and dental rooms)."""
+    def __init__(self, seed):
+        super().__init__(seed)
+        self.L, self.D, self.dual = 1.2, 0.65, False
