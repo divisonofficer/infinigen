@@ -151,10 +151,13 @@ def warehouse_roof(L, S, zc, at, name, rng, stats):
     for r_ in range(rows):
         for k in range(per):
             cx, cy = at(L * (k + 0.5) / per, S * (r_ + 0.5) / rows)
-            _cyl(name("HighBayCord"), (cx, cy, zc - 0.05), (cx, cy, zh + 0.2), 0.006, steel, n=6)
-            _cyl(name("HighBayLamp"), (cx, cy, zh + 0.2), (cx, cy, zh), 0.09, alu, n=20)
-            o = pa._prims(name("HighBayLamp"), [(alu, [("cyl", (cx, cy, zh - 0.12), (0.28, 0.1, 0.24), (0, 0, 0))]),
-                                                (glow, [("cyl", (cx, cy, zh - 0.235), (0.24, 0.24, 0.01), (0, 0, 0))])])
+            # linear strip fixtures on chains along the aisles (wh r16: dome high-bays seen from below read as flat residential discs)
+            for dx in (-0.6, 0.6):
+                _cyl(name("HighBayCord"), (cx + dx, cy, zc - 0.05), (cx + dx, cy, zh + 0.04), 0.006, steel, n=6)
+            o = pa._prims(name("HighBayLamp"), [(alu, [("box", (cx, cy, zh), (1.5, 0.16, 0.08), (0, 0, 0)),
+                                                       ("box", (cx, cy + 0.07, zh - 0.05), (1.5, 0.02, 0.06), (0, 0, 0)),
+                                                       ("box", (cx, cy - 0.07, zh - 0.05), (1.5, 0.02, 0.06), (0, 0, 0))]),
+                                                (glow, [("box", (cx, cy, zh - 0.045), (1.44, 0.12, 0.01), (0, 0, 0))])])
             ld = bpy.data.lights.new(f"ir_highbay_{r_}_{k}", "POINT"); ld.energy = 350.0; ld.color = (1.0, 0.97, 0.92); ld.shadow_soft_size = 0.2
             lo = bpy.data.objects.new(f"PointLampFactory(highbay).spawn_asset({r_}_{k})", ld)
             bpy.context.scene.collection.objects.link(lo); lo.location = (cx, cy, zh - 0.3)
@@ -360,8 +363,14 @@ def main() -> int:
             accent = _mat("ir_arch_accent", pal["accent"], 0.8)
             stats["accent"] = accent_wall(room, accent, rng, stats)
         build(room, rng, pal, stats, a.seed, track=not a.no_track, archetype=a.archetype)
-    if a.archetype.startswith("office") or a.archetype == "warehouse":   # warehouse r3: mauve residential panel doors
+    if a.archetype.startswith("office") or a.archetype == "warehouse" or kit:   # warehouse r3: mauve residential panel doors;
+        # café N: 'a purple door frame' against a white/sage/oak kit -- any styled venue gets the neutral leaf and metal casing
         office_doors(rng, stats)
+    if a.archetype == "warehouse":                              # no skirting in an industrial unit (wh r22, 3 of 3: 'white skirting
+        sk = [o for o in bpy.data.objects if o.name.startswith("skirtingboard")]   # boards on every wall say apartment')
+        for o in sk:
+            bpy.data.objects.remove(o, do_unlink=True)
+        stats["skirting_removed"] = len(sk)
     if a.exterior:
         exterior(a.exterior, rng, stats)
     bpy.ops.wm.save_as_mainfile(filepath=a.out, compress=True)

@@ -463,7 +463,8 @@ def main() -> int:
     _kit = (json.loads(a.plans.read_text()).get("style_spec") or {}) if a.plans else {}
     if "framed_art" in (_kit.get("decor") or []):              # a styled venue hangs pictures (cafe refs: framed prints on the walls)
         for _rt in ("break-room", "cafe"):                     # clinics and shops borrow break-room too: one picture there, not a gallery
-            room_dressing.ART_ROOMS[_rt] = 4 if _kit.get("venue") == "cafe" else 1   # (clinic r9: 4 oil paintings read as a home)
+            room_dressing.ART_ROOMS[_rt] = 4 if _kit.get("venue") == "cafe" else 0 if _kit.get("venue") in (
+                "clinic-reception", "exam-room", "dental-room", "physio-room") else 1   # (clinic r9: 4 oil paintings; r15: even one reads as a home)
     if not a.no_dressing:
         room_dressing.neutral_appliances(rng, stats)
         room_dressing.mute_rugs(rng, stats)
@@ -490,9 +491,32 @@ def main() -> int:
     stats["prints_replaced"] = 0
     plain_prints(stats)
     tidy.recolor_fabric(rng, fabric, palette=palette)
+    if _kit.get("venue") in ("clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"):   # wipe-clean vinyl seats
+        from room_planner import proc_assets as _pa                # (clinic r19: velvet / beige fabric task chairs read as a home office)
+        vinyl = _pa._flat("ir_clinic_vinyl", rng.choice(((0.04, 0.045, 0.05), (0.18, 0.2, 0.22), (0.05, 0.12, 0.2))), 0.35)
+        for o in tidy.tops():
+            if tidy.factory(o.name) == "OfficeChairFactory":
+                for ob in [o, *o.children_recursive]:
+                    for sl in getattr(ob, "material_slots", []):
+                        if sl.material and tidy.FABRIC_MAT.match(sl.material.name):
+                            sl.material = vinyl
     stats["fabric_materials"] = fabric["fabric_materials"]
     art = {"paintings": 0, "screens": 0}
-    used = tidy.hang_art(rng, art)
+    # a clinic monitor shows no painting (clinic r19: 'a full-colour painting on the exam monitor', a residential cue)
+    used = tidy.hang_art(rng, art, screens=_kit.get("venue") not in ("clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"))
+    if _kit.get("venue") in ("clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"):
+        # no art means the screen keeps Infinigen's text material, whose image is empty: magenta checker (clinic r24, 3 of 3) -- a dark
+        # screen with a faint blue glow instead
+        from room_planner import proc_assets as _pa2
+        scr = _pa2._flat("ir_screen_dark", (0.02, 0.03, 0.05), 0.15)
+        _b = scr.node_tree.nodes["Principled BSDF"]; _b.inputs["Emission Color"].default_value = (0.35, 0.5, 0.75, 1); _b.inputs["Emission Strength"].default_value = 0.4
+        for o in tidy.tops():
+            if tidy.factory(o.name) in ("MonitorFactory", "TVFactory"):
+                for ob in [o, *o.children_recursive]:
+                    for sl in getattr(ob, "material_slots", []):
+                        m = sl.material
+                        if m and m.use_nodes and any(n.type == "TEX_IMAGE" and (n.image is None or not n.image.has_data) for n in m.node_tree.nodes):
+                            sl.material = scr
     stats.update(art)
     bpy.ops.wm.save_as_mainfile(filepath=a.out, compress=True)
     Path(a.out + ".activity.json").write_text(json.dumps({"stats": stats, "house_tidiness": round(house_t, 3),

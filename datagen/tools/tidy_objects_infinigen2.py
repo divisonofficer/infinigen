@@ -234,7 +234,7 @@ def canvas_box(o, idx, axes=(1, 2)):
     return [min(c[i] for c in co) for i in range(3)], [max(c[i] for c in co) for i in range(3)]
 
 
-def hang_art(rng: random.Random, stats: dict):
+def hang_art(rng: random.Random, stats: dict, screens: bool = True):
     man = json.loads((ART / "manifest.json").read_text())["images"]
     # classical CC0 collections are full of nudes: not what a home's walls (or this dataset) should show
     nude = re.compile(r"nude|naked|bather|bathing|venus|odalisque|reclining|toilette|leda|susanna|danae|nymph|eve\b", re.I)
@@ -247,7 +247,7 @@ def hang_art(rng: random.Random, stats: dict):
         return bpy.data.images.load(str(ART / best["file"]), check_existing=True)
     for o in tops():
         f = factory(o.name)
-        if f not in ("WallArtFactory", "MonitorFactory", "TVFactory") or o.type != "MESH" or not pool:
+        if f not in ("WallArtFactory", "MonitorFactory", "TVFactory") or o.type != "MESH" or not pool or (not screens and f != "WallArtFactory"):
             continue
         screens = set()                             # tv.py marks the screen faces; its material is not always the Text print
         attr = o.data.attributes.get("screen") if f != "WallArtFactory" else None

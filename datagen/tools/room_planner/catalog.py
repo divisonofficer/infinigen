@@ -137,6 +137,7 @@ LIVED_IN = {
     "open_box":        {"src": "proc:OpenBoxFactory", "on": ["workbench"], "rooms": ["warehouse", "garage"]},
     "tape_gun":        {"src": "proc:TapeGunFactory", "on": ["workbench"], "rooms": ["warehouse", "garage"]},
     "kraft_roll":      {"src": "proc:KraftRollFactory", "on": ["workbench"], "rooms": ["warehouse", "garage"]},
+    "towel_stack":     {"src": "proc:TowelStackFactory", "on": ["exam_table"], "rooms": ["physio-room", "exam-room"]},
     # clinical counter / desk props (clinic r6 critic: 'no glove boxes, sanitizer or trays -- an unfurnished showroom')
     "glove_box":       {"src": "proc:GloveBoxFactory", "on": ["medical_cabinet", "clinic_desk", "reception_desk"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},
     "sanitizer":       {"src": "proc:SanitizerFactory", "on": ["medical_cabinet", "clinic_desk", "reception_desk", "counter"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},

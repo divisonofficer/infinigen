@@ -324,6 +324,10 @@ if a.style:
     STYLE_FNS = {"wall": style_walls(_st), "floor": STYLE_FLOORS[_st.get("floor", "wood")]}
     if isinstance(_st, dict) and _st.get("architecture"):      # a style kit: other walls / feature wall / floor tone together
         KIT = _st
+        if _st.get("venue") in ("warehouse", "garage"):         # block/concrete, not plaster (warehouse r9/r11: 'packing reads as an office')
+            for k_ in ("other_walls", "feature_wall"):
+                if _st["architecture"].get(k_) in ("paint_light", "paint_dark", "shelving"):
+                    _st["architecture"][k_] = "concrete"
         STYLE_FNS = {"wall": kit_finish(_st["architecture"]["other_walls"], _st), "floor": kit_floor(_st)}
 targets = sorted((o for o in bpy.data.objects if o.type == "MESH" and PAT.match(o.name)), key=lambda o: o.name)
 rng = np.random.default_rng(a.seed)
@@ -356,6 +360,10 @@ for o in targets:
         print(f"[kit] floor finish {'polished concrete' if conc else 'matte tinted wood'}: {nf} BSDFs", flush=True)
     if KIT is not None and KIT.get("venue") in ("clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy") and KIT["architecture"].get("feature_wall") in ("wood_panel", "brick"):
         KIT["architecture"]["feature_wall"] = "paint_light"      # washable walls in a clinic (clinic r10: wood-plank wall read as a lounge)
+    if KIT is not None and KIT.get("venue") in ("clinic-reception", "exam-room", "dental-room", "physio-room") and KIT.get("wall_rgb"):
+        # walls cooled 85% toward a clinical pale grey-white (clinic r23: the reference's warm tan read as a hotel lobby, 3 of 3;
+        # r24 at 60%: still tan under 3800 K light and the reference exposure)
+        KIT["wall_rgb"] = [round(0.15 * c + 0.85 * w, 4) for c, w in zip(KIT["wall_rgb"], (0.74, 0.79, 0.82))]
     if KIT is not None and part == "wall" and KIT["architecture"]["feature_wall"] != KIT["architecture"]["other_walls"]:
         (r2,) = rng.spawn(1)
         fm = kit_finish(KIT["architecture"]["feature_wall"], KIT)(r2, pf.nodes.shader.uv_map(uv_map="m_uv"))

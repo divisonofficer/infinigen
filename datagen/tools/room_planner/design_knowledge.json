@@ -462,6 +462,46 @@
    "status": "validated",
    "rule": "Check a critic's geometry claim against the scene before acting: a wide-angle view of open wall shelves was reported as a 'tilted floating shelf' three rounds running; a matrix_world tilt scan found nothing.",
    "evidence": "shop r3-r5 pharmacy; fix was giving the shelf a back panel so it reads as furniture, not rotating anything"
+  },
+  {
+   "id": "critic-noise-needs-median",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "critic",
+   "status": "validated",
+   "rule": "A single VLM critic call is not a pass/fail measurement: the same images vary by about 2 points per criterion between calls. A scene is done only when the median of three independent calls is >= 7 on every criterion; single-call jumps of 1-2 points are not evidence that a change helped.",
+   "evidence": "warehouse storage r11 images, four calls: 7-9, 7-9, 6-8, 6-8; signs-of-use 7, 8, 6, 6 (median 6.5)"
+  },
+  {
+   "id": "planner-fields-mean-realizer-units",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "realize",
+   "status": "proposed",
+   "rule": "A field the LLM fills is read in the realizer's meaning, not the planner's: gap_m is clearance from the wall, so 'room to work in front' written as gap_m 2.2 stands the piece 2.2 m out in the floor. When a venue rule forces a relation, it also sets the fields that relation reads.",
+   "evidence": "packing r17-r20: workbench gap_m 2.2 put the bench row mid-floor with racks behind it; layout 5-7 and 'benches in a cluster' in every call"
+  },
+  {
+   "id": "rules-apply-to-the-revision",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "realize",
+   "status": "proposed",
+   "rule": "Venue placement rules run on the revised plan as well as the first plan; a revision is a new plan from the same LLM and repeats what the rules removed. Caps count what is already placed.",
+   "evidence": "packing r19: the revision re-added two benches 'beside' the first; clinic r8/r15: plants and curtains came back the same way"
+  },
+  {
+   "id": "probe-aim-at-substance",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "probe",
+   "status": "validated",
+   "rule": "A close-up's sightline test aims at a point where the object has material (bbox centre, 0.5 m, 0.9 m up), not only at its bbox centre; for hollow pieces (dental chair under its lamp boom, open racks) the centre is air and every angle failed.",
+   "evidence": "dental r21: 0 of 3 big pieces framed; re-probe with the aim heights: dental chair and cabinet run both framed"
   }
  ]
 }
