@@ -122,9 +122,29 @@ def main() -> int:
                     add_point(f"candle{k}", Vector((c.location.x, c.location.y, top + 0.12)), 3.0, (1.0, 0.55, 0.22), 0.02)
                     k += 1
             stats["candles"] = k
+    # lights buried in architecture: a ceiling fixture placed after the exposed ducts/beams ended up inside a duct, 2 cm of metal under
+    # the bulb (floor H r4: the restroom read near black, 3 of 3) -- drop the light just below whatever covers it
+    sc_, dg_ = bpy.context.scene, bpy.context.evaluated_depsgraph_get()
+    n_unburied = 0
+    for o in [o for o in bpy.data.objects if o.type == "LIGHT" and not is_window_light(o)]:
+        p = o.matrix_world.translation.copy()
+        h = sc_.ray_cast(dg_, p, Vector((0, 0, -1)), distance=0.15)
+        if not h[0] or h[4].name.endswith(".floor"):
+            continue
+        cover, q, z = h[4], h[1], None
+        for _ in range(8):                                       # march down through the cover's faces to its underside
+            z = q.z
+            q = q - Vector((0, 0, 0.003))
+            h = sc_.ray_cast(dg_, q, Vector((0, 0, -1)), distance=0.6)
+            if not h[0] or h[4] != cover:
+                break
+            q = h[1]
+        m = o.matrix_world.copy(); m.translation.z = z - 0.08; o.matrix_world = m
+        n_unburied += 1
+    stats["lights_unburied"] = n_unburied
     # service rooms on a floor scene get a neutral ceiling light when none is inside them (floor G: the restroom and stockroom behind a
     # low-ambient café rendered near black -- the fixture pass lights the planned public rooms only)
-    lit = [o.matrix_world.translation for o in bpy.data.objects if o.type == "LIGHT" and not is_window_light(o)
+    lit = [(o.matrix_world.translation, o.data.energy) for o in bpy.data.objects if o.type == "LIGHT" and not is_window_light(o)
            and "(track)" not in o.name]          # track spots aim at the hub's walls; the architecture pass ran them across the whole
                                                   # floor box, over the back rooms (floor G)
     n_svc = 0
@@ -134,8 +154,8 @@ def main() -> int:
         pts = [room["floor"].matrix_world @ Vector(c) for c in room["floor"].bound_box]
         x0, x1 = min(p.x for p in pts), max(p.x for p in pts); y0, y1 = min(p.y for p in pts), max(p.y for p in pts)
         fz = max(p.z for p in pts)
-        if any(x0 <= q.x <= x1 and y0 <= q.y <= y1 and q.z > fz for q in lit):
-            continue
+        if sum(e for q, e in lit if x0 <= q.x <= x1 and y0 <= q.y <= y1 and q.z > fz) >= 150.0:
+            continue                             # one 92 W lamp over a stall row left a restroom near black (floor H r5)
         cz = (max((room["wall"].matrix_world @ Vector(c)).z for c in room["wall"].bound_box) if "wall" in room else fz + 2.7) - 0.25
         add_point(f"svc{n_svc}", Vector(((x0 + x1) / 2, (y0 + y1) / 2, cz)), 40.0 * max(1.0, (x1 - x0) * (y1 - y0) / 6.0),
                   kelvin_rgb(4000), 0.3)

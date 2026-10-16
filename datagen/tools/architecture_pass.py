@@ -319,8 +319,10 @@ def office_doors(rng, stats):
         if o.type != "MESH" or "Door" not in f:
             continue
         m = frame if "Casing" in f else leaf
-        for sl in o.material_slots:
-            sl.material = m
+        for sl in o.material_slots:              # lite / glass-panel leaves keep their glass, metal parts take the frame (floor A r2:
+            name = sl.material.name.lower() if sl.material else ""   # glass painted over with the leaf colour read as a house panel door)
+            if "glass" not in name:
+                sl.material = frame if "metal" in name else m
         if not o.material_slots:
             o.data.materials.append(m)
         n += 1

@@ -41,7 +41,11 @@ def wet_wall(rng, vec):
 WET_FNS = {"wall": wet_wall, "floor": tiles.tile_indoor_ground_rand}
 # a commercial restroom (floor scenes, 2026-10-16): pale paint and plain light floor -- the random wall tile gave a pink diagonal
 # tile in the dental floor's restroom
-WET_FNS_WORK = {"wall": lambda rng, vec: _paint((0.8, 0.82, 0.82))(rng, vec), "floor": fl.concrete.concrete_rand}   # _paint is defined below
+# tiled, with a fixed neutral ceramic: painted plaster and the office floor read as 'an office with a toilet in it' (floors A2/G/H r4-r8,
+# 3 of 3 each); the random tile material gave a pink diagonal (floor E), so the tile colour is pinned and only the pattern varies
+from infinigen2.shaders.base_materials import ceramic as _ceramic  # noqa: E402
+WET_FNS_WORK = {"wall": lambda rng, vec: tiles.tile_indoor_wall_rand(rng, vec, tile=_ceramic.ceramic(vec, (0.86, 0.87, 0.86))),
+                "floor": lambda rng, vec: tiles.tile_indoor_ground_rand(rng, vec, tile=_ceramic.ceramic(vec, (0.42, 0.44, 0.45), roughness=0.4))}
 
 # Workplaces stand on concrete (a carpet-patterned warehouse read wrong, user 2026-10-16); half get a scratch/splat overlay.
 WORK_ROOMS = {"warehouse", "garage", "utility"}
@@ -326,7 +330,8 @@ if a.style:
     from room_planner import styles as _styles
     _st = json.load(open(a.style)) if a.style.endswith(".json") else _styles.get(a.venue, a.style)   # preset name or spec file
     STYLE_FNS = {"wall": style_walls(_st), "floor": STYLE_FLOORS[_st.get("floor", "wood")]}
-    if a.venue in ("open-office", "office", "meeting-room") and _st.get("floor", "wood") == "wood":   # a work floor is carpet tile or
+    if (a.venue or (_st.get("venue") if isinstance(_st, dict) else None)) in ("open-office", "office", "meeting-room") and \
+            _st.get("floor", "wood") == "wood":   # floors pass no --venue: the kit's own (floor C r3: glossy orange planks, 3/3)   # a work floor is carpet tile or
         STYLE_FNS["floor"] = office_floor     # concrete whatever the photo shows (office r8: high-rise parquet 'residential', 3 of 3)
     if isinstance(_st, dict) and _st.get("architecture"):      # a style kit: other walls / feature wall / floor tone together
         KIT = _st
@@ -355,6 +360,7 @@ for o in targets:
     # stripes -- 'patched together', 3 of 3); the first such room's material is reused
     shared = part == "floor" and fns is OFFICE_FNS and room_type in ("office", "meeting-room", "open-office")
     mat = _SHARED_FLOOR.get("office") if shared else None
+    reused = mat is not None                                  # already rewired by its first room: rewire finds no m_uv node
     if mat is None:
         mat = fns[part](r, pf.nodes.shader.uv_map(uv_map="m_uv"))
         if shared:
@@ -362,7 +368,7 @@ for o in targets:
     pf.ops.object.set_material(pf.types.MeshObject(o), material=mat)
     after = [s.material.name for s in o.material_slots if s.material]
     rewired = sum(rewire_to_planar(s.material) for s in o.material_slots if s.material)
-    assert rewired > 0, f"{o.name}: no m_uv node to rewire"
+    assert rewired > 0 or reused, f"{o.name}: no m_uv node to rewire"
     if KIT is not None and (KIT.get("floor_tone") == "dark" or KIT.get("mood") == "dark_moody") and part in ("wall", "floor"):
         if part == "floor" or KIT["architecture"]["other_walls"] in ("wood_panel",):
             nd = sum(darken(sl.material, 0.32) for sl in o.material_slots)   # dark stained wood, not orange
@@ -378,7 +384,10 @@ for o in targets:
         print(f"[kit] floor finish {'polished concrete' if conc else 'matte tinted wood'}: {nf} BSDFs", flush=True)
     if KIT is not None and KIT.get("venue") in ("clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy") and KIT["architecture"].get("feature_wall") in ("wood_panel", "brick"):
         KIT["architecture"]["feature_wall"] = "paint_light"      # washable walls in a clinic (clinic r10: wood-plank wall read as a lounge)
-    if KIT is not None and part == "wall" and KIT["architecture"]["feature_wall"] != KIT["architecture"]["other_walls"]:
+    if KIT is not None and part == "wall" and KIT["architecture"]["feature_wall"] != KIT["architecture"]["other_walls"] and \
+            room_type not in ("restroom", "utility", "closet", "kitchen", "hallway") and room_type not in WET_ROOMS:
+        # the venue's feature wall is front-of-house: a wood-plank wall in the restrooms and stockroom read as 'pieces of the café
+        # shell' (floor H r7, 3 of 3) and is no washable surface
         (r2,) = rng.spawn(1)
         fm = kit_finish(KIT["architecture"]["feature_wall"], KIT)(r2, pf.nodes.shader.uv_map(uv_map="m_uv"))
         mask = feature_wall_mask(o)

@@ -47,26 +47,37 @@ def main() -> int:
         if a.style:
             from room_planner import styles
             room = {**room, "style": styles.get(a.venue, a.style)["brief"]}
-        if a.reference and (not room_venues or room["type"] == spec.get("venue")):   # on a floor the kit's brief and must-haves belong
+        if a.reference and (len(doc["rooms"]) == 1 or not spec.get("venue") or room["type"] == spec["venue"]):   # on a floor the kit's
+            # brief and must-haves belong to its own venue's room, office floors too (floor C r3: the open-office brief made the pantry a
+            # hot-desk area -- 1 of 15 items fit, a bare room)
             room = {**room, "style": spec["brief"], "must_have": spec.get("must_have", []), "reference_ids": spec.get("reference_ids", [])}
             # to its own venue's room (floor G: the café brief put a coffee bar and tables in the storage room, reception's in exam rooms)
         if room_venues and room["type"] in ("utility", "closet") and room["id"] not in room_venues:
             # floors: service rooms no venue covers get a fixed fit-out (floor E: the sterilisation room rendered empty)
             clinic = any(v in ("clinic-reception", "exam-room", "dental-room", "physio-room") for v in room_venues.values())
-            furn = ([{"id": "run", "category": "medical_cabinet", "relation": "against_wall"}] if clinic and room["type"] == "utility" else
+            furn = ([{"id": "run", "category": "medical_cabinet", "relation": "against_wall"},          # sterilisation / supply: counter
+                     {"id": "racks", "category": "storage_rack", "relation": "against_wall", "away_from": "run"}]   # run + stocked rack
+                    if clinic and room["type"] == "utility" else
                     [{"id": "lockers", "category": "locker", "relation": "against_wall", "count": 2},
-                     {"id": "bench", "category": "changing_bench", "relation": "in_front_of", "target": "lockers", "gap_m": 0.6}]
+                     {"id": "bench", "category": "changing_bench", "relation": "in_front_of", "target": "lockers", "gap_m": 0.6},
+                     {"id": "mirror", "category": "mirror", "relation": "against_wall", "away_from": "lockers"}]
                     if room["type"] == "closet" else
                     [{"id": "racks", "category": "storage_rack", "relation": "against_wall", "count": 2}])
-            stock = [{"category": "cardboard_box", "on": "racks"}] if furn[0]["id"] == "racks" else []   # racks are stocked, not bare
+            stock = ([{"category": "cardboard_box", "on": "racks", "fill": True}] if any(f["id"] == "racks" for f in furn) else   # every level
+                                                                 # (floor E3 r3: one box tried, 'no fit', a bare rack)
+                     [{"category": "towel_stack", "on": "bench"}, {"category": "laundry_basket", "on": "floor"}]   # a changing room in use
+                     if furn[0]["id"] == "lockers" else [])                                                       # (floor F r2: use 3, 3 of 3)
             out["rooms"][room["id"]] = {"plan": {"occupant": "staff", "tidiness": 0.8, "lived_in": stock, "furniture": furn, "fixed": True}, "room": room}
             continue
         if room["type"] == "restroom":
             # floors: a restroom gets fixed sanitary ware, no LLM call (the solver that would fit it is off on floors, 2026-10-16)
-            n_wc = 1 if room.get("area_m2", 0) < 8 else 2      # two toilets side by side in a small room read as a jumble (floor F)
+            # always one open WC: the stall factory's panels read as 'loose boards at odd angles' in every floor (A, B, D3, E3, J, 3/3
+            # each), while the open WC + basin restrooms scored 7 on function; a large room gets a second basin, not a second stall
+            n_basin = 2 if room.get("area_m2", 0) >= 18 else 1
             plan = {"occupant": "staff and visitors", "tidiness": 0.8, "lived_in": [], "fixed": True,
-                    "furniture": [{"id": "wc", "category": "toilet", "relation": "against_wall", "count": n_wc},
-                                  {"id": "basin", "category": "wash_basin", "relation": "against_wall"}]}
+                    "furniture": [{"id": "wc", "category": "wc", "relation": "against_wall"},
+                                  {"id": "basin", "category": "wash_basin", "relation": "beside", "target": "wc", "gap_m": 0.4, "count": n_basin}]}
+            # (an open WC with its basin on the far wall read as 'a toilet alone in an empty room' -- floor A2 r4; fixtures go together)
             out["rooms"][room["id"]] = {"plan": plan, "room": room}
             continue
         if room["type"] not in types:

@@ -23,15 +23,31 @@ for name, parts in rd._rooms().items():                       # dental rooms are
     for k, (px, py) in enumerate(((x0 + 0.6, y0 + 0.6), (x1 - 0.6, y1 - 0.6), (x0 + 0.6, y1 - 0.6), (x1 - 0.6, y0 + 0.6))):
         if room.on_floor(px, py):
             tgt = Vector((c.x, c.y, room.z + (1.65 if k % 2 else 1.5)))   # near level: in a 16 m2 room a 1.25 m aim tilted the ceiling
+            wc = [o.matrix_world.translation for o in bpy.data.objects if o.parent is None and ("ToiletFactory" in o.name or "ToiletStall" in o.name)
+                  and x0 <= o.matrix_world.translation.x <= x1 and y0 <= o.matrix_world.translation.y <= y1]
+            if wc and k % 2:                                  # a restroom's odd wides frame the WC (floor F3 r4: the pan only a sliver at the
+                tgt = Vector((wc[0].x, wc[0].y, room.z + 0.9))   # frame edge, function 5, 3 of 3)
                                                               # out of frame (clinic r21: exam/dental ceiling+light 4, 'never shown')
-            cam = Vector((px, py, room.z + 1.7))
-            for _ in range(5):                                # step toward the centre while something sits within 1 m of the lens
+            cam = corner = Vector((px, py, room.z + 1.7)); best = (-1.0, corner)
+            def clearance(p):                                 # free distance toward the aim, upper and lower frame (cap 3 m)
+                d = tgt - p
+                return min((h[1] - p).length if (h := sc.ray_cast(deps, p, v.normalized(), distance=3.0))[0] else 3.0
+                           for v in (d, d - Vector((0, 0, 1.2))))
+            for _ in range(6):                                # step toward the centre while something sits within 1 m of the lens
                 d = tgt - cam                                 # (clinic r12: wide shots from inside a privacy curtain or a rack)
-                hit = sc.ray_cast(deps, cam, d.normalized(), distance=1.0)
-                low = sc.ray_cast(deps, cam, (d - Vector((0, 0, 1.2))).normalized(), distance=1.0)   # the lower frame too (wh r19:
-                if not hit[0] and not low[0] and over_floor(cam):                                   # a box pile filled wide1's bottom half)            # or under it (clinic r19: a wide shot from above the reception desk)
+                ok = over_floor(cam)                          # bare floor below (clinic r19: a wide shot from above the reception desk)
+                cl = clearance(cam) if ok else -1.0
+                if cl >= 1.0:
                     break
-                cam = cam + Vector((d.x, d.y, 0)).normalized() * 0.4
+                best = max(best, (cl, cam), key=lambda b: b[0])
+                if Vector((d.x, d.y)).length < 0.7:           # (1.4 dropped most wides of 9-11 m2 rooms, floor F3 r4; a spot needs
+                                                              # bare floor below it now, so no top-down table)  within 1 m of the centre a small room's table fills the frame from
+                    cam = best[1]; break                      # above (floor A r2); otherwise the most open spot seen -- not a stall's
+                cam = cam + Vector((d.x, d.y, 0)).normalized() * 0.4   # inside, which has bare floor too (floor H r4: four restroom
+            else:                                                       # wides of partition panels)
+                cam = best[1]
+            if best[0] < 0 and cam is corner and not over_floor(corner):   # no spot with bare floor under it: the lens would sit inside a
+                continue                                                    # rack or stall (floor H r5: an all-black stockroom wide)
             views.append({"name": f"{LABEL or (name.replace('/', '-') if _multi else name.split('_')[0])}_wide{k}", "location": list(cam), "target": list(tgt), "hfov": HFOV, "res": [512, 384]})
     if REFVIEWS:                                              # framed like the reference views: entrance -> counter wall, and the seating
         lab = LABEL or name.split('_')[0]

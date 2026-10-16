@@ -169,7 +169,7 @@ Rules:
     the desk (beam seating along walls IS right here), filing_cabinets behind the desk,
     1-2 floor_plants.
   * exam-room: an exam_table along one wall with a privacy_curtain beside it, a medical_cabinet (cabinets + sink) on another wall, a
-    clinic_desk with a desk_chair and one waiting_bench seat for the patient, a filing_cabinet; nothing residential.
+    clinic_desk with a desk_chair and one conference_chair for the patient, a filing_cabinet; nothing residential.
   * dental-room: ONE dental_chair in the middle of the room facing away from the door, a medical_cabinet run along a wall, a clinic_desk
     with a desk_chair in a corner.
   * physio-room: 2-3 exam_tables (treatment beds) in a row with privacy_curtains between them, wall_bars on a free wall,

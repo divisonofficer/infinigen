@@ -502,6 +502,76 @@
    "status": "validated",
    "rule": "A close-up's sightline test aims at a point where the object has material (bbox centre, 0.5 m, 0.9 m up), not only at its bbox centre; for hollow pieces (dental chair under its lamp boom, open racks) the centre is air and every angle failed.",
    "evidence": "dental r21: 0 of 3 big pieces framed; re-probe with the aim heights: dental chair and cabinet run both framed"
+  },
+  {
+   "id": "recolour-spares-glass",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "architecture_pass",
+   "status": "proposed",
+   "rule": "A palette override that repaints an asset's material slots must keep glass slots (and route metal slots to the metal finish); painting every slot one colour turns a lite or glass-panel office door into an opaque raised-panel house door.",
+   "evidence": "floor A r2: 3 of 3 critics called the vision-panel doors 'residential raised-panel'; the leaves were LiteDoor/GlassPanelDoor with their glass painted beige by office_doors."
+  },
+  {
+   "id": "probe-never-top-down",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "probe",
+   "status": "proposed",
+   "rule": "When no step toward the centre clears the lens, a wide shot falls back to the first spot with bare floor below it, else the corner; it never steps to within 1 m of the room centre, where a small room's table fills the frame from above.",
+   "evidence": "floor A r2: meeting-room wides showed only the tabletop; 3 of 3 critics flagged it as a probe issue."
+  },
+  {
+   "id": "style-piece-in-its-own-room",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "realize",
+   "status": "proposed",
+   "rule": "A style kit's signature piece (the chain café banquette) is required only in the kit's own venue room, never in fixed service rooms or rooms mapped to another venue.",
+   "evidence": "floor H r3: a café banquette stood in both restrooms."
+  },
+  {
+   "id": "lights-clear-of-architecture",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "kit_lighting",
+   "status": "proposed",
+   "rule": "A light whose downward ray hits non-floor geometry within 15 cm is buried in architecture (ducts, beams); move it just below the cover's underside.",
+   "evidence": "floor H r4: the restroom lamp sat 2 cm inside an exposed duct and the room read near black, 3 of 3; 5 lights were buried on that floor."
+  },
+  {
+   "id": "restroom-basin-faces-stalls",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "plan_scene",
+   "status": "proposed",
+   "rule": "A restroom's basin goes on the wall facing the stall row (away_from the WC), and a room under 18 m2 gets one stall; basins on the stall wall hide behind the end partition and two stalls fill every frame.",
+   "evidence": "floor I r3 / H r4 / G r4: 0 of 12 restroom wides showed a basin."
+  },
+  {
+   "id": "small-stockroom-racks-first",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "realize",
+   "status": "proposed",
+   "rule": "In a back stockroom (warehouse venue < 20 m2) racks take the walls before the workbench, and there is at most one bench.",
+   "evidence": "floor I r3: bench, pallet and boxes took the walls and both racks went unplaced."
+  },
+  {
+   "id": "shop-coolers-on-walls",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "realize",
+   "status": "proposed",
+   "rule": "Convenience/grocery coolers stand against a wall; a cooler group 'beside' another stood mid-floor with its black back to the aisle.",
+   "evidence": "floor I r2-r3: 3 of 3 critics asked about a 'black slab'."
   }
  ]
 }

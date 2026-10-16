@@ -9,7 +9,7 @@ FURNITURE = {
     "sofa":           {"src": "abo:sofa",        "size": [2.0, 0.9, 0.85], "rooms": ["living-room", "cafe"]},
     "armchair":       {"src": "abo:armchair",    "size": [0.85, 0.85, 0.9], "rooms": ["living-room", "bedroom", "cafe", "boutique"]},
     "dining_chair":   {"src": "copy:dining",     "size": [0.45, 0.5, 0.85], "rooms": ["dining-room", "kitchen"]},
-    "conference_chair": {"src": "inf:OfficeChairFactory", "size": [0.6, 0.6, 1.0], "rooms": ["meeting-room", "office"]},
+    "conference_chair": {"src": "inf:OfficeChairFactory", "size": [0.6, 0.6, 1.0], "rooms": ["meeting-room", "office", "exam-room"]},
     "desk_chair":     {"src": "inf:OfficeChairFactory", "size": [0.6, 0.6, 1.0], "rooms": ["bedroom", "living-room", "office", "open-office", "meeting-room", "clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},
     # tables
     "coffee_table":   {"src": "abo:coffee",      "size": [1.1, 0.6, 0.45], "rooms": ["living-room"]},
@@ -20,7 +20,9 @@ FURNITURE = {
     # storage
     "dresser":        {"src": "abo:dresser",     "size": [1.2, 0.5, 0.9], "rooms": ["bedroom"]},
     "sideboard":      {"src": "abo:dresser",     "size": [1.4, 0.45, 0.85], "rooms": ["dining-room", "living-room"]},
-    "bookshelf":      {"src": "abo:bookcase", "size": [0.8, 0.3, 1.8], "rooms": ["living-room", "bedroom", "cafe"]},
+    "bookshelf":      {"src": "abo:bookcase", "size": [0.8, 0.3, 1.8], "rooms": ["living-room", "bedroom", "cafe", "office"]},
+    "office_bookcase": {"src": "inf:SimpleBookcaseFactory", "size": [0.9, 0.35, 1.8], "rooms": ["office"]},   # plain, stocked (floor C r4: an
+                                                                                                         # ABO ladder shelf read residential, empty)
     "tv_stand":       {"src": "inf:TVStandFactory", "size": [1.6, 0.4, 0.5], "rooms": ["living-room"]},
     # lighting, textiles, plants
     "floor_lamp":     {"src": "abo:floorlamp",   "size": [0.4, 0.4, 1.6], "rooms": ["living-room", "bedroom"]},
@@ -54,9 +56,11 @@ FURNITURE = {
     # clinics and shops (non-home 20, 2026-10-16)
     "clinic_desk":    {"src": "proc:ClinicDeskFactory", "size": [1.2, 0.65, 0.75], "rooms": ["exam-room", "dental-room", "physio-room"]},
     "reception_desk": {"src": "proc:ReceptionDeskFactory", "size": [2.4, 0.75, 1.12], "rooms": ["clinic-reception", "pharmacy"]},
-    "waiting_bench":  {"src": "proc:WaitingBenchFactory", "size": [2.2, 0.6, 0.85], "rooms": ["clinic-reception", "pharmacy", "exam-room"]},
+    "waiting_bench":  {"src": "proc:WaitingBenchFactory", "size": [2.2, 0.6, 0.85], "rooms": ["clinic-reception", "pharmacy"]},   # not exam rooms:
+                                                                                     # a 3-seat beam bench read as a second waiting room (floor D3 r2)
     "exam_table":     {"src": "proc:ExamTableFactory", "size": [0.65, 1.9, 0.9], "rooms": ["exam-room", "physio-room"]},
     "toilet":         {"src": "proc:ToiletStallFactory", "size": [1.5, 0.95, 1.95], "rooms": ["restroom"]},   # floor scenes: a cubicle
+    "wc":             {"src": "inf:ToiletFactory", "size": [0.7, 0.45, 0.8], "rooms": ["restroom"]},   # a single-user restroom: no cubicle
     "wash_basin":     {"src": "proc:WashBasinFactory", "size": [0.45, 0.6, 1.9], "rooms": ["restroom"]},
     "locker":         {"src": "proc:LockerFactory", "size": [0.5, 1.4, 1.8], "rooms": ["closet"]},
     "changing_bench": {"src": "proc:ChangingBenchFactory", "size": [0.35, 1.3, 0.47], "rooms": ["closet"]},
@@ -69,7 +73,7 @@ FURNITURE = {
     "exercise_bike":  {"src": "proc:ExerciseBikeFactory", "size": [0.95, 0.5, 1.1], "rooms": ["physio-room"]},
     "clothing_rack":  {"src": "proc:ClothingRackFactory", "size": [1.6, 0.5, 1.55], "rooms": ["boutique"]},
     "display_table":  {"src": "proc:DisplayTableFactory", "size": [1.4, 0.8, 0.9], "rooms": ["boutique"]},
-    "mirror":         {"src": "proc:MirrorFactory", "size": [0.65, 0.3, 1.85], "rooms": ["boutique"]},
+    "mirror":         {"src": "proc:MirrorFactory", "size": [0.65, 0.3, 1.85], "rooms": ["boutique", "closet"]},
     "fitting_room":   {"src": "proc:FittingRoomFactory", "size": [1.25, 1.1, 2.2], "rooms": ["boutique"]},
     # offices: zones (a set placed as one) and their internal parts
     "workstation_pod": {"src": "zone:workstation_pod", "size": [2.8, 2.4, 1.2], "rooms": ["open-office", "office"]},
@@ -84,7 +88,7 @@ FURNITURE = {
     "chest_freezer":  {"src": "proc:ChestFreezerFactory", "size": [1.6, 0.8, 0.85], "rooms": ["grocery", "convenience"]},
     "cafe_chair":     {"src": "abo:cafechair",   "size": [0.45, 0.5, 0.85], "rooms": ["cafe", "office", "break-room"]},
     "bar_stool":      {"src": "abo:barstool",    "size": [0.4, 0.4, 0.75], "rooms": ["cafe", "break-room"]},
-    "beverage_fridge": {"src": "proc:DisplayCoolerFactory", "size": [0.75, 0.7, 2.0], "rooms": ["grocery", "cafe", "convenience", "pharmacy"]},
+    "beverage_fridge": {"src": "proc:DisplayCoolerFactory", "size": [0.75, 0.7, 2.0], "rooms": ["grocery", "convenience", "pharmacy"]},   # not cafe: the inf fridge rendered as a black box (floor H r4, 3 of 3)
 }
 
 #: room types that are workplaces: their planner prompt and vocabulary differ from a home's
@@ -95,7 +99,7 @@ WORK_ROOMS = {"warehouse", "garage", "utility", "office", "open-office", "meetin
 LIVED_IN = {
     "throw_blanket":   {"src": "inf:BlanketFactory", "on": ["sofa", "armchair", "bed"], "rooms": ["home"]},
     "cushion":         {"src": "abo:PILLOW", "on": ["sofa", "armchair", "bed", "floor"], "rooms": ["home"]},
-    "book_stack":      {"src": "inf:BookStackFactory", "on": ["coffee_table", "side_table", "nightstand", "desk", "floor"], "rooms": ["home", "office", "open-office", "clinic-reception"]},
+    "book_stack":      {"src": "inf:BookStackFactory", "on": ["coffee_table", "side_table", "nightstand", "desk", "floor", "office_bookcase"], "rooms": ["home", "office", "open-office", "clinic-reception"]},
     "mug":             {"src": "inf:CupFactory", "on": ["coffee_table", "side_table", "nightstand", "desk", "dining_table", "reception_desk"], "rooms": ["home", "office", "open-office", "meeting-room", "break-room", "cafe", "clinic-reception", "exam-room", "pharmacy", "dental-room"]},
     "fruit_bowl":      {"src": "inf:FruitContainerFactory", "on": ["dining_table", "coffee_table", "counter"], "rooms": ["home", "break-room", "cafe"]},
     "table_lamp":      {"src": "abo:TABLE_LAMP", "on": ["side_table", "nightstand", "desk", "sideboard"], "rooms": ["home", "office"]},
@@ -141,7 +145,7 @@ LIVED_IN = {
     "open_box":        {"src": "proc:OpenBoxFactory", "on": ["workbench"], "rooms": ["warehouse", "garage"]},
     "tape_gun":        {"src": "proc:TapeGunFactory", "on": ["workbench"], "rooms": ["warehouse", "garage"]},
     "kraft_roll":      {"src": "proc:KraftRollFactory", "on": ["workbench"], "rooms": ["warehouse", "garage"]},
-    "towel_stack":     {"src": "proc:TowelStackFactory", "on": ["exam_table"], "rooms": ["physio-room", "exam-room"]},
+    "towel_stack":     {"src": "proc:TowelStackFactory", "on": ["exam_table", "changing_bench"], "rooms": ["physio-room", "exam-room", "closet"]},
     # clinical counter / desk props (clinic r6 critic: 'no glove boxes, sanitizer or trays -- an unfurnished showroom')
     "glove_box":       {"src": "proc:GloveBoxFactory", "on": ["medical_cabinet", "clinic_desk", "reception_desk"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},
     "sanitizer":       {"src": "proc:SanitizerFactory", "on": ["medical_cabinet", "clinic_desk", "reception_desk", "counter"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},

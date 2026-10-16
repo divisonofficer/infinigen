@@ -707,7 +707,8 @@ class ToiletStallFactory:
     """A commercial WC cubicle (front +X = the door side): laminate side panels and a half-open door on legs, a white wall-hung
     toilet and cistern box inside, a paper holder (floor scenes: 'two toilets loose in an open room', 3 of 3 calls)."""
     def __init__(self, seed):
-        r = random.Random(seed); self.c = r.choice(((0.75, 0.76, 0.76), (0.25, 0.35, 0.45), (0.85, 0.84, 0.8)))
+        r = random.Random(seed); self.c = r.choice(((0.45, 0.52, 0.58), (0.55, 0.6, 0.6), (0.6, 0.53, 0.46)))   # mid laminates: navy read black (floor H r4), white
+        # stalls vanished against white walls (floor J r5, 3 of 3)
 
     def spawn_asset(self, i):
         D, W, H = 1.5, 0.95, 1.95
@@ -857,7 +858,7 @@ class DisplayCoolerFactory:
 
     def __init__(self, seed):
         r = random.Random(seed)
-        self.r = r; self.body = r.choice(((0.05, 0.05, 0.05), (0.85, 0.85, 0.84), (0.6, 0.6, 0.62)))   # style eval G: a coral cooler broke two cafes
+        self.r = r; self.body = r.choice(((0.85, 0.85, 0.84), (0.6, 0.6, 0.62)))   # no black: a black side edge-on read as a slab (floor I r2-r4, 3/3)   # style eval G: a coral cooler broke two cafes
 
     def spawn_asset(self, i):
         r, W, D, H = self.r, 0.75, 0.7, 2.0

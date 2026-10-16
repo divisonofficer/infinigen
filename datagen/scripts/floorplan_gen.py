@@ -44,6 +44,7 @@ from dataclasses import dataclass
 # --- constants (meters) ----------------------------------------------------
 
 UNIT = 0.5          # grid quantization (Infinigen uses 0.5 m unit_cast)
+STOREFRONT_VENUES = {"convenience", "grocery", "pharmacy", "boutique", "cafe"}   # hubs that face the street with glass
 MIN_DIM = 2.0       # every cell >= 2 m per side -> full-side shared edges >= 2 m
 MARGIN = 1.4        # Infinigen segment_margin: door needs shared edge STRICTLY > this
 DOOR_MIN = 1.6      # only emit a door on edges >= this (safety above MARGIN)
@@ -816,6 +817,18 @@ def emit(cells: list[Cell], W: float, H: float, rng: random.Random) -> dict:
         ext = [s for s in _exterior_sides(c.rect, W, H) if (s[3] - s[2]) > DOOR_MIN]
         if ext:
             orient, const, lo, hi = ext[0]
+            if c.venue in STOREFRONT_VENUES:                        # the longest street side is the shop front
+                orient, const, lo, hi = max(ext, key=lambda s_: s_[3] - s_[2])
+            if c.venue in STOREFRONT_VENUES and hi - lo >= DOOR_W + WIN_MIN + 3 * UNIT:
+                # a shop / café front (floor I r5: 'no storefront, reads as a lit warehouse', 3 of 3): the street door at one end of
+                # the hub's exterior wall and panoramic glass across the rest, as the single-room storefront does
+                d0 = q(lo + UNIT)
+                p0, p1 = _centered_line(orient, const, d0, d0 + DOOR_W, DOOR_W)
+                doors[_key(doors, "door")] = {"shape": _line_str(p0, p1)}
+                g0, g1 = q(d0 + DOOR_W + UNIT), q(hi - UNIT)
+                w0, w1 = _centered_line(orient, const, g0, g1, g1 - g0)
+                windows[_key(windows, "window")] = {"shape": _line_str(w0, w1), "is_panoramic": 1}
+                break
             p0, p1 = _centered_line(orient, const, lo, hi, DOOR_W)
             doors[_key(doors, "door")] = {"shape": _line_str(p0, p1)}
             break
