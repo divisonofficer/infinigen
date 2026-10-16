@@ -754,7 +754,7 @@ class ClinicWallItemFactory:
     yellow sharps bin, a paper-towel dispenser, a sanitizer dispenser."""
     KINDS = ("eye_chart", "clinic_poster", "glove_holder", "sharps_bin", "towel_dispenser", "wall_sanitizer", "wall_clock", "brochure_rack",
              "grab_bar", "hand_dryer", "toilet_roll", "waste_bin", "coat_hooks", "baby_change", "door_sign", "diagnostic_set",
-             "cleaning_kit")
+             "cleaning_kit", "roll_shelf")
 
     def __init__(self, seed, kind="clinic_poster"):
         self.kind, self.r = kind, random.Random(seed)
@@ -776,18 +776,26 @@ class ClinicWallItemFactory:
             return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(frame, [("box", (0.004, 0, H / 2), (0.008, W + 0.03, H + 0.03), (0, 0, 0))]),
                                                                           (white, [("box", (0.009, 0, H / 2), (0.002, W, H), (0, 0, 0))]),
                                                                           (col, [("sph", (0.012, 0, H - 0.15), (0.002, W * 0.25, 0.1), (0, 0, 0))]), (ink, lines)])
+        if k == "roll_shelf":                                    # spare toilet rolls on a small wall shelf: a restroom someone restocks
+            # ('no spare paper rolls, nothing used', floors F3 r18 / H r26, 3 of 3) -- quieter than the mop kit, which read as clutter
+            shelf = _flat("ir_ac_white", (0.86, 0.86, 0.85), 0.4); paper = _flat("ir_paper", (0.93, 0.93, 0.9), 0.7)
+            rolls = [("cyl", (0.07, y, 0.035 + 0.055 + dz), (0.055, 0.055, 0.11), (0, 0, 0)) for y, dz in ((-0.12, 0), (0.0, 0), (0.12, 0), (-0.06, 0.11), (0.06, 0.11))]
+            return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(shelf, [("box", (0.07, 0, 0.0175), (0.14, 0.4, 0.035), (0, 0, 0)),
+                                                                                    ("box", (0.005, 0, -0.05), (0.01, 0.4, 0.1), (0, 0, 0))]),
+                                                                           (paper, rolls)])
         if k == "cleaning_kit":                                  # a restroom being looked after: a yellow mop bucket with its mop leant on
             # the wall and a wet-floor A-frame (floors H r19 / I r14: restroom signs of use 5-6, 'clinically bare', 3 of 3)
             yel = _flat("ir_janitor_yellow", (0.85, 0.65, 0.05), 0.45); grey = _flat("ir_mop_grey", (0.55, 0.55, 0.55), 0.9)
             pole = _flat("ir_mop_pole", (0.7, 0.72, 0.74), 0.3, 0.9); a_ = 0.2
             return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [
                 (yel, [("box", (0.2, -0.15, 0.15), (0.3, 0.4, 0.3), (0, 0, 0)), ("box", (0.2, 0.0, 0.32), (0.3, 0.1, 0.04), (0, 0, 0)),
-                       ("box", (0.18, 0.42, 0.29), (0.02, 0.3, 0.6), (0, a_, 0)), ("box", (0.30, 0.42, 0.29), (0.02, 0.3, 0.6), (0, -a_, 0))]),
+                       ("box", (0.24, 0.42, 0.3), (0.025, 0.32, 0.62), (0, a_, 0))]),   # ONE sign face leaning on a back leg: the two
+                # A-frame leaves read as 'two wet-floor signs side by side' (floor H r25, 3 of 3)
+                (_flat("ir_mop_pole", (0.7, 0.72, 0.74), 0.3, 0.9), [("box", (0.38, 0.42, 0.29), (0.015, 0.02, 0.58), (0, -0.4, 0))]),
                 # the two leaves meet at the top: 0.24 m apart they read as two or three loose signs (floor E3 r13, 3 of 3)
                 (grey, [("box", (0.2, -0.22, 0.31), (0.18, 0.18, 0.06), (0, 0, 0))]),
                 # no mop pole: leant on the wall it read as 'a loose rod, debris' (floor F3 r16, 3 of 3)
-                (_flat("ir_ink", (0.05, 0.05, 0.06), 0.6), [("box", (0.18 - 0.012, 0.42, 0.36), (0.002, 0.16, 0.12), (0, a_, 0)),
-                                                             ("box", (0.30 + 0.012, 0.42, 0.36), (0.002, 0.16, 0.12), (0, -a_, 0))])])
+                (_flat("ir_ink", (0.05, 0.05, 0.06), 0.6), [("box", (0.24 - 0.016, 0.42, 0.37), (0.002, 0.18, 0.14), (0, a_, 0))])])
         if k == "glove_holder":
             boxes = [(_flat(f"ir_glovebox_{j}", c, 0.6), [("box", (0.07, 0, 0.06 + j * 0.13), (0.12, 0.26, 0.11), (0, 0, 0))])
                      for j, c in enumerate(((0.3, 0.35, 0.75), (0.55, 0.3, 0.65), (0.85, 0.85, 0.88)))]
@@ -855,8 +863,9 @@ class ClinicWallItemFactory:
                                                                                    ("cyl", (0.16, 0, 0.43), (0.145, 0.145, 0.02), (0, 0, 0))]),
                                                                           (blk, [("box", (0.32, 0, 0.02), (0.06, 0.1, 0.02), (0, 0, 0)),
                                                                                  ("cyl", (0.16, 0, 0.01), (0.145, 0.145, 0.02), (0, 0, 0))])])
-        if k == "hand_dryer":
-            return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(white, [("rbox", (0.09, 0, 0.15), (0.18, 0.28, 0.3), (0, 0, 0))]),
+        if k == "hand_dryer":                                    # brushed steel: a white box on white tile was never seen (floor H r27, 3 of 3)
+            steel = _flat("ir_dryer_steel", (0.6, 0.61, 0.63), 0.3, 1.0)
+            return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(steel, [("rbox", (0.1, 0, 0.17), (0.2, 0.3, 0.34), (0, 0, 0))]),
                                                                           (ink, [("box", (0.12, 0, 0.005), (0.08, 0.16, 0.02), (0, 0, 0))])])
         if k == "towel_dispenser":
             return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(white, [("box", (0.06, 0, 0.18), (0.12, 0.28, 0.36), (0, 0, 0))]),
