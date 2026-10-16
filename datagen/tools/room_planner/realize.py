@@ -952,7 +952,7 @@ class RoomRealizer:
         in an office room gets a handful of small things from CLUTTER (a pod 1.5-2.5 per seat)."""
         if self.doc.get("type") not in ("office", "open-office", "meeting-room", "break-room"):
             return
-        names, weights = zip(*self.CLUTTER)
+        food = [("mug", 3), ("snack", 3), ("takeaway_cup", 2), ("fruit_bowl", 1), ("bottle", 1.5), ("phone", 1), ("paper_stack", 0.5)]
         hosts = {}
         for hid, (o, _) in list(self.ids.items()):
             f = rd._factory(o.name)
@@ -964,7 +964,8 @@ class RoomRealizer:
             rng_n = self.CLUTTER_HOSTS[rd._factory(o.name)]
             n = round(len(o.get("seats", [])) * self.rng.uniform(1.5, 2.5)) if rng_n is None else self.rng.randint(*rng_n)
             for _ in range(n):
-                cat = self.rng.choices(names, weights)[0]
+                mix = food if rd._factory(o.name) == "BreakTableFactory" else self.CLUTTER   # pantry tables: food, not desk props (r4)
+                cat = self.rng.choices([m[0] for m in mix], [m[1] for m in mix])[0]
                 if cat not in catalog.LIVED_IN:
                     continue
                 self.lived_in({"category": cat, "on": hid})

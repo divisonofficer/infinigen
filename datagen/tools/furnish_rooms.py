@@ -65,7 +65,7 @@ def pool(key):
             officechair=_pool(("CHAIR",), w=(0.5, 0.72), d=(0.5, 0.75), h=(0.85, 1.3), name=lambda e: bool(re.search(
                 r"office|desk|task|swivel|mesh|ergonomic|conference|办公|오피스|사무|bureau|schreibtisch", e["name"] + " " + " ".join(e.get("keywords") or []), re.I))
                 and not re.search(r"reclin|massage|gaming|lounge|big and tall|executive|躺|리클라이너|sled|cantilever|visitor|guest|"
-                                  r"stack|reception|waiting|leather", e["name"], re.I)),   # critic r2: sled/visitor + leather exec chairs
+                                  r"stack|reception|waiting|leather|stool|drafting|counter height|bar height|tub|lounge|accent|club|armchair", e["name"], re.I)),   # critic r2/r4
             bookcase=_pool(("SHELF",), w=(0.6, 1.3), h=(1.4, 2.2), name=lambda e: not re.search(r"ladder|leaning|A-frame", e["name"], re.I)),   # critic r2/r3
             counter=_pool(("CABINET", "DRESSER", "HOME_FURNITURE_AND_DECOR"), w=(1.2, 2.4), h=(0.85, 1.15)),
             cafetable=_pool(("TABLE",), w=(0.5, 1.2), d=(0.5, 1.2), h=(0.68, 0.8)),
@@ -73,7 +73,8 @@ def pool(key):
             cafechair=_pool(("CHAIR",), w=(0, 0.62), h=(0.75, 1.0), name=lambda e: bool(re.search(
                 r"dining|bistro|side chair|cafe|café|kitchen|餐椅|餐厅|다이닝|식탁|chaise de salle|esszimmer|sedia da pranzo|silla de comedor",
                 e["name"] + " " + " ".join(e.get("keywords") or []), re.I))),
-            barstool=_pool(("STOOL_SEATING",), h=(0.6, 1.05)),
+            barstool=_pool(("STOOL_SEATING",), h=(0.6, 1.05), name=lambda e: not re.search(
+                r"rustic|farmhouse|solid wood|wooden|reclaimed|vintage", e["name"], re.I)),   # critic r4: red wooden stools read as a home bar
             board=_pool(("WRITING_BOARD",)) or _pool(("PINBOARD",)),
             filing=_pool(("CABINET", "STORAGE_DRAWER"), w=(0.35, 0.9), h=(0.6, 1.4), name=lambda e: not re.search(
                 r"rustic|reclaimed|pallet|farmhouse|vintage|distressed|barn|shabby|nightstand|bedside|night stand", e["name"], re.I)),   # critic r2/r3: pallet-wood cabinet, nightstand
