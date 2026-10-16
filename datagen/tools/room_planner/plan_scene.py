@@ -32,7 +32,7 @@ def main() -> int:
     types = set(a.types.split(","))
     doc = json.loads(a.rooms.read_text())
     spec = json.loads(a.reference.read_text()) if a.reference else None
-    images = spec["images"] if spec else None
+    images = spec.get("images") if spec else None  # hand-written briefs carry no images
     out = {"scene": doc["scene"], "model": client.MODEL, "prompt_version": client.PROMPT_VERSION, "seed": a.seed, "rooms": {},
            "venue": a.venue, "style": a.style, "style_spec": spec}
     for room in doc["rooms"]:
@@ -42,7 +42,7 @@ def main() -> int:
             from room_planner import styles
             room = {**room, "style": styles.get(a.venue, a.style)["brief"]}
         if a.reference:
-            room = {**room, "style": spec["brief"], "must_have": spec.get("must_have", []), "reference_ids": spec["reference_ids"]}
+            room = {**room, "style": spec["brief"], "must_have": spec.get("must_have", []), "reference_ids": spec.get("reference_ids", [])}
         if room["type"] not in types:
             continue
         payload = {k: v for k, v in room.items() if not k.startswith("_")}

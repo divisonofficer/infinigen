@@ -1,0 +1,105 @@
+{
+ "brief": "A clinic reception with a long oak-slat reception counter with a pale stone top as the central anchor, backed by a wall of oak veneer cabinetry with a glowing under-cabinet strip. The lounge/waiting zone sits in front of and beside the counter, next to a floor-to-ceiling glazed wall onto a garden. It has a grey-beige sofa, two light-wood-framed armchairs, a round oak coffee table on a jute rug and a drum side table. Large-format beige stone-look tiles run throughout. A coved ceiling with a warm LED edge glow, recessed downlights and three cream pendants over the counter give a calm, spa-like light. Potted plants (tall floor plants and small trailing ones on the counter), soft watercolour framed art, magazines and mugs on the tables finish it.",
+ "wall": "paint",
+ "floor": "tile",
+ "counter_front": "oak_slat",
+ "counter_top": "white_stone",
+ "backbar": "oak_slat",
+ "fixture": "pendant",
+ "must_have": [
+  {
+   "category": "reception_desk",
+   "count": 1,
+   "where": "centre-back, long counter facing the waiting area, with the oak cabinet wall behind it"
+  },
+  {
+   "category": "waiting_bench",
+   "count": 2,
+   "where": "one sofa on the right and one on the left by the window; counts as lounge seating"
+  },
+  {
+   "category": "desk_chair",
+   "count": 1,
+   "where": "black task chair behind the reception counter"
+  },
+  {
+   "category": "floor_plant",
+   "count": 4,
+   "where": "two by the glazing, one at the right wall, one beside the counter"
+  },
+  {
+   "category": "filing_cabinet",
+   "count": 1,
+   "where": "low oak cabinet at the end of the counter / behind it"
+  }
+ ],
+ "concept": "A calm, biophilic, spa-like healthcare lounge: pale oak, soft greige textiles and beige stone tile, with warm indirect light and abundant greenery so the space feels welcoming rather than clinical.",
+ "relations": [
+  "Oak slat counter front + warm 2700-3000K LED underglow + pale stone top = glowing, welcoming focal point that leads the eye from the entrance",
+  "Large glazed garden wall + plants of many sizes = biophilic, daylit calm; greenery repeats the watercolour art",
+  "Greige upholstery + light-oak frames + jute rug + beige tile = low-contrast, soft palette that keeps the room relaxed",
+  "Coved ceiling glow + recessed downlights + cream pendants = even, shadow-free ambient light at medium brightness",
+  "Generous spacing between seating groups = low density, quiet and private for patients"
+ ],
+ "architecture": {
+  "ceiling": "plaster_white",
+  "ducts_visible": false,
+  "feature_wall": "wood_panel",
+  "other_walls": "paint_light"
+ },
+ "lighting": {
+  "color_temp_k": 2800,
+  "ambient": "medium",
+  "daylight": "high",
+  "key_fixture": "pendant_row",
+  "accents": [
+   "backbar_strip"
+  ]
+ },
+ "density": {
+  "seats_per_10m2": 2.5,
+  "props_per_table": 3,
+  "plants": 9
+ },
+ "mood": "bright_daylight",
+ "floor_tone": "pale",
+ "floor_srgb": [
+  0.76,
+  0.71,
+  0.63
+ ],
+ "wall_srgb": [
+  0.88,
+  0.84,
+  0.76
+ ],
+ "table_top": "light_wood",
+ "chair_style": "upholstered",
+ "decor": [
+  "framed_art",
+  "potted_plants",
+  "hanging_plants",
+  "rugs"
+ ],
+ "metal_finish": "black",
+ "not_reproducible": "People, the monitor, phone and paperwork contents, the outdoor garden view and trees, magazine and mug details, the watercolour art itself, and the textured weave of the jute rug.",
+ "wall_rgb": [
+  0.7484,
+  0.6739,
+  0.5382
+ ],
+ "floor_rgb": [
+  0.5382,
+  0.4624,
+  0.3547
+ ],
+ "reference_ids": [
+  "817a5ffa605d44b4",
+  "e807dea2fedb1d28"
+ ],
+ "venue": "clinic-reception",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/clinic_reception_gen/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/clinic_reception_gen/view2.png"
+ ]
+}

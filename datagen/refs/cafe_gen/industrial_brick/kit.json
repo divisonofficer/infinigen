@@ -1,0 +1,115 @@
+{
+ "brief": "Long, narrow industrial corner cafe with a full-height black-steel glazed front on one side and a glazed entry door at the far end. A raw brick wall with warm wall-washed framed black-and-white prints runs the other side, with round bentwood-chair bistro tables along it. The centre is held by one long reclaimed-wood communal table with black metal Tolix-style chairs, and a timber window bar with black metal stools lines the glass. The coffee counter sits at the back: matte-black vertical-slat front, butcher-block top, espresso machine and grinders, a lit pastry case, a chalkboard menu and open black-steel shelving with cups, bags and bottles over a glowing yellow tile backsplash. Black dome pendants and track spots hang from an exposed dark ceiling with silver ducts. Surfaces carry white cups, croissants, small flower jars and a notebook; leafy potted plants are spread throughout. Mood is warm, daylit and welcoming.",
+ "wall": "brick",
+ "floor": "concrete",
+ "counter_front": "matte_black",
+ "counter_top": "butcher_block",
+ "backbar": "matte_black",
+ "fixture": "pendant",
+ "must_have": [
+  {
+   "category": "coffee_bar",
+   "count": 1,
+   "where": "on the counter: espresso machine and two grinders"
+  },
+  {
+   "category": "menu_board",
+   "count": 1,
+   "where": "large framed chalkboard above the back counter"
+  },
+  {
+   "category": "cafe_table",
+   "count": 1,
+   "where": "long reclaimed-wood communal table in the room centre"
+  },
+  {
+   "category": "cafe_table",
+   "count": 4,
+   "where": "small round bistro tables along the brick wall"
+  },
+  {
+   "category": "cafe_chair",
+   "count": 16,
+   "where": "black metal chairs at the communal table plus bentwood chairs at the round tables"
+  },
+  {
+   "category": "window_bar",
+   "count": 1,
+   "where": "long timber ledge along the glazed front"
+  },
+  {
+   "category": "bar_stool",
+   "count": 8,
+   "where": "black metal stools along the window bar"
+  },
+  {
+   "category": "floor_plant",
+   "count": 5,
+   "where": "beside the counter, window and brick wall"
+  }
+ ],
+ "concept": "Warm industrial urban cafe: raw brick, black steel and polished concrete are softened by reclaimed wood, amber light and greenery, with big street windows adding daylight.",
+ "relations": [
+  "Raw brick walls + wall-washed amber light + framed prints = warm texture that offsets the cold concrete floor and steel ducts",
+  "Black steel window frames, pendants, chairs, stools and counter front repeat one dark accent, which unifies the room and keeps it industrial",
+  "Reclaimed wood on the table, window ledge and counter top adds warmth against the black metal and gray concrete",
+  "Full-height glazing + dome pendants + track spots = daylight by day and a glowing room in the evening",
+  "Plants and flowers soften the hard materials, and the pastry case and backsplash glow draw the eye to the counter",
+  "Medium density with a long communal table, bistro tables and a window bar gives a social, busy-but-open layout"
+ ],
+ "architecture": {
+  "ceiling": "exposed_dark",
+  "ducts_visible": true,
+  "feature_wall": "brick",
+  "other_walls": "brick"
+ },
+ "lighting": {
+  "color_temp_k": 2700,
+  "ambient": "medium",
+  "daylight": "high",
+  "key_fixture": "mixed",
+  "accents": [
+   "backbar_strip",
+   "wall_sconces"
+  ]
+ },
+ "density": {
+  "seats_per_10m2": 5,
+  "props_per_table": 3,
+  "plants": 9
+ },
+ "mood": "warm_evening",
+ "floor_tone": "medium",
+ "floor_srgb": [
+  0.55,
+  0.5,
+  0.43
+ ],
+ "table_top": "butcher_block",
+ "chair_style": "mixed",
+ "decor": [
+  "framed_art",
+  "potted_plants",
+  "hanging_plants",
+  "flowers"
+ ],
+ "metal_finish": "black",
+ "not_reproducible": "People, laptops, the street view with trees, buildings and cars outside, pastries and baked goods in detail, espresso equipment detail, the chalkboard writing, and the reflective sheen of the polished floor.",
+ "floor_rgb": [
+  0.2633,
+  0.214,
+  0.1549
+ ],
+ "reference_ids": [
+  "f5b417c94104e3ba",
+  "d1364d07c512cc0b",
+  "0fab30cc16f56efa"
+ ],
+ "venue": "cafe",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/industrial_brick/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/industrial_brick/view2.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/industrial_brick/view3.png"
+ ],
+ "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/industrial_brick/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact."
+}

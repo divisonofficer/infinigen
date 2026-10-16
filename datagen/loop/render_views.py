@@ -9,12 +9,18 @@ scene.render.engine = "CYCLES"; c = scene.cycles; c.device = "GPU"
 c.samples = 96; c.use_adaptive_sampling = True; c.use_denoising = True; c.denoiser = "OPENIMAGEDENOISE"
 r = scene.render; r.use_persistent_data = True; r.resolution_percentage = 100; r.image_settings.file_format = "PNG"
 import os
+DAY = {"none": 0.0, "low": 0.12, "medium": 0.45, "high": 1.0}.get(scene.get("ir_daylight", "high"), 1.0)   # style kit (non-home 20)
 if os.environ.get("PROBE_DAYLIGHT") == "1":
     # daytime through the windows, like the dataset's lighting variants: window area-light portals at ~80 W/m2
     for o in bpy.data.objects:
         if o.type == "LIGHT" and o.data.type == "AREA" and o.parent is not None and "Window" in o.parent.name:
             area = (o.data.size * (o.data.size_y if o.data.shape in ("RECTANGLE", "ELLIPSE") else o.data.size))
-            o.data.energy = 80.0 * max(area, 0.1)
+            o.data.energy = 80.0 * max(area, 0.1) * DAY
+    w = scene.world                                             # the sky through the glass follows the kit's daylight too
+    if w and w.use_nodes:
+        for nd in w.node_tree.nodes:
+            if nd.type == "BACKGROUND":
+                nd.inputs["Strength"].default_value *= DAY
 if os.environ.get("CLAY") == "1":
     # clay check (user 2026-10-16: "does it read as an office with no textures?"): one grey diffuse override for every surface
     clay = bpy.data.materials.new("ir_clay"); clay.use_nodes = True

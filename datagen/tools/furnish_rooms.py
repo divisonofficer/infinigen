@@ -192,12 +192,19 @@ ABO_FRONT = (0.0, -1.0)
 INF_FRONT = (1.0, 0.0)
 
 
+CEILING_KIT = {"plaster_white": (0.78, 0.77, 0.74), "exposed_white": (0.8, 0.8, 0.79), "exposed_dark": (0.035, 0.035, 0.037),
+               "dark_painted": (0.03, 0.028, 0.026), "timber_slats": (0.45, 0.32, 0.2)}
+#: set by the activity pass from the plan's style kit (non-home 20: a white ceiling over a dark moody café broke the style)
+CEILING = {"kind": "plaster_white"}
+
+
 def white_ceilings(stats):
-    m = bpy.data.materials.get("ir_ceiling_plaster")
+    kind = CEILING.get("kind", "plaster_white")
+    m = bpy.data.materials.get(f"ir_ceiling_{kind}")
     if m is None:
-        m = bpy.data.materials.new("ir_ceiling_plaster"); m.use_nodes = True
+        m = bpy.data.materials.new(f"ir_ceiling_{kind}"); m.use_nodes = True
         b = m.node_tree.nodes["Principled BSDF"]
-        b.inputs["Base Color"].default_value = (0.78, 0.77, 0.74, 1); b.inputs["Roughness"].default_value = 0.92
+        b.inputs["Base Color"].default_value = (*CEILING_KIT.get(kind, CEILING_KIT["plaster_white"]), 1); b.inputs["Roughness"].default_value = 0.92
     for o in bpy.data.objects:
         if o.type == "MESH" and o.name.endswith(".ceiling"):
             for s in o.material_slots:
@@ -323,7 +330,8 @@ def bedroom_set(room, everything, obstacles, rng, stats, rugzones):
 
 HANGING = ("WallArtFactory", "MirrorFactory", "CeilingLightFactory", "CeilingClassicLampFactory", "AboCeilingFixtureFactory",
            "CeilingBeamFactory", "SoffitFactory", "DuctFactory", "PipeFactory", "TrackRailFactory", "TrackSpotFactory", "AcCassetteFactory",
-           "SprinklerFactory", "CeilingGridFactory", "LinearLedFactory", "DiffuserFactory", "SmokeDetectorFactory", "LinearPendantFactory")
+           "SprinklerFactory", "CeilingGridFactory", "LinearLedFactory", "DiffuserFactory", "SmokeDetectorFactory", "LinearPendantFactory",
+           "RoofDeckFactory", "RoofGirderFactory", "HighBayCordFactory", "HighBayLampFactory")   # warehouse roof (whC r2: the deck blocked the floor)
 
 
 def obstacles(everything):

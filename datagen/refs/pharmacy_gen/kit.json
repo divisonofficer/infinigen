@@ -1,0 +1,107 @@
+{
+ "brief": "A bright, daylit pharmacy with a long white dispensing counter with a green base band and LED underglow across the back, fronted by a full-height white backbar of medicine shelving. Free-standing white gondolas with green plinths and glass-edged shelves of boxed and bottled products run down the open pale floor, with wall gondolas on both side walls. A waiting zone of green upholstered bench seats sits in the left corner beside a tall window and a framed leaf print. Potted and hanging plants soften the clinical white, and recessed LED panels light the whole room evenly. Surfaces carry computer monitors, small plants and product displays.",
+ "wall": "paint",
+ "floor": "concrete",
+ "counter_front": "white_panel",
+ "counter_top": "white_stone",
+ "backbar": "oak_slat",
+ "fixture": "flush",
+ "must_have": [
+  {
+   "category": "gondola",
+   "count": 3,
+   "where": "free-standing white and green aisle units down the centre-left of the floor"
+  },
+  {
+   "category": "wall_gondola",
+   "count": 6,
+   "where": "along the left and right side walls"
+  },
+  {
+   "category": "backbar_shelf",
+   "count": 1,
+   "where": "full-width medicine shelving behind the dispensing counter"
+  },
+  {
+   "category": "reception_desk",
+   "count": 1,
+   "where": "long dispensing counter across the back"
+  },
+  {
+   "category": "waiting_bench",
+   "count": 1,
+   "where": "left side by the window, a row of four green seats"
+  },
+  {
+   "category": "floor_plant",
+   "count": 2,
+   "where": "by the window and the waiting area"
+  }
+ ],
+ "concept": "A clean, clinical-fresh pharmacy where white surfaces, apple-green accents, even daylight-white LED light and plants signal trust, health and ease of navigation.",
+ "relations": [
+  "White panels + pale speckled floor + 4000K flush LED panels + window daylight = shadowless, hygienic, high-visibility retail",
+  "Apple-green accent bands on counter base, gondola plinths and seating tie the zones together and act as brand colour",
+  "Dense colourful product packaging is the only colour on neutral white shelving, so the products become the decor",
+  "Low gondolas keep sightlines open to the dispensing counter, while the waiting bench sits apart by the window",
+  "Plants and a leaf print soften the clinical grid and reinforce the green wellness concept"
+ ],
+ "architecture": {
+  "ceiling": "plaster_white",
+  "ducts_visible": false,
+  "feature_wall": "paint_light",
+  "other_walls": "paint_light"
+ },
+ "lighting": {
+  "color_temp_k": 4000,
+  "ambient": "high",
+  "daylight": "medium",
+  "key_fixture": "linear",
+  "accents": [
+   "backbar_strip"
+  ]
+ },
+ "density": {
+  "seats_per_10m2": 1.5,
+  "props_per_table": 2,
+  "plants": 5
+ },
+ "mood": "bright_daylight",
+ "floor_tone": "pale",
+ "floor_srgb": [
+  0.84,
+  0.85,
+  0.84
+ ],
+ "wall_srgb": [
+  0.95,
+  0.96,
+  0.94
+ ],
+ "table_top": "white_stone",
+ "chair_style": "upholstered",
+ "decor": [
+  "potted_plants",
+  "hanging_plants",
+  "framed_art"
+ ],
+ "metal_finish": "chrome",
+ "not_reproducible": "Actual medicine boxes and brand packaging, staff and customers, computer screens and POS hardware, the view of trees outside the window, ceiling air vents and signage.",
+ "wall_rgb": [
+  0.89,
+  0.9114,
+  0.8689
+ ],
+ "floor_rgb": [
+  0.6739,
+  0.6921,
+  0.6739
+ ],
+ "reference_ids": [
+  "2e0843b15c31079e"
+ ],
+ "venue": "pharmacy",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/pharmacy_gen/view1.png"
+ ]
+}

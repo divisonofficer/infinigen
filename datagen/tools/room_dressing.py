@@ -261,19 +261,22 @@ def close_exterior_doors(stats):
             # rotation z = 0 is not always shut: some leaves carry the swing in their mesh (office r2 2026-10-16: 'closed' leaves
             # rendered half open). Search the z rotation that lays the leaf flat in the opening: thinnest across the wall normal,
             # centred on the opening.
-            # Vertices, not bound_box (the leaf can be diagonal in its own frame), 10-90 percentiles (loose joint-marker vertices
-            # sit 1 m off the panel). Measured on 47308102: the panel is thin along local x, so rotation 0 stands it 90 deg open.
-            vs = [v.co.copy() for v in o.data.vertices] if o.type == "MESH" else []
+            # Area-weighted face centres: the panel dominates the area, so the closed pose has the smallest spread across the wall
+            # normal. Vertex percentiles (the previous measure) were swayed by dense handle/hinge meshes and shut a LiteDoor at -30
+            # deg, 60 deg open (clinic r5, 2026-10-16); the along term picks the one of the two flat poses that sits in the opening.
+            fs = [(p.center.copy(), p.area) for p in o.data.polygons] if o.type == "MESH" else []
+            fs = fs or [(Vector(q), 1.0) for q in o.bound_box]
+            A = sum(a for _, a in fs) or 1.0
             t = Vector((-n.y, n.x, 0))
             def cost(rz):
                 o.rotation_euler[2] = rz
                 bpy.context.view_layer.update()
                 M = o.matrix_world
-                pts = [M @ v for v in vs] or [M @ Vector(q) for q in o.bound_box]
-                across = sorted((p - c).dot(n) for p in pts)
-                along = sorted((p - c).dot(t) for p in pts)
-                k = len(pts) // 10
-                return (across[-1 - k] - across[k]) + abs(along[len(along) // 2])
+                w = [((M @ q - c).dot(n), (M @ q - c).dot(t), a) for q, a in fs]
+                mn = sum(x * a for x, _, a in w) / A
+                sd = (sum(a * (x - mn) ** 2 for x, _, a in w) / A) ** 0.5
+                return sd + 0.1 * abs(sum(y * a for _, y, a in w) / A)
+            o.rotation_mode = "XYZ"
             o.rotation_euler[2] = min((math.radians(d) for d in range(-180, 180, 2)), key=cost)
             closed += 1
     bpy.context.view_layer.update()

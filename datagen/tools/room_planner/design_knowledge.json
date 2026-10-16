@@ -335,6 +335,87 @@
    "status": "proposed",
    "rule": "Office archetypes recolour every door leaf to one neutral finish and every casing and window frame to brushed aluminium.",
    "evidence": "2026-10-16 office r6 (loop_office_r6.jpg): open 7-8, high-rise 5-9, meeting 7, private 5-7, pantry 6-7; maroon doors, green frames and wood window frames read as residential"
+  },
+  {
+   "id": "style-kit-not-palette",
+   "rooms": [
+    "cafe",
+    "*"
+   ],
+   "applied_to": "reference+generator",
+   "status": "validated",
+   "rule": "A reference is read into ONE style kit: architecture (ceiling, feature and other walls), lighting (colour temperature, ambient, daylight, accents), materials, furniture family, density and decor, with the relations between them written out. Every pass reads the same kit. Attributes the kit does not set may not fall back to break-room defaults.",
+   "evidence": "floral_moody ablation 2026-10-16, fixed layout and cameras, VLM coherence s0 2 / s1 2 / s2 4 / s3 6, control 1; brightness W1_L 46 / 33 / 5 / 5"
+  },
+  {
+   "id": "lighting-dominates-style",
+   "rooms": [
+    "cafe",
+    "*"
+   ],
+   "applied_to": "generator",
+   "status": "validated",
+   "rule": "Lighting (daylight level, ambient, colour temperature, accents) is the largest single lever on style fidelity. Surfaces alone (dark ceiling, wood walls) barely move it. Apply lighting together with surfaces.",
+   "evidence": "floral_moody ablation: lighting axis 1 -> 6 and space_type 4 -> 6 at s2; surfaces-only s1 left lighting at 1 and coherence at 2"
+  },
+  {
+   "id": "size-runs-from-free-stretch",
+   "rooms": [
+    "break-room",
+    "*"
+   ],
+   "applied_to": "generator",
+   "status": "proposed",
+   "rule": "Size and site a built-in wall run (pantry, counter, cabinet run) from the longest door- and window-free stretch, not from the longest wall. A run fixed to a wall that holds the door is placed nowhere, and the room ends up empty.",
+   "evidence": "pantry r11: the longest wall of officeM held the door, the 4.2 m run was pinned to it, 0 placed, critic 1-6 (r10 was 6-8)"
+  },
+  {
+   "id": "stock-needs-solid-decks",
+   "rooms": [
+    "warehouse",
+    "garage",
+    "pharmacy",
+    "*"
+   ],
+   "applied_to": "generator",
+   "status": "proposed",
+   "rule": "Anything that should look stocked needs solid shelf decks the stocker can find. Wire or open shelving from asset pools yields 0 stocked items, so procedural racks with decks are used, filled unevenly (some levels half empty).",
+   "evidence": "warehouse r1: 0 items on 9 ABO racks (load/stock 2/10), 14 per deck on the Infinigen LargeShelf; pharmacy r2 back shelf bare"
+  },
+  {
+   "id": "hero-piece-contrast",
+   "rooms": [
+    "exam-room",
+    "physio-room",
+    "dental-room",
+    "*"
+   ],
+   "applied_to": "generator",
+   "status": "proposed",
+   "rule": "The room's hero piece must contrast with its surroundings. A white exam couch in a white clinic reads as 'no couch'; give it a coloured pad (teal/navy/black). A curtain that hides it, or one modelled as parallel slabs, also removes it from the reading.",
+   "evidence": "clinic r5: exam 5/10 'no exam couch' although one was placed (pale pad); physio 'gym, no beds'; curtains read as folding screens"
+  },
+  {
+   "id": "kit-fallbacks-stay-in-family",
+   "rooms": [
+    "cafe",
+    "*"
+   ],
+   "applied_to": "generator",
+   "status": "proposed",
+   "rule": "When a style-kit field takes a catch-all value ('mixed'), map it to a mix inside the venue's family (bistro chairs), never to the generic asset pool. The generic pool pulls in office/upholstered pieces that contradict the concept.",
+   "evidence": "kit F industrial/chain: chair_style 'mixed' fell back to ABO grey upholstered chairs; furniture 3/10 in both style evals"
+  },
+  {
+   "id": "kit-counts-are-targets",
+   "rooms": [
+    "cafe",
+    "*"
+   ],
+   "applied_to": "generator",
+   "status": "proposed",
+   "rule": "Kit densities (plants, seats, props per table) are targets the realizer fills to, not hints to the planner. The planner asks for 3-4 plants whatever the reference shows.",
+   "evidence": "kit F: kits asked 9-14 plants, renders had 1-3; decor 3-5/10 in all four style evals"
   }
  ]
 }

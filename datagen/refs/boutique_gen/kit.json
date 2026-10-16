@@ -1,0 +1,120 @@
+{
+ "brief": "A long, narrow boutique seen from the entrance. Black-steel and wood wall rails with hanging garments in earthy tones (rust, olive, cream, navy, florals) run along both side walls, with shelves above holding bowls, art and trailing plants. Two low two-tier wood-and-black-steel display tables with folded knits stand on a jute rug in the middle of the floor, topped with a ceramic vase of eucalyptus and a tray with mugs. At the back, a taupe linen curtain closes off the fitting room on a small platform, with a bench and olive trees beside it. On the right, a slatted walnut cash counter with a dark stone top sits under a black dome pendant. Warm 2700K track spots wash the cream walls, and the mood is cosy, calm and curated.",
+ "concept": "A warm, natural-material boutique that ties honey-toned oak floors, black steel frames, cream walls and warm track light together with earthy linen clothing and green plants.",
+ "wall": "paint",
+ "wall_srgb": [
+  0.93,
+  0.87,
+  0.77
+ ],
+ "floor": "wood",
+ "floor_tone": "medium",
+ "floor_srgb": [
+  0.66,
+  0.46,
+  0.27
+ ],
+ "counter_front": "walnut_slat",
+ "counter_top": "black_stone",
+ "backbar": "walnut_slat",
+ "fixture": "pendant",
+ "table_top": "light_wood",
+ "chair_style": "light_wood",
+ "metal_finish": "black",
+ "mood": "warm_evening",
+ "decor": [
+  "potted_plants",
+  "rugs",
+  "framed_art",
+  "flowers"
+ ],
+ "architecture": {
+  "ceiling": "plaster_white",
+  "ducts_visible": false,
+  "feature_wall": "paint_light",
+  "other_walls": "paint_light"
+ },
+ "lighting": {
+  "color_temp_k": 2700,
+  "ambient": "medium",
+  "daylight": "low",
+  "key_fixture": "track_spots",
+  "accents": [
+   "backbar_strip"
+  ]
+ },
+ "density": {
+  "seats_per_10m2": 1,
+  "props_per_table": 4,
+  "plants": 7
+ },
+ "must_have": [
+  {
+   "category": "clothing_rack",
+   "count": 6,
+   "where": "along both side walls, wall-mounted black steel rails with wood shelves above"
+  },
+  {
+   "category": "display_table",
+   "count": 2,
+   "where": "centre of the floor on the jute rug, two-tier wood and black steel with folded knitwear"
+  },
+  {
+   "category": "counter",
+   "count": 1,
+   "where": "right rear, slatted walnut front with dark top, under the pendant"
+  },
+  {
+   "category": "fitting_room",
+   "count": 1,
+   "where": "back wall, taupe linen curtain on a black rod over a low platform"
+  },
+  {
+   "category": "mirror",
+   "count": 1,
+   "where": "left, arched black-framed floor mirror leaning against the pillar"
+  },
+  {
+   "category": "rug",
+   "count": 2,
+   "where": "jute runner under the display tables and a smaller one near the fitting room"
+  },
+  {
+   "category": "floor_plant",
+   "count": 3,
+   "where": "potted olive trees near the pillar and by the fitting room"
+  },
+  {
+   "category": "wall_gondola",
+   "count": 2,
+   "where": "back right, black steel open shelving with stacked folded knits"
+  }
+ ],
+ "relations": [
+  "Honey oak floor + walnut counter + wood table tops + cream walls under 2700K light = a warm, cohesive, inviting palette.",
+  "Black steel frames on racks, tables, mirror, track and pendant give graphic contrast and unify the wood and fabric.",
+  "Track spots aimed at the walls and the garments highlight the product, while low daylight keeps the evening glow.",
+  "Earthy rust, olive, cream and navy clothing + jute rugs + green plants reinforce the natural, calm mood.",
+  "Sparse seating and wide aisles with products at the edges and centre give a spacious, curated retail flow."
+ ],
+ "not_reproducible": "The folded and hanging garments in specific patterns, the ceramics and mugs, the books, the framed artwork content, the register screen, the shoes and baskets, and the street seen through the entrance door.",
+ "wall_rgb": [
+  0.8481,
+  0.7293,
+  0.5542
+ ],
+ "floor_rgb": [
+  0.3931,
+  0.1789,
+  0.0593
+ ],
+ "reference_ids": [
+  "c613f19d7ac75b84",
+  "77f5f4c6cbbec91e"
+ ],
+ "venue": "boutique",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/boutique_gen/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/boutique_gen/view2.png"
+ ]
+}

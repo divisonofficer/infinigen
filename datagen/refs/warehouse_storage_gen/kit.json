@@ -1,0 +1,113 @@
+{
+ "brief": "A deep, high-bay warehouse organised as two long racking aisles running toward a concrete end wall. Tall blue-and-orange pallet racking lines both sides, loaded with cardboard cartons, grey plastic totes and shrink-wrapped pallets. A central aisle with worn yellow dashed lane markings stays clear, with floor-stacked pallets of boxes at the edges. At the far end a steel workbench and a smaller shelving bay form a packing/work zone. A tall aluminium ladder leans on the left racking, a black drum fan sits near the foreground, and a hand truck stands by the right racking. Light is cool-neutral and even from industrial high-bay pendants and small skylights, over exposed dark steel trusses and ducting. The mood is utilitarian, busy and orderly.",
+ "wall": "concrete",
+ "floor": "concrete",
+ "counter_front": "concrete",
+ "counter_top": "steel",
+ "backbar": "matte_black",
+ "fixture": "pendant",
+ "must_have": [
+  {
+   "category": "storage_rack",
+   "count": 12,
+   "where": "two long rows of tall blue/orange pallet racking flanking the central aisle"
+  },
+  {
+   "category": "pallet",
+   "count": 14,
+   "where": "on rack beams and stacked on the floor along the aisle edges"
+  },
+  {
+   "category": "box_pile",
+   "count": 10,
+   "where": "floor-level stacks of cartons and shrink-wrapped pallets beside the aisle"
+  },
+  {
+   "category": "ladder",
+   "count": 1,
+   "where": "leaning on left racking"
+  },
+  {
+   "category": "fan",
+   "count": 1,
+   "where": "foreground left, pedestal drum fan"
+  },
+  {
+   "category": "utility_cart",
+   "count": 1,
+   "where": "right foreground, blue hand truck"
+  },
+  {
+   "category": "workbench",
+   "count": 1,
+   "where": "far end of aisle in front of end shelving"
+  },
+  {
+   "category": "wide_shelf",
+   "count": 1,
+   "where": "end wall, small shelving bay with parts and boxes"
+  }
+ ],
+ "concept": "A working logistics warehouse where tall colour-coded steel racking, bare concrete and exposed trusses under cool even high-bay light make a functional, load-bearing space with a clear central aisle.",
+ "relations": [
+  "Tall blue/orange racking on both sides creates a corridor that draws the eye to the workbench at the far end wall.",
+  "Cool-neutral high-bay pendants plus skylights give even light, which suits the grey concrete floor and wall and the cardboard-brown cargo.",
+  "Yellow floor markings and yellow rack guards keep the aisle clear, while pallets and boxes sit at the edges as dense storage.",
+  "Exposed dark trusses and ducts raise the ceiling and make the racking feel taller.",
+  "Ladder, hand truck and fan are the working tools that show people use the racking."
+ ],
+ "architecture": {
+  "ceiling": "exposed_dark",
+  "ducts_visible": true,
+  "feature_wall": "concrete",
+  "other_walls": "concrete"
+ },
+ "lighting": {
+  "color_temp_k": 4800,
+  "ambient": "medium",
+  "daylight": "low",
+  "key_fixture": "pendant_row",
+  "accents": []
+ },
+ "density": {
+  "seats_per_10m2": 1,
+  "props_per_table": 3,
+  "plants": 0
+ },
+ "mood": "bright_daylight",
+ "floor_tone": "medium",
+ "floor_srgb": [
+  0.55,
+  0.55,
+  0.53
+ ],
+ "wall_srgb": [
+  0.5,
+  0.5,
+  0.5
+ ],
+ "table_top": "dark_wood",
+ "chair_style": "metal_bistro",
+ "decor": [],
+ "metal_finish": "black",
+ "not_reproducible": "Workers, forklifts, the exact carton labels and contents, shrink wrap transparency, floor stains and wear, the skylight glow, the monitor on the far wall and the small parts at the end shelving.",
+ "wall_rgb": [
+  0.214,
+  0.214,
+  0.214
+ ],
+ "floor_rgb": [
+  0.2633,
+  0.2633,
+  0.2429
+ ],
+ "reference_ids": [
+  "5b9fec80cbc3eeb9",
+  "1638b019ea3a661b"
+ ],
+ "venue": "warehouse",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/warehouse_storage_gen/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/warehouse_storage_gen/view2.png"
+ ]
+}

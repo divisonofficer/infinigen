@@ -1,0 +1,130 @@
+{
+ "brief": "A long, narrow Parisian-style café. A street-front window band on the left carries a timber window bar with round-seat stools, candles and flower jars. Behind it, a central aisle with an oriental runner rug leads past round bentwood-chair tables to a back wall of dark wood panelling with a framed floral oil painting and sconces. The right side is a long black panelled counter with a black marble top, a glass pastry case, grinders and an espresso machine. Behind the counter sit dark shelves with coffee bags, bottles, cups and a big blank chalkboard menu. The mood is intimate, warm and candle-lit at dusk. A crystal chandelier, small pendants and track spots glow over tables that hold tea-light candles, flower bouquets, cups, pastries and a notebook. Potted olive trees and large bouquets soften the dark joinery.",
+ "wall": "wood_panel",
+ "floor": "wood",
+ "counter_front": "matte_black",
+ "counter_top": "black_stone",
+ "backbar": "matte_black",
+ "fixture": "chandelier",
+ "must_have": [
+  {
+   "category": "cafe_table",
+   "count": 8,
+   "where": "round dark-wood tables along the aisle and window, each with candle and flowers"
+  },
+  {
+   "category": "cafe_chair",
+   "count": 16,
+   "where": "bentwood chairs around the round tables"
+  },
+  {
+   "category": "window_bar",
+   "count": 1,
+   "where": "timber ledge along the street windows"
+  },
+  {
+   "category": "bar_stool",
+   "count": 4,
+   "where": "round wooden stools at the window bar"
+  },
+  {
+   "category": "coffee_bar",
+   "count": 1,
+   "where": "espresso machine and two grinders on the counter"
+  },
+  {
+   "category": "menu_board",
+   "count": 1,
+   "where": "large framed blank chalkboard above the backbar"
+  },
+  {
+   "category": "floor_plant",
+   "count": 4,
+   "where": "potted olive trees by the window and the aisle"
+  }
+ ],
+ "concept": "A candle-lit, dark-panelled Parisian café in which black joinery, dark wood and a marble counter are lifted by a crystal chandelier, flickering tea lights, lush florals and worn antique textures.",
+ "relations": [
+  "dark stained wood panelling + black counter + low warm ~2300K light = enclosed, intimate evening mood",
+  "many small light sources (candles, sconces, pendants, table lamp) + one glowing chandelier compensate for low ambient light and make the dark surfaces glossy",
+  "bentwood chairs + round pedestal tables + oriental runner rugs = traditional brasserie furniture family that matches the panelling",
+  "black marble top and glass pastry case on a black panelled counter = focal point, lit by the chandelier and candles",
+  "flowers and olive trees give the only colour and green against the dark palette",
+  "dense small tables with 3-5 props each (candle, vase, cup, plate) add to the cosy, layered feel",
+  "brass hardware and chandelier metal tie into the warm light"
+ ],
+ "architecture": {
+  "ceiling": "dark_painted",
+  "feature_wall": "wood_panel",
+  "other_walls": "wood_panel",
+  "ducts_visible": false
+ },
+ "lighting": {
+  "color_temp_k": 2300,
+  "ambient": "low",
+  "daylight": "low",
+  "key_fixture": "mixed",
+  "accents": [
+   "wall_sconces",
+   "candles",
+   "table_lamps",
+   "backbar_strip"
+  ]
+ },
+ "density": {
+  "seats_per_10m2": 6,
+  "props_per_table": 4,
+  "plants": 10
+ },
+ "mood": "dark_moody",
+ "floor_tone": "dark",
+ "floor_srgb": [
+  0.16,
+  0.1,
+  0.07
+ ],
+ "wall_srgb": [
+  0.12,
+  0.08,
+  0.05
+ ],
+ "table_top": "dark_wood",
+ "chair_style": "bentwood",
+ "decor": [
+  "flowers",
+  "candles",
+  "potted_plants",
+  "rugs",
+  "framed_art"
+ ],
+ "metal_finish": "brass",
+ "not_reproducible": "People, the Parisian street and buildings outside, the crystal chandelier's detail, real pastries and food, the oil painting's content, the espresso machine and grinders' detail, the antique patina on the wood.",
+ "wall_rgb": [
+  0.0134,
+  0.0072,
+  0.0039
+ ],
+ "floor_rgb": [
+  0.022,
+  0.01,
+  0.006
+ ],
+ "reference_ids": [
+  "1d8e4dd1bf57ec31",
+  "051cfad87a88e4cb",
+  "60183fd4333b0321"
+ ],
+ "venue": "cafe",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/floral_moody/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/floral_moody/view2.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/floral_moody/view3.png"
+ ],
+ "table_extra": [
+  [
+   "vase",
+   4
+  ]
+ ],
+ "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/floral_moody/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact."
+}

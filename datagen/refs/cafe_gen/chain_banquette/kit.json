@@ -1,0 +1,141 @@
+{
+ "brief": "A narrow, light-filled corner cafe. The left long wall is clad in honey-toned horizontal wood planks, with a continuous tan leather banquette running along it and a row of small square two-top tables with black steel pedestal bases. The right wall is a glazed storefront with black mullions and a glass door, with a timber window-bar ledge and three wooden-seat bar stools. The back wall holds a brick-fronted counter with a pale concrete top, a chrome espresso machine, two grinders and a lit pastry case. Behind it, a black chalkboard menu sits between two open shelves with jars, cups and plants, lit by a warm backbar strip. The centre is open polished concrete floor with round tables and mustard velvet chairs. Track spots and black dome pendants give a warm golden glow. Plants trail and stand everywhere. Surfaces hold coffee cups, croissants, small glass bud vases and notebooks.",
+ "wall": "paint",
+ "wall_srgb": [
+  0.93,
+  0.88,
+  0.78
+ ],
+ "floor": "concrete",
+ "floor_srgb": [
+  0.6,
+  0.57,
+  0.52
+ ],
+ "floor_tone": "medium",
+ "counter_front": "brick_red",
+ "counter_top": "steel",
+ "backbar": "oak_slat",
+ "fixture": "pendant",
+ "table_top": "light_wood",
+ "chair_style": "mixed",
+ "decor": [
+  "hanging_plants",
+  "potted_plants",
+  "framed_art",
+  "flowers"
+ ],
+ "metal_finish": "black",
+ "mood": "warm_evening",
+ "concept": "A sunlit industrial-warm cafe where honey wood, red brick and tan leather soften raw concrete and exposed ducts, and green plants, golden light and mustard chairs make it welcoming.",
+ "architecture": {
+  "ceiling": "exposed_white",
+  "ducts_visible": true,
+  "feature_wall": "wood_panel",
+  "other_walls": "paint_light"
+ },
+ "lighting": {
+  "color_temp_k": 2700,
+  "ambient": "medium",
+  "daylight": "high",
+  "key_fixture": "mixed",
+  "accents": [
+   "backbar_strip"
+  ]
+ },
+ "density": {
+  "seats_per_10m2": 5,
+  "props_per_table": 3,
+  "plants": 14
+ },
+ "must_have": [
+  {
+   "category": "coffee_bar",
+   "count": 1,
+   "where": "on the counter: espresso machine and two grinders"
+  },
+  {
+   "category": "menu_board",
+   "count": 1,
+   "where": "black chalkboard above the counter"
+  },
+  {
+   "category": "banquette_row",
+   "count": 1,
+   "where": "along the wood-clad left wall, tan leather with cushions"
+  },
+  {
+   "category": "cafe_table",
+   "count": 9,
+   "where": "4 to 5 square two-tops along the banquette, 3 to 4 round tables in the centre and by the window"
+  },
+  {
+   "category": "cafe_chair",
+   "count": 10,
+   "where": "black metal bistro chairs at banquette tables, mustard upholstered chairs at round tables"
+  },
+  {
+   "category": "window_bar",
+   "count": 1,
+   "where": "timber ledge along the glazed right wall"
+  },
+  {
+   "category": "bar_stool",
+   "count": 3,
+   "where": "at the window bar, wood seats on black frames"
+  },
+  {
+   "category": "floor_plant",
+   "count": 4,
+   "where": "by the wood wall, window corners and entrance"
+  }
+ ],
+ "relations": [
+  "Honey wood wall + tan leather banquette + red brick counter + 2700K light = warm, earthy palette that glows in the evening",
+  "Raw concrete floor and exposed white ducts with black steel (tables, chairs, pendants, track, window frames) keep it industrial and give contrast to the warm wood",
+  "Large glazed storefront + hanging and potted plants = daylight and greenery in one zone, with the window bar and round tables closest to the glass",
+  "Linear banquette with small two-tops along one wall leaves the centre open, so the counter stays visible and the walkway clear",
+  "Mustard velvet chairs repeat in cushions and the yellow flowers, so the accent colour links the zones",
+  "Black chalkboard + warm backbar strip + track spots make the counter the focal point at the back"
+ ],
+ "not_reproducible": "People, the street view and trees outside, coffee beans, pastries and food, cups and cushion patterns, framed landscape photographs, the contents of the jars, the cash register, glass cloches and the chalkboard writing.",
+ "wall_rgb": [
+  0.8481,
+  0.7484,
+  0.5705
+ ],
+ "floor_rgb": [
+  0.3185,
+  0.2846,
+  0.233
+ ],
+ "reference_ids": [
+  "32e32579d1f8e569",
+  "a9f330462cd8cea2",
+  "410dec1d3912dc83"
+ ],
+ "venue": "cafe",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/chain_banquette/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/chain_banquette/view2.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/chain_banquette/view3.png"
+ ],
+ "require": [
+  {
+   "id": "req_banquette",
+   "category": "banquette_row",
+   "relation": "against_wall"
+  }
+ ],
+ "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/chain_banquette/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact.",
+ "upholstery_srgb": [
+  0.72,
+  0.4,
+  0.17
+ ],
+ "upholstery_rgb": [
+  0.477,
+  0.1329,
+  0.0245
+ ]
+}

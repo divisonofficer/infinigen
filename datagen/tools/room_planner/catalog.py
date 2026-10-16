@@ -27,14 +27,14 @@ FURNITURE = {
     "rug":            {"src": "abo:rug",         "size": [2.0, 1.4, 0.01], "rooms": ["living-room", "bedroom", "dining-room", "boutique"]},
     "floor_plant":    {"src": "inf:LargePlantContainerFactory", "size": [0.5, 0.5, 1.1], "rooms": ["living-room", "bedroom", "dining-room", "office", "open-office", "meeting-room", "cafe", "grocery", "clinic-reception", "physio-room", "boutique", "pharmacy"]},
     # workplaces: warehouse / garage / utility
-    "storage_rack":   {"src": "abo:rack",        "size": [1.2, 0.6, 1.8], "rooms": ["warehouse", "garage", "utility"]},
+    "storage_rack":   {"src": "proc:StorageRackFactory", "size": [2.1, 0.7, 2.3], "rooms": ["warehouse", "garage", "utility"]},
     "wide_shelf":     {"src": "inf:LargeShelfFactory", "size": [1.6, 0.5, 2.0], "rooms": ["warehouse", "garage"]},
     "pallet":         {"src": "proc:PalletFactory", "size": [1.2, 0.8, 0.14], "rooms": ["warehouse"]},
     "box_pile":       {"src": "proc:BoxPileFactory", "size": [1.2, 0.8, 0.9], "rooms": ["warehouse", "garage", "grocery"]},
-    "workbench":      {"src": "inf:SimpleDeskFactory", "size": [1.4, 0.7, 0.8], "rooms": ["warehouse", "garage"]},
+    "workbench":      {"src": "proc:WorkbenchFactory", "size": [1.8, 0.75, 0.9], "rooms": ["warehouse", "garage"]},
     "ladder":         {"src": "abo:ladder",      "size": [0.5, 0.7, 1.5], "rooms": ["warehouse", "garage", "utility"]},
-    "stool":          {"src": "abo:stool",       "size": [0.4, 0.4, 0.6], "rooms": ["warehouse", "garage"]},
-    "utility_cart":   {"src": "abo:cart",        "size": [0.9, 0.5, 0.9], "rooms": ["warehouse", "grocery"]},
+    "stool":          {"src": "proc:ShopStoolFactory", "size": [0.35, 0.35, 0.7], "rooms": ["warehouse", "garage"]},
+    "utility_cart":   {"src": "proc:PlatformCartFactory", "size": [0.95, 0.6, 1.0], "rooms": ["warehouse", "grocery"]},
     "fan":            {"src": "abo:fan",         "size": [0.4, 0.3, 1.0], "rooms": ["warehouse", "garage"]},
     # offices
     "meeting_table":  {"src": "proc:ConferenceTableFactory",   "size": [2.4, 1.1, 0.75], "rooms": ["meeting-room", "office"]},   # open office: inside glass_meeting_room only (critic r3)
@@ -80,7 +80,7 @@ FURNITURE = {
     "chest_freezer":  {"src": "proc:ChestFreezerFactory", "size": [1.6, 0.8, 0.85], "rooms": ["grocery", "convenience"]},
     "cafe_chair":     {"src": "abo:cafechair",   "size": [0.45, 0.5, 0.85], "rooms": ["cafe", "office", "break-room"]},
     "bar_stool":      {"src": "abo:barstool",    "size": [0.4, 0.4, 0.75], "rooms": ["cafe", "break-room"]},
-    "beverage_fridge": {"src": "inf:BeverageFridgeFactory", "size": [0.6, 0.6, 1.8], "rooms": ["grocery", "cafe", "convenience", "pharmacy"]},
+    "beverage_fridge": {"src": "proc:DisplayCoolerFactory", "size": [0.75, 0.7, 2.0], "rooms": ["grocery", "cafe", "convenience", "pharmacy"]},
 }
 
 #: room types that are workplaces: their planner prompt and vocabulary differ from a home's
@@ -125,6 +125,8 @@ LIVED_IN = {
     "basket":          {"src": "inf:BasketBaseFactory", "on": ["floor", "counter"], "rooms": ["grocery", "convenience", "pharmacy"]},
     "register":        {"src": "proc:RegisterFactory", "on": ["counter"], "rooms": ["grocery", "cafe", "convenience", "boutique", "pharmacy"]},
     # desk clutter (user 2026-10-16: offices looked untouched -- leftover snacks, books, pencils, cups)
+    "bud_vase":        {"src": "proc:BudVaseFactory", "on": ["cafe_table", "counter", "window_bar"], "rooms": ["cafe"]},
+    "flower_arrangement": {"src": "proc:FlowerArrangementFactory", "on": ["counter"], "rooms": ["cafe"]},
     "drink_cans":      {"src": "proc:DrinkCansFactory", "on": ["pantry_run", "break_table", "counter"], "rooms": ["break-room", "convenience"]},
     "snack_basket":    {"src": "proc:SnackBasketFactory", "on": ["pantry_run", "break_table"], "rooms": ["break-room"]},
     "pen_cup":         {"src": "proc:PenCupFactory", "on": ["desk", "office_desk", "meeting_table", "reception_desk"], "rooms": ["office", "open-office", "meeting-room", "clinic-reception", "exam-room", "pharmacy", "dental-room"]},
@@ -132,12 +134,19 @@ LIVED_IN = {
     "snack":           {"src": "proc:SnackFactory", "on": ["desk", "office_desk", "meeting_table", "break_table"], "rooms": ["office", "open-office", "meeting-room", "break-room"]},
     "phone":           {"src": "proc:PhoneFactory", "on": ["desk", "office_desk", "meeting_table", "break_table", "cafe_table", "reception_desk"], "rooms": ["office", "open-office", "meeting-room", "break-room", "cafe", "clinic-reception", "pharmacy", "boutique", "convenience"]},
     "notebook":        {"src": "proc:NotebookFactory", "on": ["desk", "office_desk", "meeting_table", "reception_desk"], "rooms": ["office", "open-office", "meeting-room", "clinic-reception", "exam-room", "dental-room"]},
+    # clinical counter / desk props (clinic r6 critic: 'no glove boxes, sanitizer or trays -- an unfurnished showroom')
+    "glove_box":       {"src": "proc:GloveBoxFactory", "on": ["medical_cabinet", "clinic_desk", "reception_desk"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},
+    "sanitizer":       {"src": "proc:SanitizerFactory", "on": ["medical_cabinet", "clinic_desk", "reception_desk", "counter"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},
+    "paper_towel":     {"src": "proc:PaperTowelFactory", "on": ["medical_cabinet"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},
+    "clipboard":       {"src": "proc:ClipboardFactory", "on": ["medical_cabinet", "clinic_desk", "reception_desk", "exam_table"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},
+    "kidney_tray":     {"src": "proc:KidneyTrayFactory", "on": ["medical_cabinet", "clinic_desk"], "rooms": ["exam-room", "dental-room"]},
     "paper_stack":     {"src": "proc:PaperStackFactory", "on": ["desk", "meeting_table", "filing_cabinet", "reception_desk"], "rooms": ["office", "open-office", "meeting-room", "clinic-reception", "exam-room", "dental-room", "pharmacy"]},
 }
 
 RELATIONS = {
     "against_wall": "back against wall `wall` (a wall id from the room, or 'longest_free'); `facing` defaults to the room",
     "in_front_of": "in front of `target` at `gap_m` (coffee table 0.4-0.5 m before a sofa)",
+    "behind": "on the far side of `target`, facing it (the staff chair behind a reception desk or counter)",
     "beside": "next to `target` on `side` (left|right|both), touching distance",
     "around": "spread around `target` (dining chairs around a table), `count` of them",
     "facing": "turned to face `target` (armchair facing the sofa, sofa facing the TV)",

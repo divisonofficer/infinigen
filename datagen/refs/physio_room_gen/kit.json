@@ -1,0 +1,113 @@
+{
+ "brief": "A bright, open physiotherapy room with a clear central floor. Along the left wall is a row of three height-adjustable treatment couches. Each has a pillow and a folded sage towel, and each bay is divided by sage curtains on ceiling tracks. Pale oak bedside cabinets, small table lamps and framed landscape prints sit between the bays. The large windows on the far wall give soft daylight, and their lower panes are frosted for privacy. In the middle of the floor are parallel walking bars on a pale wood platform. Near the window is an exercise bike. On the right, a wall bar (ribbed ladder) stands next to a steel shelf holding gym balls, a balance trainer, foam blocks, dumbbells and bands, with a blue mat on the floor. Potted green plants soften the clinical white and grey. The mood is calm, clean and reassuring.",
+ "concept": "A calm, daylit clinical-wellness room where white walls, pale grey resilient flooring, sage-and-oak accents and plants soften the equipment, with a clear central floor for movement therapy.",
+ "wall": "paint",
+ "wall_srgb": [
+  0.95,
+  0.94,
+  0.9
+ ],
+ "floor": "concrete",
+ "floor_srgb": [
+  0.74,
+  0.73,
+  0.71
+ ],
+ "floor_tone": "pale",
+ "counter_front": "white_panel",
+ "counter_top": "light_wood",
+ "backbar": "oak_slat",
+ "fixture": "flush",
+ "architecture": {
+  "ceiling": "plaster_white",
+  "ducts_visible": false,
+  "feature_wall": "paint_light",
+  "other_walls": "paint_light"
+ },
+ "lighting": {
+  "color_temp_k": 4000,
+  "ambient": "high",
+  "daylight": "high",
+  "key_fixture": "linear",
+  "accents": [
+   "table_lamps"
+  ]
+ },
+ "density": {
+  "seats_per_10m2": 1.5,
+  "props_per_table": 2,
+  "plants": 8
+ },
+ "mood": "bright_daylight",
+ "table_top": "light_wood",
+ "chair_style": "light_wood",
+ "decor": [
+  "framed_art",
+  "potted_plants"
+ ],
+ "metal_finish": "chrome",
+ "must_have": [
+  {
+   "category": "exam_table",
+   "count": 3,
+   "where": "in a row along the left wall, each bay separated by curtains"
+  },
+  {
+   "category": "privacy_curtain",
+   "count": 3,
+   "where": "sage curtains on ceiling tracks between and beside the couches"
+  },
+  {
+   "category": "parallel_bars",
+   "count": 1,
+   "where": "center of the room on a pale wood platform"
+  },
+  {
+   "category": "exercise_bike",
+   "count": 1,
+   "where": "right side near the window"
+  },
+  {
+   "category": "wall_bars",
+   "count": 1,
+   "where": "right wall, next to the equipment shelf"
+  },
+  {
+   "category": "exercise_set",
+   "count": 1,
+   "where": "shelf on the right wall with gym balls, balance trainer, foam blocks, dumbbells and bands, plus a mat"
+  },
+  {
+   "category": "floor_plant",
+   "count": 4,
+   "where": "beside the windows and along the far wall"
+  }
+ ],
+ "relations": [
+  "Pale grey seamless flooring + white walls + high-CRI neutral 4000K ceiling panels + big windows = bright, hygienic and reassuring",
+  "Sage curtains and couch upholstery + pale oak cabinets and platform + green plants soften the clinical equipment and make it feel warm",
+  "Low equipment density with a clear central floor = space for walking, gait training and staff movement",
+  "Treatment couches grouped on one wall behind curtains for privacy, with active equipment on the opposite side and the center left open",
+  "Small warm table lamps and framed landscape art add a calm, domestic note to the cool overhead light"
+ ],
+ "not_reproducible": "People (patients, therapists), the view of trees outside, the pillows, towels and small bottles, the sink and dispensers, and the print images on the frames.",
+ "wall_rgb": [
+  0.89,
+  0.8689,
+  0.7874
+ ],
+ "floor_rgb": [
+  0.5071,
+  0.4919,
+  0.4624
+ ],
+ "reference_ids": [
+  "055ae10f72ed314e",
+  "321d1bef02aa75e7"
+ ],
+ "venue": "physio-room",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/physio_room_gen/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/physio_room_gen/view2.png"
+ ]
+}

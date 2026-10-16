@@ -1,0 +1,93 @@
+{
+ "brief": "A bright, daylit convenience store with a glazed storefront on the left and a checkout counter just inside the door. The counter has a light oak front and a steel top, and it holds the POS screen, a card terminal and impulse-buy racks. A row of glass-door beverage fridges fills the back wall. Three or four rows of steel gondolas run toward the fridges, with the snack island in the centre of the main aisle. Wall gondolas line the right side with household goods. The floor is large pale-grey tile and the walls are white. Evenly spaced LED panels in a white ceiling give flat, neutral, high-key light. A few potted plants sit near the window, and red hand baskets are stacked beside the counter.",
+ "concept": "A clean, bright, neutral-lit utilitarian retail box where light grey tile, white walls and steel shelving let the colourful product be the only decor, and the aisles lead the eye to the cold wall.",
+ "relations": [
+  "Flat neutral 4000K+ LED panel light + white walls + pale grey tile = bright, clean, legible shop where the product packaging supplies all the colour",
+  "Large glazed storefront next to the counter + daylight = the cashier can see the street and the entrance reads as open",
+  "Long parallel gondola rows, aisles about 1.5 m wide and a cold-drink wall at the end = clear sightline and a pull towards the fridges at the back",
+  "Light oak counter front + steel top + black metal shelving = a durable, wipeable, low-maintenance material set",
+  "No seating and few decor items = all floor area goes to product density"
+ ],
+ "wall": "paint",
+ "wall_srgb": [
+  0.93,
+  0.93,
+  0.92
+ ],
+ "floor": "tile",
+ "floor_tone": "pale",
+ "floor_srgb": [
+  0.72,
+  0.72,
+  0.72
+ ],
+ "counter_front": "oak_slat",
+ "counter_top": "steel",
+ "backbar": "oak_slat",
+ "fixture": "flush",
+ "architecture": {
+  "ceiling": "plaster_white",
+  "ducts_visible": false,
+  "feature_wall": "paint_light",
+  "other_walls": "paint_light"
+ },
+ "lighting": {
+  "color_temp_k": 4500,
+  "ambient": "high",
+  "daylight": "high",
+  "key_fixture": "linear",
+  "accents": []
+ },
+ "density": {
+  "seats_per_10m2": 1,
+  "props_per_table": 0,
+  "plants": 2
+ },
+ "mood": "bright_daylight",
+ "table_top": "light_wood",
+ "chair_style": "metal_bistro",
+ "decor": [
+  "potted_plants"
+ ],
+ "metal_finish": "chrome",
+ "must_have": [
+  {
+   "category": "counter",
+   "count": 1,
+   "where": "checkout just inside the glazed entrance, left foreground"
+  },
+  {
+   "category": "beverage_fridge",
+   "count": 9,
+   "where": "back wall, a continuous row of glass-door cold drink units"
+  },
+  {
+   "category": "gondola",
+   "count": 5,
+   "where": "free-standing rows running front to back, with the snack island in the main aisle"
+  },
+  {
+   "category": "wall_gondola",
+   "count": 3,
+   "where": "right wall for household goods, left wall behind the counter for confectionery and sundries"
+  }
+ ],
+ "not_reproducible": "Packaged products with their branding, the POS screen, card terminal and cash-register items, the stacked red baskets, the street and cars outside, the fire alarm, signage and price labels, and people.",
+ "wall_rgb": [
+  0.8481,
+  0.8481,
+  0.8276
+ ],
+ "floor_rgb": [
+  0.477,
+  0.477,
+  0.477
+ ],
+ "reference_ids": [
+  "a96306ee53b778bb"
+ ],
+ "venue": "convenience",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/convenience_store_gen/view1.png"
+ ]
+}

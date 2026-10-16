@@ -1,0 +1,4 @@
+{"brief": "A packing and dispatch area of a small e-commerce warehouse: two or three long packing workbenches in a row with stools, shelving racks of cardboard boxes along the walls, pallets with stacked boxes near the loading door, a utility cart, bright even fluorescent light, concrete floor.",
+ "wall": "concrete", "floor": "concrete", "counter_front": "concrete", "counter_top": "steel", "backbar": "matte_black", "fixture": "flush",
+ "must_have": [{"category": "workbench", "count": 3}, {"category": "storage_rack", "count": 6}, {"category": "pallet", "count": 3}, {"category": "box_pile", "count": 3}, {"category": "utility_cart", "count": 1}, {"category": "stool", "count": 3}],
+ "provenance_note": "hand-written brief (no reference image), non-home 20 campaign 2026-10-16"}

@@ -1,0 +1,109 @@
+{
+ "brief": "A long, high-bay fulfilment warehouse seen down a central concrete aisle. On the left, a continuous run of light-wood-topped packing benches with dark steel frames and lower shelves holds box stacks, bubble wrap bins, a scale, tape dispensers and pen pots. Beside them, tall perforated-steel racking with pale timber shelves is filled with cardboard cartons and clear tubs. On the right, more racking and a rolling utility cart carry paper and tape rolls. At the far end, a grey roller shutter door has shrink-wrapped pallets of cartons and a yellow hand pallet jack in front of it. Round black stools sit along the benches. Light is cool, even and functional, from white linear fluorescent fixtures under exposed steel trusses, with a single potted plant as the only softness.",
+ "concept": "A working pack-and-ship warehouse where pale timber, dark powder-coated steel and cardboard sit on polished concrete under even cool linear light, so every element reads as functional storage and workbench space.",
+ "wall": "paint",
+ "wall_srgb": [
+  0.85,
+  0.83,
+  0.78
+ ],
+ "floor": "concrete",
+ "floor_tone": "medium",
+ "floor_srgb": [
+  0.55,
+  0.54,
+  0.51
+ ],
+ "counter_front": "concrete",
+ "counter_top": "light_wood",
+ "backbar": "oak_slat",
+ "fixture": "flush",
+ "table_top": "butcher_block",
+ "chair_style": "metal_bistro",
+ "decor": [
+  "potted_plants"
+ ],
+ "metal_finish": "black",
+ "mood": "bright_daylight",
+ "architecture": {
+  "ceiling": "exposed_white",
+  "ducts_visible": true,
+  "feature_wall": "shelving",
+  "other_walls": "paint_light"
+ },
+ "lighting": {
+  "color_temp_k": 4500,
+  "ambient": "high",
+  "daylight": "low",
+  "key_fixture": "linear",
+  "accents": []
+ },
+ "density": {
+  "seats_per_10m2": 1.5,
+  "props_per_table": 5,
+  "plants": 1
+ },
+ "must_have": [
+  {
+   "category": "workbench",
+   "count": 4,
+   "where": "continuous run along the left side of the central aisle, with lower shelves holding cartons and bubble wrap"
+  },
+  {
+   "category": "storage_rack",
+   "count": 8,
+   "where": "tall steel racking with timber shelves along both side walls, full of cartons and tubs"
+  },
+  {
+   "category": "stool",
+   "count": 4,
+   "where": "round black swivel stools along the workbenches"
+  },
+  {
+   "category": "box_pile",
+   "count": 6,
+   "where": "on benches, under benches and in open stacks near the far door"
+  },
+  {
+   "category": "pallet",
+   "count": 4,
+   "where": "far end in front of the roller shutter, with shrink-wrapped carton loads"
+  },
+  {
+   "category": "utility_cart",
+   "count": 1,
+   "where": "right side of the aisle, with tape and paper rolls"
+  },
+  {
+   "category": "wide_shelf",
+   "count": 2,
+   "where": "lower shelf under the workbenches"
+  }
+ ],
+ "relations": [
+  "Pale timber bench tops and shelves against dark steel uprights and cardboard make a warm, neutral palette that stays readable under cool white light.",
+  "Polished concrete floor plus a clear central aisle gives forklift and pallet-jack circulation, so furniture sits in rows along the walls and leaves the middle open.",
+  "High ceilings with exposed trusses, pipes and linear fixtures give bright, even, shadowless light, so it feels like a task space rather than a lounge.",
+  "Dense racking and many cartons give the room its visual density, while few seats (stools only) and almost no decor make it function-first."
+ ],
+ "not_reproducible": "People, computer monitors, the specific items on the benches (scale, tape guns, paperwork, pens), the roller shutter door mechanics, wall-mounted electrical boxes and conduit, shrink wrap and bubble wrap detail, branded labels.",
+ "wall_rgb": [
+  0.6921,
+  0.6559,
+  0.5705
+ ],
+ "floor_rgb": [
+  0.2633,
+  0.253,
+  0.2234
+ ],
+ "reference_ids": [
+  "5aef6088baabbe8f",
+  "c984e4ab42fdbf8a"
+ ],
+ "venue": "warehouse",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/warehouse_packing_gen/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/warehouse_packing_gen/view2.png"
+ ]
+}

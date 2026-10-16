@@ -1,0 +1,100 @@
+{
+ "brief": "A bright, daylit clinical exam room. The doctor's desk zone sits on the left under a large window, with a monitor, a mesh task chair and a plant on the desk. A blue guest chair stands in the foreground. The exam table sits against a pale-blue feature wall in the centre, framed by ceiling-track privacy curtains, with a step stool and a wall-mounted otoscope set. A white cabinet run with a sink, a dispenser, a sharps bin and supplies lines the right wall. A steel supply trolley stands by the window. Flat, even, cool-white light comes from recessed ceiling panels and the window. The mood is clean, calm and reassuring.",
+ "wall": "paint",
+ "wall_srgb": [
+  0.93,
+  0.95,
+  0.96
+ ],
+ "floor": "concrete",
+ "floor_tone": "pale",
+ "floor_srgb": [
+  0.76,
+  0.74,
+  0.7
+ ],
+ "counter_front": "white_panel",
+ "counter_top": "white_stone",
+ "backbar": "matte_black",
+ "fixture": "flush",
+ "architecture": {
+  "ceiling": "plaster_white",
+  "ducts_visible": false,
+  "feature_wall": "paint_light",
+  "other_walls": "paint_light"
+ },
+ "lighting": {
+  "color_temp_k": 4500,
+  "ambient": "high",
+  "daylight": "high",
+  "key_fixture": "linear",
+  "accents": []
+ },
+ "density": {
+  "seats_per_10m2": 2,
+  "props_per_table": 3,
+  "plants": 2
+ },
+ "mood": "bright_daylight",
+ "table_top": "white_stone",
+ "chair_style": "upholstered",
+ "decor": [
+  "potted_plants"
+ ],
+ "metal_finish": "chrome",
+ "concept": "A hygienic, daylit clinical room where white casework, a pale-blue accent wall and curtains, wipeable grey flooring and even cool light read as calm and sterile.",
+ "relations": [
+  "Pale-blue feature wall + matching blue curtains + blue vinyl upholstery tie the exam zone together and soften the clinical white.",
+  "White laminate casework + chrome fittings + seamless pale grey floor = wipeable, hygienic surfaces with no warm or decorative materials.",
+  "Large window daylight + recessed flush ceiling panels at neutral-cool 4500K = even, shadowless light for examination.",
+  "The desk zone sits by the window and the exam table by the accent wall, separated by the ceiling-track privacy curtain, so the room splits into consult and exam areas.",
+  "Sparse furniture with open floor and only two small plants keeps the room uncluttered and easy to clean."
+ ],
+ "must_have": [
+  {
+   "category": "exam_table",
+   "count": 1,
+   "where": "centre, against the blue accent wall"
+  },
+  {
+   "category": "privacy_curtain",
+   "count": 2,
+   "where": "on the ceiling track around the exam table"
+  },
+  {
+   "category": "clinic_desk",
+   "count": 1,
+   "where": "left, near the window"
+  },
+  {
+   "category": "desk_chair",
+   "count": 2,
+   "where": "one task chair behind the desk, one guest chair in front"
+  },
+  {
+   "category": "medical_cabinet",
+   "count": 2,
+   "where": "right wall: wall cabinets plus base cabinets with sink; steel supply trolley by the window"
+  }
+ ],
+ "not_reproducible": "The view outside the window (trees and a building), the computer monitor and keyboard, wall-mounted diagnostic instruments, the hand-hygiene dispensers, the sharps bin, the supplies on the trolley and the sink tap.",
+ "wall_rgb": [
+  0.8481,
+  0.89,
+  0.9114
+ ],
+ "floor_rgb": [
+  0.5382,
+  0.5071,
+  0.448
+ ],
+ "reference_ids": [
+  "e77e8c892384a0ea",
+  "27718e268a354a1b"
+ ],
+ "venue": "exam-room",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/exam_room_gen/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/exam_room_gen/view2.png"
+ ]
+}

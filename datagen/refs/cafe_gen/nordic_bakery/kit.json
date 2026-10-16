@@ -1,0 +1,120 @@
+{
+ "brief": "A bright, daylit Scandinavian-style cafe with a full-height glazed street frontage and a timber-framed door. Along the glass runs a window bar of tall oak stools, with potted fiddle-leaf and olive trees filling the corners. The middle of the room is open pale oak plank floor with round marble bistro tables and square light-oak tables, each seated with woven-rush oak chairs. The long white vertical-slat counter runs along the right and back, topped with white marble, with an espresso machine and two grinders, cake domes, a flower vase and a glass pastry case. Behind it, open oak shelves hold cups, jars, coffee bags and trailing plants under a large framed blackboard menu. White pendants and white track spots give soft support light, but sun dappling through the street trees is the main light. Tables carry cappuccinos, croissants, small flower vases and notebooks.",
+ "wall": "paint",
+ "wall_srgb": [
+  0.95,
+  0.93,
+  0.89
+ ],
+ "floor": "wood",
+ "floor_srgb": [
+  0.74,
+  0.58,
+  0.4
+ ],
+ "floor_tone": "pale",
+ "counter_front": "white_panel",
+ "counter_top": "white_stone",
+ "backbar": "oak_slat",
+ "fixture": "pendant",
+ "table_top": "light_wood",
+ "chair_style": "light_wood",
+ "metal_finish": "brass",
+ "decor": [
+  "potted_plants",
+  "hanging_plants",
+  "flowers"
+ ],
+ "architecture": {
+  "ceiling": "plaster_white",
+  "ducts_visible": false,
+  "feature_wall": "shelving",
+  "other_walls": "paint_light"
+ },
+ "lighting": {
+  "color_temp_k": 3000,
+  "ambient": "medium",
+  "daylight": "high",
+  "key_fixture": "pendant_row",
+  "accents": [
+   "backbar_strip"
+  ]
+ },
+ "density": {
+  "seats_per_10m2": 4,
+  "props_per_table": 3,
+  "plants": 12
+ },
+ "mood": "bright_daylight",
+ "must_have": [
+  {
+   "category": "coffee_bar",
+   "count": 1,
+   "where": "on the counter, espresso machine with two grinders"
+  },
+  {
+   "category": "menu_board",
+   "count": 1,
+   "where": "large framed blackboard centred on the back wall"
+  },
+  {
+   "category": "cafe_table",
+   "count": 5,
+   "where": "round marble and square light-oak tables in the middle of the room"
+  },
+  {
+   "category": "cafe_chair",
+   "count": 12,
+   "where": "woven-rush oak chairs around tables"
+  },
+  {
+   "category": "window_bar",
+   "count": 2,
+   "where": "long tall oak ledge table along the street glazing"
+  },
+  {
+   "category": "bar_stool",
+   "count": 6,
+   "where": "oak stools at the window bar"
+  },
+  {
+   "category": "floor_plant",
+   "count": 4,
+   "where": "olive tree and fiddle-leaf figs by the windows and counter"
+  }
+ ],
+ "concept": "A Scandinavian daylit bakery-cafe where pale oak, white slat panelling and white marble are warmed by street-tree sunlight, greenery and woven-rush seating.",
+ "relations": [
+  "Pale oak floor + light oak furniture + white painted slat counter and walls = a bright, airy, low-contrast palette that bounces the daylight",
+  "Full-height glazing + sparse white pendants + 3000K warm bulbs = daylight is the key light and fixtures only add a gentle warm accent",
+  "Woven-rush seats + marble tabletops + plants and flowers = soft natural texture against a clean white background",
+  "Open oak shelves + blackboard menu + pastry case concentrate the visual interest on the counter wall, leaving the floor open",
+  "Moderate seating density with a window bar keeps the room relaxed and lets people look out at the street"
+ ],
+ "not_reproducible": "Street trees, cars and buildings outside, dappled sun patterns, real food and pastries, coffee cups, people, books and notebooks, bottles and coffee bags, the espresso machine's fine detail.",
+ "wall_rgb": [
+  0.89,
+  0.8481,
+  0.7678
+ ],
+ "floor_rgb": [
+  0.5071,
+  0.2957,
+  0.1329
+ ],
+ "reference_ids": [
+  "9d37d716b4ba4ad2",
+  "8a1f354fad7e538a",
+  "809ea16acf42ddb0"
+ ],
+ "venue": "cafe",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/nordic_bakery/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/nordic_bakery/view2.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/nordic_bakery/view3.png"
+ ],
+ "clutter_exclude": [
+  "wine_glass"
+ ],
+ "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/nordic_bakery/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact."
+}

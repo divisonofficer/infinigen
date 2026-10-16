@@ -460,6 +460,10 @@ def main() -> int:
         print(f"[activity] {name.split('.spawn')[0]} {kind}/{room}: {len(levels)} levels, placed {stats['furniture'][name]['placed']}", flush=True)
     fabric = {"fabric_materials": 0}
     stats.update(appliance_slots=0, lonely_plants_removed=0, wall_art_added=0, mirrors_added=0, rugs_muted=0)
+    _kit = (json.loads(a.plans.read_text()).get("style_spec") or {}) if a.plans else {}
+    if "framed_art" in (_kit.get("decor") or []):              # a styled venue hangs pictures (cafe refs: framed prints on the walls)
+        for _rt in ("break-room", "cafe"):
+            room_dressing.ART_ROOMS[_rt] = 4
     if not a.no_dressing:
         room_dressing.neutral_appliances(rng, stats)
         room_dressing.mute_rugs(rng, stats)
@@ -473,6 +477,9 @@ def main() -> int:
                 for cls in rng.sample([td.BookStackFactory, tw.CupFactory, td.VaseFactory, tw.FruitContainerFactory, tw.BowlFactory], 2):
                     put(spawn, cls, F, levels[0], rng, "any", 0.5, stats)
         plans = json.loads(a.plans.read_text()) if a.plans else {"rooms": {}}
+        kit = (plans.get("style_spec") or {}).get("architecture") or {}
+        if kit.get("ceiling"):                                   # the style kit's ceiling (dark / exposed / timber), not always plaster
+            furnish_rooms.CEILING["kind"] = kit["ceiling"]
         furnish_rooms.furnish(rng, stats, decor_on, skip=set(plans["rooms"]))
         if plans["rooms"]:
             from room_planner import realize

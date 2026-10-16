@@ -74,7 +74,71 @@ class PalletFactory:
                 parts.append((xi * (L / 2 - 0.07), yi * (W / 2 - 0.07), h_bot + h_blk / 2, 0.14, 0.14, h_blk))
         for yi in (-1, 0, 1):                                    # bottom boards
             parts.append((0, yi * (W / 2 - 0.07), h_bot / 2, L, 0.14, h_bot))
-        return _boxes(f"PalletFactory({self.seed}).spawn_asset({i})", parts, pallet_wood())
+        r, load, z = random.Random(self.seed), [], h_bot + h_blk + h_top
+        if r.random() < 0.85:                                    # most pallets carry goods (warehouse r2: 'pallets lie bare')
+            for layer in range(r.randint(1, 4)):
+                h = r.uniform(0.25, 0.4); nx = r.choice((2, 3))
+                for a in range(nx):
+                    for b in range(2):
+                        if layer and r.random() < 0.2:
+                            continue
+                        load.append((-L / 2 + (a + 0.5) * L / nx + r.uniform(-0.01, 0.01), -W / 2 + (b + 0.5) * W / 2 + r.uniform(-0.01, 0.01),
+                                     z + h / 2, L / nx - 0.02, W / 2 - 0.02, h))
+                z += h
+        return _parts_object(f"PalletFactory({self.seed}).spawn_asset({i})", [(pallet_wood(), parts)] + ([(cardboard(), load)] if load else []))
+
+
+class WorkbenchFactory:
+    """Packing / work bench (front +X): steel frame, butcher-block or ply top at 0.9 m, a lower shelf, a pegboard upstand at the back,
+    a tape gun and a stretch-film roll (warehouse r2: 'dark-topped tables on thin white legs read as an office or dining room')."""
+    def __init__(self, seed):
+        r = random.Random(seed); self.r = r
+        self.L = r.choice((1.5, 1.8, 2.0)); self.frame = r.choice(((0.15, 0.3, 0.55), (0.35, 0.37, 0.4), (0.12, 0.12, 0.12)))
+
+    def spawn_asset(self, i):
+        L, D, H = self.L, 0.75, 0.9
+        frame = _flat(f"ir_bench_frame_{int(self.frame[2] * 100)}", self.frame, 0.45, 0.6); top = _flat("ir_butcher", (0.6, 0.42, 0.26), 0.55, wood=True)
+        peg = _flat("ir_pegboard", (0.62, 0.5, 0.36), 0.7); film = _flat("ir_film", (0.85, 0.9, 0.92), 0.1, transmission=0.6)
+        red = _flat("ir_tapegun", (0.75, 0.12, 0.08), 0.4)
+        legs = [("box", (sx * (D / 2 - 0.03), sy * (L / 2 - 0.03), H / 2 - 0.02), (0.05, 0.05, H - 0.04), (0, 0, 0)) for sx in (1, -1) for sy in (1, -1)]
+        rails = [("box", (0, 0, 0.15), (D - 0.04, L - 0.04, 0.03), (0, 0, 0)), ("box", (-D / 2 + 0.03, 0, H + 0.35), (0.04, L - 0.04, 0.03), (0, 0, 0))]
+        rails += [("box", (-D / 2 + 0.03, sy * (L / 2 - 0.03), H + 0.2), (0.04, 0.04, 0.6), (0, 0, 0)) for sy in (1, -1)]
+        return _prims(f"WorkbenchFactory({i}).spawn_asset({i})",
+                      [(frame, legs + rails), (top, [("box", (0, 0, H - 0.02), (D, L, 0.04), (0, 0, 0)), ("box", (0, 0, 0.175), (D - 0.06, L - 0.06, 0.02), (0, 0, 0))]),
+                       (peg, [("box", (-D / 2 + 0.03, 0, H + 0.2), (0.012, L - 0.1, 0.55), (0, 0, 0))]),
+                       (film, [("cyl", (0.1, L / 2 - 0.35, 0.33), (0.07, 0.07, 0.4), (math.pi / 2, 0, 0))]),
+                       (red, [("box", (0.15, -L / 2 + 0.3, H + 0.05), (0.06, 0.18, 0.1), (0, 0, 0.4))])])
+
+
+class ShopStoolFactory:
+    """Steel shop stool: a round black seat on four splayed tube legs with a foot ring."""
+    def __init__(self, seed):
+        self.r = random.Random(seed)
+
+    def spawn_asset(self, i):
+        steel = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0); seat = _flat("ir_stool_seat", (0.05, 0.05, 0.05), 0.5)
+        legs = [("cyl", (0.12 * math.cos(a), 0.12 * math.sin(a), 0.32), (0.012, 0.012, 0.64), (-0.1 * math.sin(a), 0.1 * math.cos(a), 0))
+                for a in (0.8, 2.4, 3.9, 5.5)]
+        return _prims(f"ShopStoolFactory({i}).spawn_asset({i})",
+                      [(steel, legs + [("cyl", (0, 0, 0.25), (0.14, 0.14, 0.015), (0, 0, 0))]), (seat, [("cyl", (0, 0, 0.66), (0.17, 0.17, 0.05), (0, 0, 0))])])
+
+
+class PlatformCartFactory:
+    """Flatbed warehouse trolley: a 0.9 x 0.6 deck on four castors, a U handle at one end, sometimes a box or two on it."""
+    def __init__(self, seed):
+        self.r = random.Random(seed)
+
+    def spawn_asset(self, i):
+        r = self.r
+        deck = _flat("ir_cart_deck", r.choice(((0.15, 0.3, 0.6), (0.2, 0.2, 0.22), (0.7, 0.15, 0.1))), 0.5, 0.3)
+        steel = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0); rub = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
+        wheels = [("cyl", (sx * 0.38, sy * 0.24, 0.05), (0.05, 0.05, 0.03), (math.pi / 2, 0, 0)) for sx in (1, -1) for sy in (1, -1)]
+        handle = [("cyl", (-0.44, sy * 0.25, 0.55), (0.012, 0.012, 0.8), (0, 0, 0)) for sy in (1, -1)] + \
+                 [("cyl", (-0.44, 0, 0.95), (0.012, 0.012, 0.5), (math.pi / 2, 0, 0))]
+        groups = [(deck, [("box", (0, 0, 0.14), (0.9, 0.6, 0.04), (0, 0, 0))]), (steel, handle), (rub, wheels)]
+        if r.random() < 0.6:
+            groups.append((cardboard(), [("box", (0.1, 0, 0.16 + 0.15), (0.5, 0.4, 0.3), (0, 0, r.uniform(-0.2, 0.2)))]))
+        return _prims(f"PlatformCartFactory({i}).spawn_asset({i})", groups)
 
 
 class BoxPileFactory:
@@ -102,7 +166,7 @@ class BoxPileFactory:
 
 
 # ---- cafe ---------------------------------------------------------------------------------------------------------------------------
-def _flat(name, rgb, rough, metallic=0.0, transmission=0.0):
+def _flat(name, rgb, rough, metallic=0.0, transmission=0.0, wood=False):
     m = bpy.data.materials.get(name)
     if m is not None:
         return m
@@ -112,7 +176,28 @@ def _flat(name, rgb, rough, metallic=0.0, transmission=0.0):
     b.inputs["Metallic"].default_value = metallic
     if transmission:
         b.inputs["Transmission Weight"].default_value = transmission
+    if wood:
+        _grain(m, rgb)
     return m
+
+
+WOODS = ("butcher_block", "light_wood", "dark_wood")
+
+
+def _grain(m, rgb):
+    """Wood grain on a flat colour (style eval 2026-10-16: 'chairs and tables look like clay with a flat tint, no wood grain'):
+    distorted wave bands in object space mix the colour with a 35% darker late wood, plus a faint bump of the same bands."""
+    nt = m.node_tree; N, L = nt.nodes, nt.links
+    b = N["Principled BSDF"]
+    tc = N.new("ShaderNodeTexCoord"); wv = N.new("ShaderNodeTexWave"); mix = N.new("ShaderNodeMix"); bump = N.new("ShaderNodeBump")
+    wv.wave_type = "BANDS"; wv.bands_direction = "X"
+    wv.inputs["Scale"].default_value = 22.0; wv.inputs["Distortion"].default_value = 4.0; wv.inputs["Detail"].default_value = 4.0
+    wv.inputs["Detail Scale"].default_value = 2.0                # fine grain (style eval H: 'oversized wavy procedural grain')
+    mix.data_type = "RGBA"
+    mix.inputs[6].default_value = (*rgb, 1); mix.inputs[7].default_value = (*(c * 0.65 for c in rgb), 1)
+    bump.inputs["Strength"].default_value = 0.08; bump.inputs["Distance"].default_value = 0.002
+    L.new(tc.outputs["Object"], wv.inputs["Vector"]); L.new(wv.outputs["Fac"], mix.inputs["Factor"])
+    L.new(mix.outputs[2], b.inputs["Base Color"]); L.new(wv.outputs["Fac"], bump.inputs["Height"]); L.new(bump.outputs["Normal"], b.inputs["Normal"])
 
 
 STYLE = {}                                                       # set by realize from the plan's venue style
@@ -153,11 +238,17 @@ class CafeCounterFactory:
         L, D, H = self.L, 0.65, 1.0
         fr_rgb, fr_r = COUNTER_FRONTS[self.front]; tp_rgb, tp_r = COUNTER_TOPS[self.top]
         front = _flat(f"ir_counter_{self.front}", fr_rgb, fr_r); top = _flat(f"ir_counter_top_{self.top}", tp_rgb, tp_r,
-                                                                             metallic=1.0 if self.top == "steel" else 0.0)
+                                                                             metallic=1.0 if self.top == "steel" else 0.0, wood=self.top in WOODS)
         body = [(0, 0, (H - 0.04) / 2, D, L, H - 0.04)]
-        if self.slats:                                           # vertical slats proud of the front face (+x)
+        if self.slats and "panel" not in self.front:             # vertical slats proud of the front face (+x)
             n = int(L / 0.06)
             body += [(D / 2 + 0.008, -L / 2 + (k + 0.5) * L / n, (H - 0.04) / 2, 0.016, L / n * 0.6, H - 0.1) for k in range(n)]
+        else:                                                    # raised panels with a moulding frame (style eval: 'a plain block')
+            n = max(2, int(L / 0.6))
+            for k in range(n):
+                y = -L / 2 + (k + 0.5) * L / n
+                body += [(D / 2 + 0.01, y, 0.5, 0.02, L / n - 0.12, 0.62), (D / 2 + 0.005, y, 0.86, 0.01, L / n - 0.06, 0.03),
+                         (D / 2 + 0.005, y, 0.14, 0.01, L / n - 0.06, 0.03)]
         return _parts_object(f"CafeCounterFactory({i}).spawn_asset({i})",
                              [(front, body), (top, [(0.03, 0, H - 0.02, D + 0.06, L + 0.04, 0.04)])])
 
@@ -166,14 +257,163 @@ class CafeTableFactory:
     """Bistro table: round-ish (octagonal) or square top on a pedestal, 0.6-0.8 m, 0.75 m high."""
     def __init__(self, seed):
         r = random.Random(seed)
-        self.w = r.uniform(0.6, 0.8); self.top = r.choice(("white_stone", "black_stone", "butcher_block"))
+        self.w = r.uniform(0.6, 0.8)
+        self.top = STYLE.get("table_top") if STYLE.get("table_top") in COUNTER_TOPS else r.choice(("white_stone", "black_stone", "butcher_block"))
 
     def spawn_asset(self, i):
         w = self.w
-        top = _flat(f"ir_counter_top_{self.top}", *COUNTER_TOPS[self.top]); metal = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
+        top = _flat(f"ir_counter_top_{self.top}", *COUNTER_TOPS[self.top], wood=self.top in WOODS); metal = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
+        if STYLE.get("chair_style") == "bentwood" or STYLE.get("table_shape") == "round":   # round bistro tops (style eval)
+            return _prims(f"CafeTableFactory({i}).spawn_asset({i})",
+                          [(top, [("cyl", (0, 0, 0.745), (w / 2, w / 2, 0.03), (0, 0, 0))]),
+                           (metal, [("cyl", (0, 0, 0.37), (0.03, 0.03, 0.7), (0, 0, 0)), ("cyl", (0, 0, 0.015), (0.22, 0.22, 0.03), (0, 0, 0))])])
         return _parts_object(f"CafeTableFactory({i}).spawn_asset({i})",
                              [(top, [(0, 0, 0.74, w, w, 0.03)]),
                               (metal, [(0, 0, 0.37, 0.06, 0.06, 0.70), (0, 0, 0.01, 0.45, 0.06, 0.02), (0, 0, 0.01, 0.06, 0.45, 0.02)])])
+
+
+class CafeChairFactory:
+    """A café chair in the reference's style (cafe r3: ABO pools gave grey/white upholstered chairs for every style). Front +X.
+    bentwood: dark curved hoop back, round seat, splayed legs; light_wood: pale oak, spindle-free shell back; metal_bistro: black steel
+    seat and back with a straight back."""
+    def __init__(self, seed, style=None):
+        r = random.Random(seed)
+        self.style = style or STYLE.get("chair_style") or r.choice(("bentwood", "light_wood", "metal_bistro"))
+        if self.style not in ("bentwood", "light_wood", "metal_bistro"):   # 'mixed': a café mixes two bistro families, never office chairs
+            self.style = r.choice(("metal_bistro", "metal_bistro", "bentwood"))   # dark bistro family (style eval G: blond chairs in a brick cafe)
+
+    def spawn_asset(self, i):
+        st = self.style
+        col = {"bentwood": ((0.035, 0.02, 0.012), 0.35, 0.0), "light_wood": ((0.62, 0.46, 0.3), 0.5, 0.0),   # near-black: reads dark under 2300 K
+               "metal_bistro": ((0.04, 0.04, 0.045), 0.4, 1.0)}.get(st, ((0.12, 0.07, 0.04), 0.45, 0.0))
+        m = _flat(f"ir_chair_{st}", col[0], col[1], col[2], wood=st in ("bentwood", "light_wood"))
+        legs = [("cyl", (sx * 0.17, sy * 0.17, 0.22), (0.016, 0.014, 0.45), (sy * 0.06, -sx * 0.06, 0)) for sx in (1, -1) for sy in (1, -1)]
+        if st == "bentwood":
+            seat = [("cyl", (0, 0, 0.46), (0.21, 0.21, 0.035), (0, 0, 0))]
+            back = [("box", (-0.19, sy * 0.15, 0.68), (0.025, 0.025, 0.46), (0, 0, 0)) for sy in (1, -1)] + \
+                   [("box", (-0.2, 0, 0.9), (0.025, 0.34, 0.025), (0, 0, 0)), ("box", (-0.2, 0, 0.7), (0.02, 0.3, 0.02), (0, 0, 0))]
+        elif st == "metal_bistro":
+            seat = [("box", (0, 0, 0.46), (0.4, 0.4, 0.025), (0, 0, 0))]
+            back = [("box", (-0.2, 0, 0.66), (0.025, 0.38, 0.38), (0, 0.08, 0))]
+        else:
+            seat = [("box", (0, 0, 0.46), (0.42, 0.42, 0.03), (0, 0, 0))]
+            back = [("box", (-0.2, 0, 0.72), (0.03, 0.4, 0.14), (0, 0.12, 0))] + [("box", (-0.19, sy * 0.17, 0.6), (0.025, 0.025, 0.28), (0, 0, 0)) for sy in (1, -1)]
+        return _prims(f"CafeChairFactory({i}).spawn_asset({i})", [(m, legs + seat + back)])
+
+
+class BudVaseFactory:
+    """A small glass or ceramic vase with 3-7 flowers (style eval floral: 'no flowers on the tables'), 0.15-0.3 m."""
+    def __init__(self, seed, big=False):
+        r = random.Random(seed); self.r, self.big = r, big
+        self.pal = r.choice((((0.85, 0.3, 0.4), (0.95, 0.85, 0.9)), ((0.95, 0.7, 0.2), (0.95, 0.95, 0.9)), ((0.6, 0.2, 0.5), (0.9, 0.5, 0.6)),
+                             ((0.95, 0.95, 0.92), (0.75, 0.1, 0.15))))
+
+    def spawn_asset(self, i):
+        r, s_ = self.r, (2.6 if self.big else 1.0)
+        vase = _flat("ir_vase_glass" if r.random() < 0.5 else "ir_vase_ceramic", (0.85, 0.88, 0.85) if r.random() < 0.5 else (0.2, 0.25, 0.22), 0.1,
+                     transmission=0.8 if r.random() < 0.5 else 0.0)
+        stem = _flat("ir_stem", (0.12, 0.3, 0.1), 0.7); leaf = _flat("ir_leaf", (0.15, 0.38, 0.12), 0.6)
+        groups = [(vase, [("cyl", (0, 0, 0.06 * s_), (0.03 * s_, 0.025 * s_, 0.12 * s_), (0, 0, 0))])]
+        stems, heads, leaves = [], {}, []
+        for k in range(r.randint(5, 9) if self.big else r.randint(3, 6)):
+            a, t = r.uniform(0, 6.28), r.uniform(0.05, 0.35)
+            h = r.uniform(0.14, 0.24) * s_
+            tip = (math.sin(t) * math.cos(a) * h, math.sin(t) * math.sin(a) * h, 0.1 * s_ + math.cos(t) * h)
+            stems.append(("cyl", (tip[0] / 2, tip[1] / 2, (0.1 * s_ + tip[2]) / 2), (0.003 * s_, 0.003 * s_, h), (t * math.sin(a), -t * math.cos(a), 0)))
+            c = r.choice(self.pal)
+            heads.setdefault(c, []).append(("sph", tip, (0.025 * s_, 0.025 * s_, 0.018 * s_), (0, 0, 0)))
+            leaves.append(("sph", (tip[0] * 0.6, tip[1] * 0.6, 0.1 * s_ + tip[2] * 0.4), (0.02 * s_, 0.008 * s_, 0.012 * s_), (0, 0, a)))
+        groups += [(stem, stems), (leaf, leaves)]
+        for c, parts in heads.items():
+            groups.append((_flat(f"ir_bloom_{int(c[0] * 100)}_{int(c[1] * 100)}", c, 0.6), parts))
+        return _prims(f"BudVaseFactory({i}).spawn_asset({i})", groups)
+
+
+class FlowerArrangementFactory(BudVaseFactory):
+    """A large bouquet for the counter (floral cafés)."""
+    def __init__(self, seed):
+        super().__init__(seed, big=True)
+
+
+class HangingPlantFactory:
+    """A ceiling-hung trailing plant (pothos): a pot on three cords from a ceiling hook, leaf strands trailing 0.4-0.9 m below it.
+    Origin at the hook; the pot hangs `drop` below (nordic / chain refs: hanging plants in every view, renders had none)."""
+    def __init__(self, seed, drop=0.7):
+        r = random.Random(seed); self.r = r; self.drop = drop
+        self.pot = r.choice(((0.85, 0.83, 0.78), (0.6, 0.35, 0.22), (0.12, 0.12, 0.12)))
+
+    def spawn_asset(self, i):
+        r, z = self.r, -self.drop
+        pot = _flat(f"ir_pot_{int(self.pot[0] * 100)}", self.pot, 0.6); cord = _flat("ir_cord", (0.75, 0.68, 0.55), 0.8)
+        leaf = _flat(f"ir_pothos_{i % 3}", ((0.12, 0.32, 0.08), (0.18, 0.4, 0.1), (0.1, 0.26, 0.07))[i % 3], 0.55)
+        cords = [("cyl", (0.06 * math.cos(a) / 2, 0.06 * math.sin(a) / 2, z / 2), (0.003, 0.003, abs(z)), (0.12 * math.sin(a), -0.12 * math.cos(a), 0))
+                 for a in (0, 2.1, 4.2)]
+        leaves = [("sph", (0, 0, z + 0.02), (0.13, 0.13, 0.07), (0, 0, 0))]
+        for s_ in range(r.randint(5, 8)):                        # strands over the rim, each a chain of leaves drifting outward
+            a = r.uniform(0, 2 * math.pi); L = r.uniform(0.3, 0.6)   # bottom stays above head height
+            for k in range(int(L / 0.06)):
+                rad = 0.12 + 0.02 * k ** 0.5
+                leaves.append(("sph", (rad * math.cos(a) + r.uniform(-0.02, 0.02), rad * math.sin(a) + r.uniform(-0.02, 0.02), z - 0.05 - k * 0.06),
+                               (0.035, 0.03, 0.012), (r.uniform(-1, 1), r.uniform(-1, 1), r.uniform(0, 3))))
+        return _prims(f"HangingPlantFactory({i}).spawn_asset({i})",
+                      [(pot, [("cyl", (0, 0, z - 0.07), (0.08, 0.12, 0.16), (0, 0, 0))]), (cord, cords), (leaf, leaves)])
+
+
+class OliveTreeFactory:
+    """A potted olive tree, 1.4-1.9 m: a terracotta or stone pot, a slim twisting trunk, clusters of grey-green leaf masses (floral / nordic
+    refs: olive trees by the windows; Infinigen plants take minutes each)."""
+    def __init__(self, seed):
+        r = random.Random(seed); self.r = r; self.h = r.uniform(1.4, 1.9)
+        self.pot = r.choice(((0.6, 0.35, 0.22), (0.55, 0.53, 0.5), (0.12, 0.12, 0.12)))
+
+    def spawn_asset(self, i):
+        r, h = self.r, self.h
+        pot = _flat(f"ir_pot_{int(self.pot[0] * 100)}", self.pot, 0.8); bark = _flat("ir_bark", (0.18, 0.15, 0.12), 0.9)
+        leaf = _flat("ir_olive_leaf", (0.22, 0.28, 0.18), 0.7)
+        trunk, masses = [], []
+        x = y = 0.0
+        for k in range(4):                                      # a slightly crooked trunk in four segments
+            z0 = 0.4 + k * (h - 0.9) / 4; dx, dy = r.uniform(-0.04, 0.04), r.uniform(-0.04, 0.04)
+            trunk.append(("cyl", (x + dx / 2, y + dy / 2, z0 + (h - 0.9) / 8), (0.025, 0.022, (h - 0.9) / 4 + 0.02), (dy * 2, -dx * 2, 0)))
+            x += dx; y += dy
+        # branches out of the trunk top, each ending in a cloud of small leaves; 7-11 big ellipsoids read as 'low-poly lollipop
+        # blobs' in three style evals (cafe G)
+        for k in range(r.randint(5, 8)):
+            a, el = r.uniform(0, 6.28), r.uniform(0.35, 1.0)
+            Lb = r.uniform(0.25, 0.45)
+            tip = (x + Lb * math.cos(el) * math.cos(a), y + Lb * math.cos(el) * math.sin(a), h - 0.5 + Lb * math.sin(el))
+            mid = ((x + tip[0]) / 2, (y + tip[1]) / 2, (h - 0.5 + tip[2]) / 2)
+            trunk.append(("cyl", mid, (0.012, 0.008, Lb), (0, math.pi / 2 - el, a)))
+            for _ in range(r.randint(28, 40)):
+                q = (tip[0] + r.gauss(0, 0.09), tip[1] + r.gauss(0, 0.09), tip[2] + r.gauss(0, 0.07))
+                masses.append(("sph", q, (0.035, 0.011, 0.004), (r.uniform(-1.2, 1.2), r.uniform(-1.2, 1.2), r.uniform(0, 6.28))))
+        return _prims(f"OliveTreeFactory({i}).spawn_asset({i})",
+                      [(pot, [("cyl", (0, 0, 0.2), (0.17, 0.22, 0.4), (0, 0, 0))]), (bark, trunk), (leaf, masses)])
+
+
+class ChandelierFactory:
+    """A crystal / brass chandelier (origin at the top): a ring of 6-10 arms with glowing bulbs and hanging crystal drops."""
+    def __init__(self, seed):
+        r = random.Random(seed); self.n = r.choice((6, 8, 10)); self.R = r.uniform(0.3, 0.45)
+
+    def spawn_asset(self, i):
+        n, R = self.n, self.R
+        brass = _flat("ir_sconce_metal", (0.55, 0.38, 0.12), 0.3, 1.0); crystal = _flat("ir_crystal", (0.95, 0.95, 1.0), 0.02, transmission=1.0)
+        bulb = _flat("ir_chandelier_bulb", (1.0, 0.85, 0.6), 0.3)
+        b = bulb.node_tree.nodes["Principled BSDF"]
+        b.inputs["Emission Color"].default_value = (1.0, 0.62, 0.3, 1); b.inputs["Emission Strength"].default_value = 30.0
+        arms, bulbs, drops = [("cyl", (0, 0, -0.25), (0.015, 0.015, 0.5), (0, 0, 0)), ("cyl", (0, 0, -0.5), (R, R, 0.02), (0, 0, 0))], [], []
+        for k in range(n):
+            a = 2 * math.pi * k / n
+            x, y = R * math.cos(a), R * math.sin(a)
+            arms.append(("cyl", (x / 2, y / 2, -0.5), (0.008, 0.008, R), (math.pi / 2, 0, a + math.pi / 2)))
+            arms.append(("cyl", (x, y, -0.47), (0.018, 0.012, 0.05), (0, 0, 0)))          # candle cup
+            bulbs.append(("sph", (x, y, -0.43), (0.012, 0.012, 0.03), (0, 0, 0)))          # candle-flame bulb (style eval: 'white globes')
+            for j in range(5):                                                           # strands of crystal drops
+                t = (k + j / 5) * 2 * math.pi / n
+                drops.append(("sph", (R * 0.85 * math.cos(t), R * 0.85 * math.sin(t), -0.56 - 0.035 * (j % 3)), (0.008, 0.008, 0.018), (0, 0, 0)))
+        drops += [("sph", (0, 0, -0.62 - 0.04 * j), (0.02 - 0.003 * j, 0.02 - 0.003 * j, 0.03), (0, 0, 0)) for j in range(4)]
+        return _prims(f"ChandelierFactory({i}).spawn_asset({i})", [(brass, arms), (bulb, bulbs), (crystal, drops)])
 
 
 class EspressoMachineFactory:
@@ -221,9 +461,13 @@ class BackBarShelfFactory:
         L, D = self.L, 0.28
         wood = _flat(f"ir_counter_{self.wood}", *COUNTER_FRONTS[self.wood]); metal = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
         zs = [1.15 + k * (1.05 / (self.levels - 1)) for k in range(self.levels)]
-        return _parts_object(f"BackBarShelfFactory({i}).spawn_asset({i})",
-                             [(wood, [(0, 0, z, D, L, 0.03) for z in zs]),
-                              (metal, [(-D / 2 + 0.01, sx * (L / 2 - 0.03), 1.1, 0.02, 0.02, 2.2) for sx in (-1, 1)])])
+        groups = [(wood, [(0, 0, z, D, L, 0.03) for z in zs]), (metal, [(-D / 2 + 0.01, sx * (L / 2 - 0.03), 1.1, 0.02, 0.02, 2.2) for sx in (-1, 1)])]
+        if STYLE.get("mood") in ("warm_evening", "dark_moody"):   # glowing under-shelf strips (cafe refs: the back bar is the warm light source)
+            led = _flat("ir_led_warm", (1.0, 0.75, 0.45), 0.3)
+            b = led.node_tree.nodes["Principled BSDF"]
+            b.inputs["Emission Color"].default_value = (1.0, 0.72, 0.42, 1); b.inputs["Emission Strength"].default_value = 6.0
+            groups.append((led, [(D / 2 - 0.04, 0, z - 0.02, 0.015, L - 0.08, 0.008) for z in zs]))
+        return _parts_object(f"BackBarShelfFactory({i}).spawn_asset({i})", groups)
 
 
 class WindowBarFactory:
@@ -233,7 +477,7 @@ class WindowBarFactory:
 
     def spawn_asset(self, i):
         L = self.L
-        wood = _flat("ir_counter_top_butcher_block", *COUNTER_TOPS["butcher_block"]); metal = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
+        wood = _flat("ir_counter_top_butcher_block", *COUNTER_TOPS["butcher_block"], wood=True); metal = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
         return _parts_object(f"WindowBarFactory({i}).spawn_asset({i})",
                              [(wood, [(0, 0, 1.03, 0.4, L, 0.04)]),
                               (metal, [(0, sx * (L / 2 - 0.15), 0.5, 0.04, 0.04, 1.0) for sx in (-1, 1)])])
@@ -241,6 +485,73 @@ class WindowBarFactory:
 
 # ---- retail -------------------------------------------------------------------------------------------------------------------------
 HEADER_COLOURS = [(0.75, 0.08, 0.06), (0.05, 0.3, 0.6), (0.08, 0.45, 0.2), (0.85, 0.55, 0.05), (0.45, 0.1, 0.45)]
+
+
+class StorageRackFactory:
+    """Steel warehouse rack (front +X): two upright frames per bay, orange step beams and solid decks on 4-5 levels, so the shelf
+    filler finds every level (ABO wire racks: 0 items stocked on 9 racks, warehouse r1 2026-10-16: 'every rack is bare')."""
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.L = r.choice((1.8, 2.4)); self.D = r.choice((0.6, 0.8)); self.H = r.choice((2.2, 2.4))
+        self.up = r.choice(((0.1, 0.22, 0.5), (0.35, 0.37, 0.4), (0.82, 0.82, 0.8)))
+        self.deck = r.choice(((0.62, 0.5, 0.36), (0.6, 0.62, 0.64)))      # chipboard or galvanised
+
+    def spawn_asset(self, i):
+        L, D, H = self.L, self.D, self.H
+        up = _flat(f"ir_rack_up_{int(self.up[2] * 100)}", self.up, 0.45, 0.6); beam = _flat("ir_rack_beam", (0.85, 0.32, 0.05), 0.4, 0.5)
+        deck = _flat(f"ir_rack_deck_{int(self.deck[0] * 100)}", self.deck, 0.6, 0.0 if self.deck[0] > self.deck[2] + 0.1 else 0.7)
+        posts = [(sx * (D / 2 - 0.04), sy * (L / 2 - 0.04), H / 2, 0.07, 0.07, H) for sx in (1, -1) for sy in (1, -1)]
+        braces = [(0, sy * (L / 2 - 0.04), z, D - 0.08, 0.03, 0.03) for sy in (1, -1) for z in (0.3, H / 2, H - 0.3)]
+        zs = [0.12] + [0.12 + k * (H - 0.25) / 3.6 for k in range(1, 4)] + [H - 0.04]
+        beams = [(sx * (D / 2 - 0.04), 0, z - 0.06, 0.05, L - 0.08, 0.1) for sx in (1, -1) for z in zs]
+        decks = [(0, 0, z + 0.005, D - 0.06, L - 0.1, 0.02) for z in zs]
+        return _parts_object(f"StorageRackFactory({i}).spawn_asset({i})", [(up, posts + braces), (beam, beams), (deck, decks)])
+
+
+class DisplayCoolerFactory:
+    """Upright glass-door drinks cooler (front +X), 0.75 x 0.7 x 2.0 m: a dark cabinet, a lit header, an aluminium-framed glass
+    door, a white-lit interior and 5 shelves of bottles and cans in rows. Infinigen's BeverageFridge is an under-counter unit and
+    rendered as 'knee-high black boxes' (shop r2 critic)."""
+    PACK = ((0.75, 0.1, 0.08), (0.1, 0.35, 0.7), (0.95, 0.6, 0.1), (0.2, 0.55, 0.2), (0.85, 0.85, 0.8), (0.1, 0.1, 0.1))
+
+    def __init__(self, seed):
+        r = random.Random(seed)
+        self.r = r; self.body = r.choice(((0.05, 0.05, 0.05), (0.85, 0.85, 0.84), (0.6, 0.6, 0.62)))   # style eval G: a coral cooler broke two cafes
+
+    def spawn_asset(self, i):
+        r, W, D, H = self.r, 0.75, 0.7, 2.0
+        body = _flat(f"ir_cooler_{int(self.body[0] * 100)}", self.body, 0.4, 0.3); alu = _flat("ir_wh_alu", (0.8, 0.8, 0.82), 0.3, 1.0)
+        glass = _flat("ir_cooler_glass", (0.9, 0.95, 0.97), 0.03, transmission=0.95)
+        lit = _flat("ir_cooler_lit", (1.0, 1.0, 1.0), 0.4)
+        lit.node_tree.nodes["Principled BSDF"].inputs["Emission Color"].default_value = (0.92, 0.97, 1.0, 1)
+        lit.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"].default_value = 2.5
+        shell = [("box", (-D / 2 + 0.02, 0, H / 2), (0.04, W, H), (0, 0, 0)), ("box", (0, W / 2 - 0.02, H / 2), (D, 0.04, H), (0, 0, 0)),
+                 ("box", (0, -W / 2 + 0.02, H / 2), (D, 0.04, H), (0, 0, 0)), ("box", (0, 0, 0.06), (D, W, 0.12), (0, 0, 0)),
+                 ("box", (0, 0, H - 0.1), (D, W, 0.2), (0, 0, 0))]
+        frame = [("box", (D / 2 - 0.01, 0, 0.14), (0.03, W, 0.04), (0, 0, 0)), ("box", (D / 2 - 0.01, 0, H - 0.22), (0.03, W, 0.04), (0, 0, 0)),
+                 ("box", (D / 2 - 0.01, W / 2 - 0.03, H / 2), (0.03, 0.04, H - 0.32), (0, 0, 0)),
+                 ("box", (D / 2 - 0.01, -W / 2 + 0.03, H / 2), (0.03, 0.04, H - 0.32), (0, 0, 0)),
+                 ("box", (D / 2 + 0.02, -W / 2 + 0.08, H / 2), (0.03, 0.025, 0.7), (0, 0, 0))]        # handle
+        shelves = [("box", (0.0, 0, z), (D - 0.12, W - 0.08, 0.012), (0, 0, 0)) for z in (0.16, 0.5, 0.84, 1.18, 1.52)]
+        stock = {}
+        for z in (0.16, 0.5, 0.84, 1.18, 1.52):
+            c = r.choice(self.PACK); can = r.random() < 0.4
+            h, rad = (0.12, 0.033) if can else (0.24, 0.035)
+            for row in range(3):
+                for k in range(int((W - 0.12) / (2 * rad + 0.008))):
+                    if r.random() < 0.1:                         # a few sold
+                        continue
+                    y = -W / 2 + 0.07 + rad + k * (2 * rad + 0.008)
+                    stock.setdefault(c, []).append(("cyl", (D / 2 - 0.1 - row * 0.12, y, z + 0.006 + h / 2), (rad, rad * (1 if can else 0.6), h), (0, 0, 0)))
+        groups = [(body, shell), (alu, frame + shelves), (lit, [("box", (-D / 2 + 0.045, 0, H / 2), (0.005, W - 0.1, H - 0.4), (0, 0, 0)),
+                                                                ("box", (D / 2 - 0.005, 0, H - 0.1), (0.01, W - 0.1, 0.14), (0, 0, 0))]),
+                  (glass, [("box", (D / 2 - 0.01, 0, H / 2 - 0.04), (0.008, W - 0.06, H - 0.36), (0, 0, 0))])]
+        groups += [(_flat(f"ir_pack_{int(c[0] * 100)}_{int(c[1] * 100)}_{int(c[2] * 100)}", c, 0.3, 0.5), parts) for c, parts in stock.items()]
+        o = _prims(f"DisplayCoolerFactory({i}).spawn_asset({i})", groups)
+        ld = bpy.data.lights.new(f"ir_cooler_{i}", "AREA"); ld.shape = "RECTANGLE"; ld.size, ld.size_y = 0.6, 1.6; ld.energy = 25.0
+        lo = bpy.data.objects.new(f"PointLampFactory(cooler).spawn_asset({i})", ld)
+        bpy.context.scene.collection.objects.link(lo); lo.parent = o; lo.location = (D / 2 - 0.15, 0, H / 2); lo.rotation_euler = (0, math.pi / 2, 0)
+        return o
 
 
 class GondolaFactory:
@@ -336,11 +647,24 @@ class PastryCaseFactory:
         r = self.r
         base = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0); glass = _flat("ir_dome_glass", (0.95, 0.95, 0.95), 0.02, transmission=1.0)
         pastry = _flat(f"ir_pastry_{i % 3}", [(0.7, 0.45, 0.2), (0.85, 0.7, 0.45), (0.45, 0.25, 0.12)][i % 3], 0.7)
-        items = [(r.uniform(-0.12, 0.12), -0.3 + k * 0.12, z + 0.035, 0.09, 0.08, 0.05) for z in (0.03, 0.22) for k in range(6)]
-        return _parts_object(f"PastryCaseFactory({i}).spawn_asset({i})",
-                             [(base, [(0, 0, 0.015, 0.42, 0.78, 0.03), (0, 0, 0.21, 0.4, 0.76, 0.01)]), (pastry, items),
-                              (glass, [(0.2, 0, 0.21, 0.01, 0.78, 0.4), (-0.2, 0, 0.21, 0.01, 0.78, 0.4), (0, 0.39, 0.21, 0.42, 0.01, 0.4),
-                                       (0, -0.39, 0.21, 0.42, 0.01, 0.4), (0, 0, 0.41, 0.42, 0.78, 0.01)])])
+        # croissants / buns / tarts as ellipsoids and discs (style eval 2026-10-16: 'placeholder blocks in the glass case')
+        items = []
+        for z in (0.03, 0.22):
+            for k in range(6):
+                x, y = r.uniform(-0.1, 0.1), -0.3 + k * 0.12
+                kind = r.choice(("croissant", "bun", "tart"))
+                if kind == "croissant":
+                    items.append(("sph", (x, y, z + 0.025), (0.045, 0.028, 0.022), (0, 0, r.uniform(0, 3))))
+                elif kind == "bun":
+                    items.append(("sph", (x, y, z + 0.025), (0.035, 0.035, 0.024), (0, 0, 0)))
+                else:
+                    items.append(("cyl", (x, y, z + 0.012), (0.04, 0.038, 0.024), (0, 0, 0)))
+        return _prims(f"PastryCaseFactory({i}).spawn_asset({i})",
+                      [(base, [("box", (0, 0, 0.015), (0.42, 0.78, 0.03), (0, 0, 0)), ("box", (0, 0, 0.21), (0.4, 0.76, 0.01), (0, 0, 0))]),
+                       (pastry, items),
+                       (glass, [("box", (0.2, 0, 0.21), (0.01, 0.78, 0.4), (0, 0, 0)), ("box", (-0.2, 0, 0.21), (0.01, 0.78, 0.4), (0, 0, 0)),
+                                ("box", (0, 0.39, 0.21), (0.42, 0.01, 0.4), (0, 0, 0)), ("box", (0, -0.39, 0.21), (0.42, 0.01, 0.4), (0, 0, 0)),
+                                ("box", (0, 0, 0.41), (0.42, 0.78, 0.01), (0, 0, 0))])])
 
 
 class SyrupRackFactory:
@@ -467,6 +791,9 @@ def _prims(name, groups):
             if kind == "box":
                 r = bmesh.ops.create_cube(bm, size=1.0)
                 bmesh.ops.scale(bm, vec=size, verts=r["verts"])
+            elif kind == "sph":                                  # ellipsoid with semi-axes `size`
+                r = bmesh.ops.create_icosphere(bm, subdivisions=2, radius=1.0)
+                bmesh.ops.scale(bm, vec=size, verts=r["verts"])
             else:
                 r = bmesh.ops.create_cone(bm, cap_ends=True, segments=20, radius1=size[0], radius2=size[1], depth=size[2])
             bmesh.ops.rotate(bm, cent=(0, 0, 0), matrix=Euler(rot).to_matrix(), verts=r["verts"])
@@ -483,6 +810,69 @@ def _prims(name, groups):
 
 # ---- desk clutter (user 2026-10-16: 'the office is too clean, nobody's hands on it -- leftover snacks, books, pencils, cups') ------
 _BRIGHT = ((0.75, 0.12, 0.1), (0.95, 0.65, 0.1), (0.1, 0.35, 0.7), (0.15, 0.55, 0.25), (0.85, 0.85, 0.82), (0.55, 0.15, 0.5))
+
+
+class GloveBoxFactory:
+    """A box of exam gloves (clinic r6 critic: 'no glove boxes, sanitizer or trays'): a coloured carton with a white tuft at its slot."""
+    def __init__(self, seed):
+        self.r = random.Random(seed)
+
+    def spawn_asset(self, i):
+        c = self.r.choice(((0.3, 0.35, 0.75), (0.55, 0.3, 0.65), (0.85, 0.85, 0.88), (0.2, 0.55, 0.6)))
+        box = _flat(f"ir_glovebox_{int(c[0] * 100)}", c, 0.6); tuft = _flat("ir_glove_white", (0.92, 0.92, 0.95), 0.5)
+        return _prims(f"GloveBoxFactory({i}).spawn_asset({i})", [(box, [("box", (0, 0, 0.035), (0.12, 0.24, 0.07), (0, 0, 0))]),
+                                                                 (tuft, [("sph", (0, 0, 0.075), (0.03, 0.05, 0.015), (0, 0, 0))])])
+
+
+class SanitizerFactory:
+    """A pump bottle of hand sanitizer / soap: a clear or white bottle, a pump head with a nozzle."""
+    def __init__(self, seed):
+        self.r = random.Random(seed)
+
+    def spawn_asset(self, i):
+        c = self.r.choice(((0.85, 0.92, 0.95), (0.95, 0.95, 0.95), (0.6, 0.8, 0.9)))
+        body = _flat(f"ir_sanitizer_{int(c[0] * 100)}", c, 0.15, transmission=0.4 if c[0] < 0.9 else 0.0)
+        pump = _flat("ir_pump_white", (0.92, 0.92, 0.9), 0.4)
+        return _prims(f"SanitizerFactory({i}).spawn_asset({i})",
+                      [(body, [("cyl", (0, 0, 0.08), (0.035, 0.03, 0.16), (0, 0, 0))]),
+                       (pump, [("cyl", (0, 0, 0.18), (0.012, 0.012, 0.05), (0, 0, 0)), ("box", (0.02, 0, 0.2), (0.05, 0.012, 0.012), (0, 0, 0))])])
+
+
+class PaperTowelFactory:
+    """A paper towel roll on an upright holder."""
+    def __init__(self, seed):
+        self.r = random.Random(seed)
+
+    def spawn_asset(self, i):
+        paper = _flat("ir_paper_towel", (0.94, 0.94, 0.92), 0.8); steel = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0)
+        return _prims(f"PaperTowelFactory({i}).spawn_asset({i})",
+                      [(steel, [("cyl", (0, 0, 0.005), (0.08, 0.08, 0.01), (0, 0, 0)), ("cyl", (0, 0, 0.14), (0.008, 0.008, 0.28), (0, 0, 0))]),
+                       (paper, [("cyl", (0, 0, 0.125), (0.06, 0.06, 0.22), (0, 0, 0))])])
+
+
+class ClipboardFactory:
+    """A clipboard with a form, lying flat: a hardboard back, a sheet, a metal clip."""
+    def __init__(self, seed):
+        self.r = random.Random(seed)
+
+    def spawn_asset(self, i):
+        board = _flat("ir_clipboard", (0.45, 0.32, 0.2), 0.6); sheet = _flat("ir_paper", (0.93, 0.93, 0.9), 0.7)
+        clip = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0)
+        return _prims(f"ClipboardFactory({i}).spawn_asset({i})",
+                      [(board, [("box", (0, 0, 0.003), (0.23, 0.32, 0.006), (0, 0, 0))]),
+                       (sheet, [("box", (0, -0.01, 0.0065), (0.21, 0.28, 0.001), (0, 0, 0))]),
+                       (clip, [("box", (0, 0.145, 0.012), (0.08, 0.03, 0.012), (0, 0, 0))])])
+
+
+class KidneyTrayFactory:
+    """A stainless kidney dish with an instrument or two in it."""
+    def __init__(self, seed):
+        self.r = random.Random(seed)
+
+    def spawn_asset(self, i):
+        steel = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0)
+        return _prims(f"KidneyTrayFactory({i}).spawn_asset({i})",
+                      [(steel, [("sph", (0, 0, 0.02), (0.07, 0.13, 0.02), (0, 0, 0)), ("box", (0.01, 0.02, 0.03), (0.008, 0.14, 0.004), (0, 0, 0.3))])])
 
 
 class PenCupFactory:
@@ -660,16 +1050,22 @@ class ExamTableFactory:
     """Examination / treatment couch (front +X): padded top at 0.7 m with a raised head section, a cabinet base, a paper roll, a step."""
     def __init__(self, seed):
         r = random.Random(seed)
-        self.c = r.choice(((0.15, 0.3, 0.45), (0.12, 0.12, 0.13), (0.45, 0.6, 0.62), (0.75, 0.75, 0.73)))
+        self.c = r.choice(((0.15, 0.3, 0.45), (0.12, 0.12, 0.13), (0.1, 0.35, 0.38), (0.2, 0.42, 0.55)))  # no white: a pale pad vanished against white walls (clinic r5)
 
     def spawn_asset(self, i):
+        # a couch, not a cabinet (clinic r6: 'a white box with a grey slab'): a narrow inset plinth on a steel frame with open space
+        # around it, a thick padded top overhanging it, the head section raised 30 deg, a paper roll and a step
         pad = _flat(f"ir_exam_pad_{int(self.c[2] * 100)}", self.c, 0.55); base = _flat("ir_pantry_cab_90", (0.9, 0.9, 0.88), 0.45)
-        paper = _flat("ir_paper", (0.86, 0.86, 0.84), 0.7); steel = _flat("ir_desk_frame", (0.75, 0.75, 0.76), 0.35, 0.8)
+        paper = _flat("ir_paper", (0.93, 0.93, 0.9), 0.7); steel = _flat("ir_desk_frame", (0.75, 0.75, 0.76), 0.35, 0.8)
+        hy, hz = 0.45, 0.72                                      # head hinge (local y) and top height
         return _prims(f"ExamTableFactory({i}).spawn_asset({i})",
-                      [(base, [("box", (0, 0, 0.3), (0.55, 1.5, 0.6), (0, 0, 0)), ("box", (0.42, 0.55, 0.12), (0.3, 0.45, 0.24), (0, 0, 0))]),
-                       (pad, [("box", (0, -0.2, 0.66), (0.62, 1.4, 0.1), (0, 0, 0)), ("box", (0, 0.72, 0.8), (0.62, 0.55, 0.1), (-0.5, 0, 0))]),
-                       (paper, [("box", (0, -0.1, 0.715), (0.5, 1.6, 0.004), (0, 0, 0))]),
-                       (steel, [("cyl", (0, -0.98, 0.72), (0.06, 0.06, 0.52), (0, math.pi / 2, math.pi / 2))])])
+                      [(base, [("box", (0, -0.1, 0.33), (0.4, 0.9, 0.5), (0, 0, 0)), ("box", (0.45, -0.35, 0.11), (0.28, 0.42, 0.22), (0, 0, 0))]),
+                       (steel, [("box", (0, -0.1, 0.03), (0.55, 1.3, 0.04), (0, 0, 0)), ("box", (0, -0.1, 0.62), (0.5, 1.2, 0.05), (0, 0, 0)),
+                                ("cyl", (0, -0.98, 0.7), (0.05, 0.05, 0.56), (0, math.pi / 2, math.pi / 2))]),
+                       (pad, [("box", (0, -0.2, hz), (0.68, 1.3, 0.12), (0, 0, 0)),
+                              ("box", (0, hy + 0.3 * math.cos(0.52), hz + 0.3 * math.sin(0.52)), (0.68, 0.62, 0.12), (0.52, 0, 0))]),
+                       (paper, [("box", (0, -0.25, hz + 0.062), (0.5, 1.2, 0.003), (0, 0, 0)),
+                                ("cyl", (0, -0.98, 0.7), (0.07, 0.07, 0.5), (0, math.pi / 2, math.pi / 2))])])
 
 
 class PrivacyCurtainFactory:
@@ -681,11 +1077,15 @@ class PrivacyCurtainFactory:
     def spawn_asset(self, i):
         L, D = self.L, self.D
         fab = _flat(f"ir_curtain_{int(self.c[1] * 100)}", self.c, 0.9); rail = _flat("ir_desk_frame", (0.75, 0.75, 0.76), 0.35, 0.8)
-        drawn = random.Random(i).uniform(0.35, 0.55)          # half drawn back (clinic r3: a closed curtain hid the couch in every view)
-        pleats = [(0.0, L / 2 - (k + 0.5) * 0.07, 1.3, 0.04 + 0.02 * (k % 2), 0.065, 2.0) for k in range(int(L * drawn / 0.07))]
-        side = [(-D / 2 + (k + 0.5) * 0.12, L / 2, 1.3, 0.11, 0.03 + 0.02 * (k % 2), 2.0) for k in range(int(D / 0.12 * 0.5))]
-        return _parts_object(f"PrivacyCurtainFactory({i}).spawn_asset({i})",
-                             [(fab, pleats + side), (rail, [(0, 0, 2.33, 0.03, L, 0.03), (-D / 4, L / 2, 2.33, D / 2, 0.03, 0.03)])])
+        drawn = random.Random(i).uniform(0.22, 0.38)          # bunched back (clinic r3: a closed curtain hid the couch; r5: still hid the beds)
+        # fabric folds: thin panels zig-zagging +-40 deg; parallel 5 cm slabs read as a folding screen (clinic r5 critic)
+        n1, n2 = int(L * drawn / 0.06), int(D * 0.4 / 0.06)
+        folds = [("box", (0.0, L / 2 - (k + 0.5) * 0.06, 1.32), (0.006, 0.075, 1.98), (0, 0, 0.7 if k % 2 else -0.7)) for k in range(n1)]
+        folds += [("box", (-D / 2 + (k + 0.5) * 0.06, L / 2, 1.32), (0.075, 0.006, 1.98), (0, 0, 0.7 if k % 2 else -0.7)) for k in range(n2)]
+        hooks = [("box", (0, L / 2 - (k + 0.5) * 0.06, 2.31), (0.012, 0.012, 0.03), (0, 0, 0)) for k in range(n1)]
+        return _prims(f"PrivacyCurtainFactory({i}).spawn_asset({i})",
+                      [(fab, folds), (rail, hooks + [("box", (0, 0, 2.33), (0.03, L, 0.03), (0, 0, 0)),
+                                                     ("box", (-D / 4, L / 2, 2.33), (D / 2, 0.03, 0.03), (0, 0, 0))])])
 
 
 class DentalChairFactory:
@@ -777,13 +1177,19 @@ class ExerciseBikeFactory:
         self.c = random.Random(seed).choice(((0.1, 0.1, 0.1), (0.85, 0.85, 0.85), (0.6, 0.1, 0.1)))
 
     def spawn_asset(self, i):
+        # stabiliser feet, a tube frame, a flywheel housing, saddle post, handlebar post with console, cranks; the old version stood a
+        # 0.95 x 0.5 slab under tilted boxes and read as 'a tangle of black parts' (clinic r5 critic)
         body = _flat(f"ir_bike_{int(self.c[0] * 100)}", self.c, 0.4, 0.3); black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
+        tube = lambda p, q, r=0.025: ("cyl", tuple((a + b) / 2 for a, b in zip(p, q)), (r, r, math.dist(p, q)),
+                                      (0, math.atan2(q[0] - p[0], q[2] - p[2]), 0))
         return _prims(f"ExerciseBikeFactory({i}).spawn_asset({i})",
-                      [(body, [("cyl", (0.3, 0, 0.32), (0.25, 0.25, 0.1), (math.pi / 2, 0, 0)), ("box", (0.05, 0, 0.45), (0.12, 0.08, 0.7), (0, 0.5, 0)),
-                               ("box", (0.4, 0, 1.0), (0.15, 0.18, 0.1), (0, -0.4, 0))]),
-                       (black, [("box", (0, 0, 0.03), (0.95, 0.5, 0.06), (0, 0, 0)), ("box", (-0.25, 0, 0.88), (0.25, 0.18, 0.07), (0, 0, 0)),
-                                ("cyl", (-0.2, 0, 0.6), (0.025, 0.025, 0.55), (0, 0.3, 0)), ("cyl", (0.4, 0, 0.75), (0.025, 0.025, 0.5), (0, -0.2, 0)),
-                                ("box", (0.42, 0, 0.98), (0.05, 0.5, 0.03), (0, 0, 0))])])
+                      [(body, [("cyl", (0.22, 0, 0.36), (0.26, 0.26, 0.1), (math.pi / 2, 0, 0)), tube((-0.4, 0, 0.06), (0.22, 0, 0.36), 0.035),
+                               ("box", (0.36, 0, 1.06), (0.08, 0.26, 0.17), (0, -0.5, 0))]),
+                       (black, [("box", (-0.42, 0, 0.03), (0.08, 0.5, 0.06), (0, 0, 0)), ("box", (0.42, 0, 0.03), (0.08, 0.5, 0.06), (0, 0, 0)),
+                                tube((0.42, 0, 0.06), (0.22, 0, 0.36), 0.035), tube((-0.12, 0, 0.36), (-0.24, 0, 0.84)),
+                                ("box", (-0.25, 0, 0.88), (0.26, 0.17, 0.06), (0, 0, 0)), tube((0.22, 0, 0.36), (0.33, 0, 1.0), 0.03),
+                                ("cyl", (0.34, 0, 1.0), (0.016, 0.016, 0.48), (math.pi / 2, 0, 0)),
+                                ("box", (0.05, 0.12, 0.28), (0.18, 0.02, 0.03), (0, 0.6, 0)), ("box", (0.05, -0.12, 0.28), (0.18, 0.02, 0.03), (0, -0.6, 0))])])
 
 
 class ClothingRackFactory:
@@ -799,16 +1205,22 @@ class ClothingRackFactory:
         chrome = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0)
         groups = [(chrome, [(0, 0, 1.5, 0.03, L, 0.03), (0, L / 2 - 0.02, 0.75, 0.03, 0.03, 1.5), (0, -L / 2 + 0.02, 0.75, 0.03, 0.03, 1.5),
                             (0, L / 2 - 0.02, 0.01, 0.45, 0.04, 0.02), (0, -L / 2 + 0.02, 0.01, 0.45, 0.04, 0.02)])]
-        for c in self.pal:
-            garments = []
-            for k in range(self.n):
-                if r.random() < 1 / len(self.pal):
-                    y = -L / 2 + 0.08 + (k + 0.5) * (L - 0.16) / self.n
-                    h = r.uniform(0.6, 1.05)
-                    garments.append((0, y, 1.47 - h / 2, r.uniform(0.38, 0.48), 0.03, h))
-            if garments:
-                groups.append((_flat(f"ir_garment_{int(c[0] * 100)}_{int(c[1] * 100)}", c, 0.85), garments))
-        return _parts_object(f"ClothingRackFactory({i}).spawn_asset({i})", groups)
+        hanger = _flat("ir_hanger_wood", (0.55, 0.4, 0.25), 0.5)
+        hang, by_col = [], {}
+        for k in range(self.n):                                  # a garment: hanger, shoulders, a body, two sleeves (shop r1: 'flat slabs')
+            y = -L / 2 + 0.08 + (k + 0.5) * (L - 0.16) / self.n
+            c = r.choice(self.pal); h = r.uniform(0.55, 1.05); w = r.uniform(0.38, 0.46); t = r.uniform(0.04, 0.08)
+            hang.append(("box", (0, y, 1.45), (0.4, 0.008, 0.02), (0.15, 0, 0)))
+            g = by_col.setdefault(c, [])
+            g.append(("box", (0, y, 1.41), (w * 0.9, t, 0.05), (0, 0, 0)))                       # shoulders
+            g.append(("box", (0, y, 1.41 - h / 2), (w * 0.85, t, h), (0, r.uniform(-0.03, 0.03), 0)))  # body
+            for sx in (1, -1):
+                g.append(("box", (sx * w * 0.5, y, 1.3), (0.09, t * 0.8, 0.28), (0, sx * 0.25, 0)))   # sleeves
+        groups.append((hanger, hang))
+        for c, parts in by_col.items():
+            groups.append((_flat(f"ir_garment_{int(c[0] * 100)}_{int(c[1] * 100)}", c, 0.9), parts))
+        return _prims(f"ClothingRackFactory({i}).spawn_asset({i})", [(m, [("box", (cx, cy, cz), (sx, sy, sz), (0, 0, 0)) for cx, cy, cz, sx, sy, sz in parts])
+                                                                     if parts and len(parts[0]) == 6 else (m, parts) for m, parts in groups])
 
 
 class DisplayTableFactory:
@@ -821,11 +1233,13 @@ class DisplayTableFactory:
         L, r = self.L, self.r
         top = _flat(f"ir_disp_top_{int(self.top[0] * 100)}", self.top, 0.45); steel = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
         stacks = []
-        for k in range(r.randint(3, 5)):
-            c = r.choice(_BRIGHT + ((0.85, 0.82, 0.75), (0.2, 0.25, 0.35)))
-            h = 0.03 * r.randint(2, 6)
-            stacks.append((_flat(f"ir_folded_{int(c[0] * 100)}_{int(c[2] * 100)}", c, 0.85),
-                           [(r.uniform(-0.15, 0.15), -L / 2 + (k + 0.5) * L / 5.2, 0.76 + h / 2, 0.32, 0.26, h)]))
+        for k in range(r.randint(3, 5)):                         # folded garments: 2-6 layers, rounded fold edge, mixed shades
+            x0, y0 = r.uniform(-0.15, 0.15), -L / 2 + (k + 0.5) * L / 5.2
+            base = r.choice(_BRIGHT + ((0.85, 0.82, 0.75), (0.2, 0.25, 0.35)))
+            for j in range(r.randint(2, 6)):
+                c = tuple(min(1.0, max(0.0, v * r.uniform(0.8, 1.15))) for v in base)
+                stacks.append((_flat(f"ir_folded_{int(c[0] * 100)}_{int(c[1] * 100)}_{int(c[2] * 100)}", c, 0.9),
+                               [(x0 + r.uniform(-0.01, 0.01), y0 + r.uniform(-0.01, 0.01), 0.775 + j * 0.032, 0.3, 0.25, 0.028)]))
         return _parts_object(f"DisplayTableFactory({i}).spawn_asset({i})",
                              [(top, [(0, 0, 0.74, 0.8, L, 0.04)]), (steel, [(0, sy * (L / 2 - 0.05), 0.36, 0.7, 0.04, 0.72) for sy in (1, -1)])] + stacks)
 
@@ -850,10 +1264,14 @@ class FittingRoomFactory:
     def spawn_asset(self, i):
         wall = _flat("ir_fitting_wall", (0.9, 0.9, 0.88), 0.5); fab = _flat(f"ir_curtain_{int(self.c[0] * 100)}", self.c, 0.85)
         rail = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
-        pleats = [(0.6, -0.5 + (k + 0.5) * 0.1, 1.15, 0.03 + 0.02 * (k % 2), 0.09, 1.95) for k in range(8)]
-        return _parts_object(f"FittingRoomFactory({i}).spawn_asset({i})",
-                             [(wall, [(0, -0.52, 1.1, 1.2, 0.04, 2.2), (0, 0.52, 1.1, 1.2, 0.04, 2.2), (-0.58, 0, 1.1, 0.04, 1.08, 2.2)]),
-                              (fab, pleats), (rail, [(0.6, 0, 2.15, 0.02, 1.0, 0.02)])])
+        # zig-zag fabric folds over 40-70% of the opening (shop r2: parallel slabs read as an unfinished partition)
+        n = int(1.0 * random.Random(i).uniform(0.4, 0.7) / 0.06)
+        folds = [("box", (0.6, 0.48 - (k + 0.5) * 0.06, 1.15), (0.006, 0.075, 1.95), (0, 0, 0.7 if k % 2 else -0.7)) for k in range(n)]
+        return _prims(f"FittingRoomFactory({i}).spawn_asset({i})",
+                      [(wall, [("box", (0, -0.52, 1.1), (1.2, 0.04, 2.2), (0, 0, 0)), ("box", (0, 0.52, 1.1), (1.2, 0.04, 2.2), (0, 0, 0)),
+                               ("box", (-0.58, 0, 1.1), (0.04, 1.08, 2.2), (0, 0, 0))]),
+                       (fab, folds), (rail, [("box", (0.6, 0, 2.15), (0.02, 1.0, 0.02), (0, 0, 0)),
+                                             ("box", (-0.55, 0.3, 1.7), (0.06, 0.02, 0.02), (0, 0, 0))])])
 
 
 class MenuBoardFactory:
@@ -885,6 +1303,8 @@ class BanquetteFactory:
         r = random.Random(seed)
         self.L = L or r.choice((2.0, 2.4, 3.0, 3.6))
         self.c = r.choice(((0.45, 0.12, 0.1), (0.12, 0.3, 0.25), (0.55, 0.42, 0.25), (0.15, 0.15, 0.17), (0.7, 0.55, 0.2)))
+        if STYLE.get("upholstery_rgb"):                          # the reference's leather / velvet (style eval chain G: random colour)
+            self.c = tuple(STYLE["upholstery_rgb"])
 
     def spawn_asset(self, i):
         L = self.L
@@ -902,6 +1322,15 @@ class CounterStoolFactory:
         r = random.Random(seed)
         self.c = r.choice(((0.1, 0.1, 0.1), (0.85, 0.85, 0.83), (0.2, 0.4, 0.55), (0.75, 0.45, 0.15), (0.55, 0.57, 0.58)))
         self.frame = r.choice(((0.03, 0.03, 0.03), (0.75, 0.75, 0.76)))
+        cs = STYLE.get("chair_style")                            # styled cafés: stools of the chair family (style eval: cream stools)
+        if cs == "bentwood":
+            self.c, self.frame = (0.035, 0.02, 0.012), (0.035, 0.02, 0.012)
+        elif cs == "light_wood":
+            self.c, self.frame = (0.62, 0.46, 0.3), (0.62, 0.46, 0.3)
+        elif cs == "metal_bistro":
+            self.c, self.frame = (0.04, 0.04, 0.045), (0.04, 0.04, 0.045)
+        if STYLE.get("metal_finish") == "brass" and cs:
+            self.frame = (0.55, 0.38, 0.12)
 
     def spawn_asset(self, i):
         seat = _flat(f"ir_stool_seat_{int(self.c[0] * 100)}_{int(self.c[2] * 100)}", self.c, 0.45)
@@ -960,6 +1389,27 @@ class SnackBasketFactory:
                            [("box", (r.uniform(-0.07, 0.07), -W / 2 + 0.05 + k * (W - 0.1) / 6, 0.09 + r.uniform(0, 0.04)),
                              (0.04, 0.14, 0.2), (r.uniform(-0.5, 0.5), r.uniform(-0.3, 0.3), r.uniform(-0.3, 0.3)))]))
         return _prims(f"SnackBasketFactory({i}).spawn_asset({i})", groups)
+
+
+class ProductBoxFactory:
+    """A retail product (front +X): a cereal / cracker / tea / detergent box with a coloured body and a contrasting label band, or a
+    bottle; sizes and colours vary per facing (shop r1: 'the same few primitives in a row')."""
+    def __init__(self, seed):
+        r = random.Random(seed); self.r = r
+        self.kind = r.choice(("cereal", "cracker", "tea", "detergent", "bottle"))
+        self.c1, self.c2 = r.sample(_BRIGHT + ((0.9, 0.85, 0.6), (0.2, 0.15, 0.1), (0.85, 0.85, 0.85)), 2)
+
+    def spawn_asset(self, i):
+        body = _flat(f"ir_prod_{int(self.c1[0] * 100)}_{int(self.c1[1] * 100)}_{int(self.c1[2] * 100)}", self.c1, 0.4)
+        band = _flat(f"ir_prod_{int(self.c2[0] * 100)}_{int(self.c2[1] * 100)}_{int(self.c2[2] * 100)}", self.c2, 0.4)
+        if self.kind == "bottle":
+            h = self.r.uniform(0.2, 0.3)
+            return _prims(f"ProductBoxFactory({i}).spawn_asset({i})", [(body, [("cyl", (0, 0, h * 0.4), (0.035, 0.035, h * 0.8), (0, 0, 0)),
+                                                                              ("cyl", (0, 0, h * 0.9), (0.015, 0.012, h * 0.2), (0, 0, 0))]),
+                                                                      (band, [("cyl", (0, 0, h * 0.45), (0.036, 0.036, h * 0.25), (0, 0, 0))])])
+        d, w, h = {"cereal": (0.07, 0.19, 0.28), "cracker": (0.06, 0.2, 0.12), "tea": (0.07, 0.13, 0.08), "detergent": (0.12, 0.2, 0.25)}[self.kind]
+        return _parts_object(f"ProductBoxFactory({i}).spawn_asset({i})", [(body, [(0, 0, h / 2, d, w, h)]),
+                                                                          (band, [(d / 2 + 0.001, 0, h * 0.55, 0.002, w * 0.9, h * 0.3)])])
 
 
 class PantryRunFactory:
@@ -1038,6 +1488,8 @@ class BreakTableFactory(ConferenceTableFactory):
         r = random.Random(seed)
         self.L = r.choice((1.4, 1.6, 1.8)); self.W = 0.8; self.H = 0.92   # counter height: matches counter stools (r5: 1.06 table vs 0.94 stools)
         self.top = r.choice(((0.92, 0.92, 0.9), (0.15, 0.15, 0.15), (0.62, 0.5, 0.36)))
+        if STYLE.get("table_top") in COUNTER_TOPS:               # a styled café's communal table shares the kit's top (style eval: white laminate)
+            self.top = COUNTER_TOPS[STYLE["table_top"]][0]
 
 
 class GlassPartitionFactory:

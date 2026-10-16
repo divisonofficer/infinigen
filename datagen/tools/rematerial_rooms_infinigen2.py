@@ -51,7 +51,15 @@ def work_floor(rng, vec):
                                           (lambda r, v: fl._layer_rand(r, v, concrete.concrete_rand(r, v)), 1.0)])(rng_func, vec)
 
 
-WORK_FNS = {"wall": fl.wall_material_rand, "floor": work_floor}
+def work_wall(rng, vec):
+    """Painted block or bare concrete (warehouse r1 critic: OSB wainscot and a smooth grey paint read as a garage or den)."""
+    from infinigen2.shaders.base_materials import concrete
+    rng_choice, rng_func = rng.spawn(2)
+    return pf.control.choice(rng_choice, [(_paint((0.8, 0.8, 0.78)), 2.0), (_paint((0.62, 0.66, 0.7)), 1.0),
+                                          (_paint((0.72, 0.7, 0.64)), 1.0)])(rng_func, vec)   # r3: concrete_rand read as stucco
+
+
+WORK_FNS = {"wall": work_wall, "floor": work_floor}
 
 # Offices get painted walls (a dark mottled stone break room read wrong, user 2026-10-16): paint mostly, sometimes a wood-plank or
 # smooth-concrete feature wall; no granite/gravel/flaked/patterned. Floors: carpet, wood planks or plain tiles.
@@ -129,8 +137,8 @@ VENUE_FNS = {"cafe": {"wall": cafe_wall, "floor": cafe_floor},
              **{k: {"wall": _paint(c), "floor": _paint(f)} for k, c, f in (
                  ("clinic-reception", (0.9, 0.92, 0.92), (0.72, 0.74, 0.73)), ("exam-room", (0.88, 0.92, 0.93), (0.78, 0.8, 0.8)),
                  ("dental-room", (0.85, 0.92, 0.93), (0.74, 0.78, 0.79)), ("physio-room", (0.9, 0.91, 0.88), (0.62, 0.66, 0.68)))},
-             **{k: {"wall": _paint(c), "floor": tiles.tile_indoor_ground_rand} for k, c in (
-                 ("convenience", (0.9, 0.9, 0.88)), ("pharmacy", (0.92, 0.94, 0.93)))},
+             **{k: {"wall": _paint(c), "floor": _paint(f)} for k, c, f in (       # commercial vinyl (shop r1: a pink patterned tile)
+                 ("convenience", (0.9, 0.9, 0.88), (0.62, 0.63, 0.63)), ("pharmacy", (0.92, 0.94, 0.93), (0.74, 0.76, 0.75)))},
              "boutique": {"wall": _paint((0.9, 0.87, 0.82)), "floor": fl.wood_planks.wood_planks_rand}}   # office pantry: not carpet (r2), not glossy green herringbone tile (r3)
 
 
@@ -192,12 +200,80 @@ def level_wall_patterns(mat) -> int:
     return n
 
 
+def kit_finish(name, st):
+    """A style-kit wall finish (non-home 20, 2026-10-16: 'a style is the relation between its parts', so every surface reads one kit)."""
+    dark = st.get("mood") == "dark_moody" or st.get("floor_tone") == "dark"
+    if name == "paint_dark":
+        return _paint(st.get("wall_rgb") if st.get("wall_rgb") and sum(st["wall_rgb"]) < 0.6 else (0.045, 0.04, 0.035))
+    if name in ("paint_light", "shelving"):
+        return _paint(st.get("wall_rgb") if st.get("wall_rgb") and sum(st["wall_rgb"]) >= 0.6 else (0.85, 0.83, 0.78))
+    if name == "wood_panel":
+        return (lambda r, v: fl.wood_planks.wood_planks_brown_preset(v)) if dark else (lambda r, v: fl.wood_planks.wood_planks_blonde_preset(v))
+    return {"brick": _bricks, "concrete": fl.concrete.concrete_rand, "tile": tiles.tile_indoor_wall_rand}[name]
+
+
+def kit_floor(st):
+    kind, tone = st.get("floor", "wood"), st.get("floor_tone", "medium")
+    if kind == "wood":
+        return (lambda r, v: fl.wood_planks.wood_planks_blonde_preset(v)) if tone == "pale" else (lambda r, v: fl.wood_planks.wood_planks_brown_preset(v))
+    if kind != "wood" and st.get("floor_rgb"):                # concrete, vinyl, tile: the reference's tone (clinic r6: a random green
+        return _paint(st["floor_rgb"])                          # patterned tile where the kit said pale beige tile)
+    return STYLE_FLOORS[kind]
+
+
+def feature_wall_mask(o):
+    """Faces of the back wall (the one facing the storefront, y max): inward normal -y, on the farthest such plane."""
+    me, mw = o.data, o.matrix_world
+    ny = np.array([(mw.to_3x3() @ p.normal).normalized().y for p in me.polygons])
+    cy = np.array([(mw @ p.center).y for p in me.polygons])
+    back = ny < -0.7
+    if not back.any():
+        return back
+    return back & (cy > cy[back].max() - 0.3)
+
+
+def darken(mat, k):
+    """Multiply every BSDF colour in a material (nested node groups included) by k: keeps grain and pattern, lowers the tone. The 2.0
+    shaders wrap their BSDFs in groups, so a top-level-only edit did nothing (floral_moody s3b: walls stayed orange)."""
+    if mat is None or not mat.use_nodes:
+        return 0
+    seen, n = set(), 0
+    def walk(nt):
+        nonlocal n
+        if nt.name in seen:
+            return
+        seen.add(nt.name)
+        for node in list(nt.nodes):
+            if node.type == "GROUP" and node.node_tree is not None:
+                walk(node.node_tree)
+            elif node.type.startswith("BSDF"):
+                for name in ("Base Color", "Color"):
+                    if name in node.inputs:
+                        sock = node.inputs[name]
+                        mix = nt.nodes.new("ShaderNodeMix"); mix.data_type = "RGBA"; mix.blend_type = "MULTIPLY"
+                        mix.inputs["Factor"].default_value = 1.0
+                        mix.inputs["B"].default_value = (k, k * 0.92, k * 0.85, 1)
+                        if sock.is_linked:
+                            nt.links.new(sock.links[0].from_socket, mix.inputs["A"])
+                        else:
+                            mix.inputs["A"].default_value = sock.default_value
+                        nt.links.new(mix.outputs["Result"], sock)
+                        n += 1
+                        break
+    walk(mat.node_tree)
+    return n
+
+
 STYLE_FNS = {}
+KIT = None
 if a.style:
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     from room_planner import styles as _styles
     _st = json.load(open(a.style)) if a.style.endswith(".json") else _styles.get(a.venue, a.style)   # preset name or spec file
     STYLE_FNS = {"wall": style_walls(_st), "floor": STYLE_FLOORS[_st.get("floor", "wood")]}
+    if isinstance(_st, dict) and _st.get("architecture"):      # a style kit: other walls / feature wall / floor tone together
+        KIT = _st
+        STYLE_FNS = {"wall": kit_finish(_st["architecture"]["other_walls"], _st), "floor": kit_floor(_st)}
 targets = sorted((o for o in bpy.data.objects if o.type == "MESH" and PAT.match(o.name)), key=lambda o: o.name)
 rng = np.random.default_rng(a.seed)
 record = []
@@ -214,6 +290,18 @@ for o in targets:
     after = [s.material.name for s in o.material_slots if s.material]
     rewired = sum(rewire_to_planar(s.material) for s in o.material_slots if s.material)
     assert rewired > 0, f"{o.name}: no m_uv node to rewire"
+    if KIT is not None and (KIT.get("floor_tone") == "dark" or KIT.get("mood") == "dark_moody") and part in ("wall", "floor"):
+        if part == "floor" or KIT["architecture"]["other_walls"] in ("wood_panel",):
+            nd = sum(darken(sl.material, 0.32) for sl in o.material_slots)   # dark stained wood, not orange
+            print(f"[kit] darkened {o.name}: {nd} BSDFs", flush=True)
+    if KIT is not None and part == "wall" and KIT["architecture"]["feature_wall"] != KIT["architecture"]["other_walls"]:
+        (r2,) = rng.spawn(1)
+        fm = kit_finish(KIT["architecture"]["feature_wall"], KIT)(r2, pf.nodes.shader.uv_map(uv_map="m_uv"))
+        mask = feature_wall_mask(o)
+        if mask.any():
+            pf.ops.object.set_material(pf.types.MeshObject(o), material=fm, selection=mask)
+            rewire_to_planar(o.material_slots[-1].material)
+        print(f"[kit] feature wall {KIT['architecture']['feature_wall']}: {int(mask.sum())} faces", flush=True)
     leveled = sum(level_wall_patterns(s.material) for s in o.material_slots if s.material) if part == "wall" else 0
     record.append({"object": o.name, "part": part, "before": before, "after": after, "rewired_uv_nodes": rewired,
                    "leveled_mappings": leveled})

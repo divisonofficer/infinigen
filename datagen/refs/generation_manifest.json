@@ -1,0 +1,322 @@
+{
+  "generator": "built-in image_gen",
+  "synthetic": true,
+  "purpose": "Style-kit extraction for procedural non-home room generation",
+  "limitations": "Synthetic design references. View pairs are approximate generative reinterpretations, not calibrated multiview observations. Requested dimensions are prompt targets rather than measurements.",
+  "images": [
+    {
+      "type": "clinic_reception",
+      "view": 1,
+      "path": "clinic_reception_gen/view1.png",
+      "synthetic": true,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Clinic reception and waiting room, about 35m\u00b2, 2.9m ceiling. View1: wide shot from entrance toward reception counter, the counter's public face directly faces entrance, clear staff workspace behind counter. Waiting seats face the counter in a coherent waiting group, with a low magazine table and plants. Warm neutral beige and light wood tones, modest wall art, indirectly lit ceiling cove and soft natural fill. Monitor and a few papers on staff side; small cup on table, one chair slightly pulled out. Believable compact welcoming clinic interior, no extra rooms.",
+      "reference": null,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2417029,
+      "sha256": "817a5ffa605d44b436be1481cd8052ea17e4f669f7de6582078bbfccd6a4285d"
+    },
+    {
+      "type": "exam_room",
+      "view": 1,
+      "path": "exam_room_gen/view1.png",
+      "synthetic": true,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. GP examination room about 24m\u00b2, ceiling 2.9m. View1: wide from entrance toward exam zone. Medical examination couch along one wall with disposable PAPER ROLL and ADJUSTABLE raised backrest, a ceiling-track privacy curtain HALF-DRAWN around the couch. Along another wall sink and white cabinet run, small doctor's desk with monitor and a patient chair. Light warm gray washable floor, white/light blue clinical palette, even ceiling panel lights, natural window fill. Practical clear walking space, not an operating theater. A few papers on desk and slightly pulled out patient chair. Show couch, curtain track, sink and desk in one readable room.",
+      "reference": null,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2073909,
+      "sha256": "e77e8c892384a0eaf3a5ee461242e3aa958f681943c88d4fec8a76bed51a9fe2"
+    },
+    {
+      "type": "clinic_reception",
+      "view": 2,
+      "path": "clinic_reception_gen/view2.png",
+      "synthetic": true,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photograph of SAME clinic reception/waiting room in reference, new view2 from a side corner close to reception counter, looking diagonally over the waiting area with public counter front, monitor and staff workspace behind it clearly visible. Preserve warm light oak fluted counter, beige armchairs and sofa, magazine table, plants, wall art and softly glowing indirect cove ceiling. Single 35m\u00b2 room, ceiling 2.9m, eye level 1.5m, 26mm lens. Orient waiting chairs to give seated patients a clear view toward counter; realistic magazines, cup and papers, a chair at slight angle. Make camera angle distinctly different from entrance-wide shot and show counter work surface and seating in more detail. No people, brands, logos or readable text.",
+      "reference": "clinic_reception_gen/view1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2348862,
+      "sha256": "e807dea2fedb1d28eb9c409846507f28894f908a15c0c9d4d0a044dc6b90e88f"
+    },
+    {
+      "type": "exam_room",
+      "view": 2,
+      "path": "exam_room_gen/view2.png",
+      "synthetic": true,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photo of SAME GP exam room in reference. View2 from a different side angle closer to examination couch, eye level 1.5m, 28mm lens. Show blue medical examination couch in three-quarter side view with raised adjustable backrest, white disposable paper covering fed from paper roll, ceiling-mounted curtain track and half-drawn pale blue privacy curtain around it. Preserve pale blue wall, white cabinet run and sink at side, gray washable floor, small doctor's desk/monitor and patient chair at frame edge, ceiling panel lights and daylight. Single 24m\u00b2 room with 2.9m ceiling; a few papers on desk and realistically placed medical equipment. No people, brands, logos or readable writing. Keep clear practical working access to couch; no extra rooms.",
+      "reference": "exam_room_gen/view1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2212560,
+      "sha256": "27718e268a354a1be0279a0699e4c158fb490b35ad4aff79d2799273ac6ae144"
+    },
+    {
+      "type": "dental_room",
+      "view": 1,
+      "path": "dental_room_gen/view1.png",
+      "synthetic": true,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Dental treatment room, single 25m\u00b2 room, ceiling 2.9m. View1: wide shot from entrance toward a dental unit chair in MIDDLE of room, with integrated dental instrument tray and hoses, articulated operating light arm above chair. White wall cabinet run and sink, dentist's wheeled stool beside chair, monitor or X-ray viewer on wall. White/pale aqua clean palette, washable light gray floor, bright even ceiling lights and a little window fill. Instruments and gloves neatly but naturally positioned, no patient. Clearly distinguish dental chair from ordinary recliner, preserve clear space around it, realistic modest clinic room.",
+      "reference": null,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2002618,
+      "sha256": "4d9d805d1ee51720ff2be873b3e16754378fb6dd63382f21021f05aff6539ba5"
+    },
+    {
+      "type": "physio_room",
+      "view": 1,
+      "path": "physio_room_gen/view1.png",
+      "synthetic": true,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Physiotherapy room about 42m\u00b2, ceiling 3m. View1: wide shot from entrance toward treatment and exercise zones. TWO or THREE treatment beds along wall, ceiling track privacy CURTAINS BETWEEN beds, a set of PARALLEL BARS in open floor zone, wooden WALL BARS fixed to wall, an exercise bike, exercise mats and balls neatly at side. Bright gym feel, pale neutral walls, light wood accents and resilient vinyl floor, broad even ceiling lights with natural daylight. Beds have folded towels and one paper sheet, water bottle near bike, natural mild signs of use. Clear circulation, credible compact rehabilitation clinic, not a large fitness club. All required equipment visible.",
+      "reference": null,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2162795,
+      "sha256": "055ae10f72ed314e0fd11ad2dfd1737d46c288147290c49cd9d8c00669786f46"
+    },
+    {
+      "type": "dental_room",
+      "view": 2,
+      "path": "dental_room_gen/view2.png",
+      "synthetic": true,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic interior architectural photograph of SAME dental room in reference. View2: new camera angle at opposite side of dental chair, three-quarter front/side view in more detail, eye level 1.5m, 28mm lens. Show shaped blue dental unit chair with headrest and reclining back, integrated instrument tray and hanging handpiece hoses, articulated operating light arm above, dentist's wheeled stool next to chair, white cabinetry and sink behind, dental X-ray monitor. Maintain white/pale aqua palette, light gray washable floor, bright even ceiling panel lighting, same 25m\u00b2 single room and 2.9m ceiling. Chair is in center of room with working access around it. No people, brand logos, readable writing, collage or redesign.",
+      "reference": "dental_room_gen/view1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2024495,
+      "sha256": "deca789af0efc5c5bf65122896c59b467d0d76803901e4992645017e7f22f797"
+    },
+    {
+      "type": "physio_room",
+      "view": 2,
+      "path": "physio_room_gen/view2.png",
+      "synthetic": true,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photo of SAME physiotherapy room in reference. View2: new angle from near exercise bike facing diagonally across parallel bars toward three treatment beds and curtain partitions; eye level 1.5m, 26mm lens. Foreground/detail includes exercise bike, mat and therapy ball, wooden wall bars fixed to side wall; parallel walking bars and beds with adjustable frames clearly visible. Preserve pale sage beds, folded towels, ceiling track curtains between beds, bright gym feel, neutral walls, gray resilient floor, plants, daylight and ceiling panels. Same 42m\u00b2 single room, 3m ceiling. Natural minor signs of use, no people, logos or readable text. Coherent practical exercise/treatment circulation, strongly different view from entrance.",
+      "reference": "physio_room_gen/view1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2171765,
+      "sha256": "321d1bef02aa75e725ae355944e5a8ea7f6593557b72cd2e1d9eb74ec17ea34d"
+    },
+    {
+      "type": "convenience_store",
+      "view": 1,
+      "path": "convenience_store_gen/view1.png",
+      "synthetic": true,
+      "prompt": "Use case: precise-object-edit. Edit the provided convenience store image. Preserve the camera, architecture, lighting, gray tile floor, shelf rows, checkout counter by entrance, red shopping baskets and glass-door beverage fridges. Change ONLY every product package/label and any visible signage: remove ALL text, lettering, glyphs, brand marks and logos. Replace product fronts with realistic PLAIN SOLID COLOUR packaging, simple two-tone blocks or small abstract color bands without symbols. Drinks bottles and cans with blank color labels. Snack bags and boxes must have entirely TEXTLESS fronts; no pseudo letters or decorative typography anywhere. Keep shelves richly stocked and natural slight misalignment. Photorealistic materials, same landscape frame. No people.",
+      "reference": null,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2246779,
+      "sha256": "8c7a8ff311e33de3943844896f2c9ba238e39ee33dc94945d1485993946b5f76"
+    },
+    {
+      "type": "pharmacy",
+      "view": 1,
+      "path": "pharmacy_gen/view1.png",
+      "synthetic": true,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Small pharmacy, single 55m\u00b2 sales/dispensing room, ceiling 2.9m. View1: wide from entrance toward dispensing counter. White dispensing counter faces public with dense MEDICINE BOX SHELVING BEHIND it, hundreds of small unbranded plain/muted color-coded boxes. In front, a few LOW OTC GONDOLAS stocked with bottles and boxes; a small waiting BENCH along side wall. Clean WHITE/GREEN palette, restrained sage/lime accents, white commercial floor, even ceiling panel lights, practical counter monitor and a few papers. Clear public aisles and plausible staff side behind dispensing counter. All boxes generic, no readable text, symbols as minimal color blocks, no people or brand logos.",
+      "reference": null,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2094309,
+      "sha256": "2e0843b15c31079e201a1a9a0599ffeee1ff565cccdb923119d2bc9a8b6b4981"
+    },
+    {
+      "type": "pharmacy",
+      "view": 2,
+      "path": "pharmacy_gen/view2.png",
+      "synthetic": true,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photo of SAME white/green pharmacy in reference. View2: new side angle closer to dispensing counter, eye level 1.5m, 28mm lens. Show densely packed wall shelving of generic small medicine boxes behind counter, clear staff workspace with monitor and papers, counter surface in detail; foreground edges of stocked OTC gondolas and waiting bench along window. Preserve white cabinetry, sage/lime green accents, pale commercial floor and even ceiling panels, same 55m\u00b2 single room, 2.9m ceiling. Medicine box fronts have simple plain white and muted color blocks, no letters or numbers or logos. Natural uneven stock and small paper on counter. No people, brands, readable text, collage or new rooms.",
+      "reference": "pharmacy_gen/view1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2033977,
+      "sha256": "86947b6ccfd082057f3655a9b09cc82a137e68b4aaffb39b97647d6699c6f754"
+    },
+    {
+      "type": "convenience_store",
+      "view": 2,
+      "path": "convenience_store_gen/view2.png",
+      "synthetic": true,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photo of SAME convenience store in reference. View2: camera halfway down an aisle, angled toward the back-wall glass-door beverage fridges and stocked gondola shelves close up; eye level 1.5m, 28mm lens. Preserve parallel low gondolas, gray/white commercial tile floor, bright even ceiling panel lighting, densely stocked colorful packages, partial checkout counter by entrance and red baskets in distant side. ALL products have PLAIN SOLID COLOUR PACKAGING or simple color bands; NO LETTERS, NUMBERS, GLYPHS, BRAND SYMBOLS or LOGOS on bags, boxes, cans or bottles. Entirely textless product fronts. Natural slightly uneven stocking. Same 65m\u00b2 single room and 3m ceiling, no people or collage. Show shelf construction and products/fridge contents in detail.",
+      "reference": "convenience_store_gen/view1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2347655,
+      "sha256": "5e9932543891185e3a849724596c38c4b147258050deadd56e3ce496a6faf4d2"
+    },
+    {
+      "type": "boutique",
+      "view": 1,
+      "path": "boutique_gen/view1.png",
+      "synthetic": true,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Small clothing boutique, single room about 55m\u00b2, 3m ceiling. View1: wide shot from entrance into main merchandise zone. CLOTHING RAILS along walls densely but neatly holding varied-colour shirts, jackets and dresses on hangers, central DISPLAY TABLES with folded knits, FULL-LENGTH MIRROR, a fitting room CURTAIN at rear, small CHECKOUT COUNTER. Warm track lighting, natural WOOD FLOOR, neutral plaster walls and simple black metal/wood furniture family, modest plant. Natural use: a slightly offset knit stack, cup and plain paper at checkout, some hangers not aligned. No mannequins needed, no people, brands, logos or readable text on clothes, tags or signs. Believable mid-priced neighborhood boutique, coherent circulation.",
+      "reference": null,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2596658,
+      "sha256": "c613f19d7ac75b847fd8397873fa1a4c0050e763b175e69dc4a1f341d10ea66d"
+    },
+    {
+      "type": "boutique",
+      "view": 2,
+      "path": "boutique_gen/view2.png",
+      "synthetic": true,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural interior photo of SAME boutique in reference. View2: new side angle near checkout looking diagonally across central folded-knit display tables and wall clothing rails, eye level 1.5m, 28mm lens. Bring varied coloured clothes on hangers and neatly folded textured sweaters into foreground detail; show tall full-length mirror and fitting-room curtain. Preserve warm track lighting, natural wood floor, black metal/wood furniture, warm beige walls and plants, single 55m\u00b2 room with 3m ceiling. Checkout counter has plain paper and cup; slight unevenness in hanger spacing and folds. No people, mannequins, brand logos, readable text or signs. Different camera direction with consistent design.",
+      "reference": "boutique_gen/view1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2701246,
+      "sha256": "77f5f4c6cbbec91e3b9f8b8a3d88ade191799e256113efdefb8003aa7135f3b5"
+    },
+    {
+      "type": "warehouse_packing",
+      "view": 1,
+      "path": "warehouse_packing_gen/view1.png",
+      "synthetic": true,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Packing/dispatch area of SMALL e-commerce warehouse, SINGLE room about 80m\u00b2, ceiling 4.8m with visible simple industrial structure. View1: wide from personnel entrance toward main packing zone. TWO OR THREE long packing workbenches IN A ROW, stools at benches, tape dispensers, cardboard boxes being packed, weighing scales and packing paper. Metal shelving racks filled with cardboard boxes along walls, pallets of stacked boxes near a closed ROLLER LOADING DOOR, utility cart in aisle. Bright even fluorescent strip lighting, sealed concrete floor, practical work circulation, no giant logistics hall. Natural signs of work: open boxes, loose packing paper, tape roll, slightly pulled-out stool, boxes not perfectly aligned. All boxes have BLANK labels with NO text, barcodes or logos.",
+      "reference": null,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2446487,
+      "sha256": "5aef6088baabbe8f53af1cd21fe9242a5223eb7939735d30eeff189408217f83"
+    },
+    {
+      "type": "warehouse_packing",
+      "view": 2,
+      "path": "warehouse_packing_gen/view2.png",
+      "synthetic": true,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photo of SAME small e-commerce packing warehouse in reference. View2: new eye-level 1.5m, 28mm angle across packing bench surfaces in close detail: two or three long workbenches in a row, tape dispenser, weighing scale, open cardboard carton being packed, kraft paper, flattened boxes and pulled-out stool. Show metal box shelving along wall and utility cart; roller loading door with pallets of stacked boxes remains visible in background. Preserve bright even fluorescent strips, exposed structure 4.8m high, sealed concrete floor, same 80m\u00b2 single room. Generic blank box labels without any text, barcodes or logos. Natural working disorder with clear aisles. No people, collage, giant hall or extra rooms.",
+      "reference": "warehouse_packing_gen/view1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2443404,
+      "sha256": "c984e4ab42fdbf8a6fd8447817e0c58c6379b6cddbeae765b7b90a87388d081b"
+    },
+    {
+      "type": "warehouse_storage",
+      "view": 1,
+      "path": "warehouse_storage_gen/view1.png",
+      "synthetic": true,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Small storage warehouse, SINGLE room about 85m\u00b2, ceiling 5m, exposed STEEL ROOF structure. View1: wide from entrance into parallel aisles of TALL STEEL PALLET RACKS/SHELVING, densely stocked with varied cardboard boxes and plastic bins. Several pallets of boxes on floor at aisle ends, a leaning LADDER, a HAND TRUCK, an industrial FAN, overhead HIGH-BAY lights. Concrete floor with FADED MARKING LINES, gray industrial walls, blue/gray uprights and orange rack beams. Modest believable local warehouse footprint, not enormous distribution center; racks about 3.5m high and clear walking aisles. Natural slight stocking irregularity and scuffed surfaces. NO text or logos or barcodes on boxes; plain blank labels.",
+      "reference": null,
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2607662,
+      "sha256": "5b9fec80cbc3eeb9fa423114ab78230437663f86dbb3a5cde3ae176bb86fbb50"
+    },
+    {
+      "type": "warehouse_storage",
+      "view": 2,
+      "path": "warehouse_storage_gen/view2.png",
+      "synthetic": true,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural interior photo of SAME small storage warehouse in reference. View2: new oblique eye-level 1.5m, 28mm angle from side aisle close to blue steel rack uprights and orange crossbeams, with stocked cardboard boxes, plastic bins and wood pallets in foreground detail. Reveal parallel rack aisles behind; include the leaning aluminum ladder, hand truck and industrial fan at side, a few pallets on floor. Preserve exposed steel roof, overhead high-bay lights, concrete floor with worn yellow marking lines, gray walls, same single 60\u201390m\u00b2 warehouse with 5m ceiling. Box labels entirely BLANK, no readable words, numbers, logos or barcodes. Natural scuffs and irregular stacking, unobstructed practical aisle. No people, collage, new architecture or huge warehouse expansion. Make perspective visibly different from entrance-centered reference.",
+      "reference": "warehouse_storage_gen/view1.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2545462,
+      "sha256": "1638b019ea3a661b28814f8a919f6ea64bf73eaad10a8575b5f8731907bd9628"
+    }
+  ],
+  "prompt_history": [
+    {
+      "type": "clinic_reception",
+      "view": 1,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Clinic reception and waiting room, about 35m\u00b2, 2.9m ceiling. View1: wide shot from entrance toward reception counter, the counter's public face directly faces entrance, clear staff workspace behind counter. Waiting seats face the counter in a coherent waiting group, with a low magazine table and plants. Warm neutral beige and light wood tones, modest wall art, indirectly lit ceiling cove and soft natural fill. Monitor and a few papers on staff side; small cup on table, one chair slightly pulled out. Believable compact welcoming clinic interior, no extra rooms."
+    },
+    {
+      "type": "exam_room",
+      "view": 1,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. GP examination room about 24m\u00b2, ceiling 2.9m. View1: wide from entrance toward exam zone. Medical examination couch along one wall with disposable PAPER ROLL and ADJUSTABLE raised backrest, a ceiling-track privacy curtain HALF-DRAWN around the couch. Along another wall sink and white cabinet run, small doctor's desk with monitor and a patient chair. Light warm gray washable floor, white/light blue clinical palette, even ceiling panel lights, natural window fill. Practical clear walking space, not an operating theater. A few papers on desk and slightly pulled out patient chair. Show couch, curtain track, sink and desk in one readable room."
+    },
+    {
+      "type": "clinic_reception",
+      "view": 2,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photograph of SAME clinic reception/waiting room in reference, new view2 from a side corner close to reception counter, looking diagonally over the waiting area with public counter front, monitor and staff workspace behind it clearly visible. Preserve warm light oak fluted counter, beige armchairs and sofa, magazine table, plants, wall art and softly glowing indirect cove ceiling. Single 35m\u00b2 room, ceiling 2.9m, eye level 1.5m, 26mm lens. Orient waiting chairs to give seated patients a clear view toward counter; realistic magazines, cup and papers, a chair at slight angle. Make camera angle distinctly different from entrance-wide shot and show counter work surface and seating in more detail. No people, brands, logos or readable text."
+    },
+    {
+      "type": "exam_room",
+      "view": 2,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photo of SAME GP exam room in reference. View2 from a different side angle closer to examination couch, eye level 1.5m, 28mm lens. Show blue medical examination couch in three-quarter side view with raised adjustable backrest, white disposable paper covering fed from paper roll, ceiling-mounted curtain track and half-drawn pale blue privacy curtain around it. Preserve pale blue wall, white cabinet run and sink at side, gray washable floor, small doctor's desk/monitor and patient chair at frame edge, ceiling panel lights and daylight. Single 24m\u00b2 room with 2.9m ceiling; a few papers on desk and realistically placed medical equipment. No people, brands, logos or readable writing. Keep clear practical working access to couch; no extra rooms."
+    },
+    {
+      "type": "dental_room",
+      "view": 1,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Dental treatment room, single 25m\u00b2 room, ceiling 2.9m. View1: wide shot from entrance toward a dental unit chair in MIDDLE of room, with integrated dental instrument tray and hoses, articulated operating light arm above chair. White wall cabinet run and sink, dentist's wheeled stool beside chair, monitor or X-ray viewer on wall. White/pale aqua clean palette, washable light gray floor, bright even ceiling lights and a little window fill. Instruments and gloves neatly but naturally positioned, no patient. Clearly distinguish dental chair from ordinary recliner, preserve clear space around it, realistic modest clinic room."
+    },
+    {
+      "type": "physio_room",
+      "view": 1,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Physiotherapy room about 42m\u00b2, ceiling 3m. View1: wide shot from entrance toward treatment and exercise zones. TWO or THREE treatment beds along wall, ceiling track privacy CURTAINS BETWEEN beds, a set of PARALLEL BARS in open floor zone, wooden WALL BARS fixed to wall, an exercise bike, exercise mats and balls neatly at side. Bright gym feel, pale neutral walls, light wood accents and resilient vinyl floor, broad even ceiling lights with natural daylight. Beds have folded towels and one paper sheet, water bottle near bike, natural mild signs of use. Clear circulation, credible compact rehabilitation clinic, not a large fitness club. All required equipment visible."
+    },
+    {
+      "type": "dental_room",
+      "view": 2,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic interior architectural photograph of SAME dental room in reference. View2: new camera angle at opposite side of dental chair, three-quarter front/side view in more detail, eye level 1.5m, 28mm lens. Show shaped blue dental unit chair with headrest and reclining back, integrated instrument tray and hanging handpiece hoses, articulated operating light arm above, dentist's wheeled stool next to chair, white cabinetry and sink behind, dental X-ray monitor. Maintain white/pale aqua palette, light gray washable floor, bright even ceiling panel lighting, same 25m\u00b2 single room and 2.9m ceiling. Chair is in center of room with working access around it. No people, brand logos, readable writing, collage or redesign."
+    },
+    {
+      "type": "physio_room",
+      "view": 2,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photo of SAME physiotherapy room in reference. View2: new angle from near exercise bike facing diagonally across parallel bars toward three treatment beds and curtain partitions; eye level 1.5m, 26mm lens. Foreground/detail includes exercise bike, mat and therapy ball, wooden wall bars fixed to side wall; parallel walking bars and beds with adjustable frames clearly visible. Preserve pale sage beds, folded towels, ceiling track curtains between beds, bright gym feel, neutral walls, gray resilient floor, plants, daylight and ceiling panels. Same 42m\u00b2 single room, 3m ceiling. Natural minor signs of use, no people, logos or readable text. Coherent practical exercise/treatment circulation, strongly different view from entrance."
+    },
+    {
+      "type": "convenience_store",
+      "view": 1,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Small neighborhood convenience store, single rectangular sales room about 65m\u00b2, ceiling 3m. View1: wide from glass street entrance toward main aisles. Several parallel rows of stocked low GONDOLA shelving with colorful unbranded snack packages and household goods, a continuous run of GLASS-DOOR DRINK FRIDGES on BACK WALL visibly stocked with bottles/cans. CHECKOUT COUNTER and register positioned BY ENTRANCE in foreground at side, stack of shopping baskets nearby. Bright even commercial ceiling lighting, gray/white commercial tile floor, realistic modest scale and clear aisles. Natural uneven stocking, a receipt-sized blank paper on counter, no empty shelves, no people, no readable words or brand marks."
+    },
+    {
+      "type": "pharmacy",
+      "view": 1,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Small pharmacy, single 55m\u00b2 sales/dispensing room, ceiling 2.9m. View1: wide from entrance toward dispensing counter. White dispensing counter faces public with dense MEDICINE BOX SHELVING BEHIND it, hundreds of small unbranded plain/muted color-coded boxes. In front, a few LOW OTC GONDOLAS stocked with bottles and boxes; a small waiting BENCH along side wall. Clean WHITE/GREEN palette, restrained sage/lime accents, white commercial floor, even ceiling panel lights, practical counter monitor and a few papers. Clear public aisles and plausible staff side behind dispensing counter. All boxes generic, no readable text, symbols as minimal color blocks, no people or brand logos."
+    },
+    {
+      "type": "convenience_store",
+      "view": 1,
+      "revision": true,
+      "prompt": "Use case: precise-object-edit. Edit the provided convenience store image. Preserve the camera, architecture, lighting, gray tile floor, shelf rows, checkout counter by entrance, red shopping baskets and glass-door beverage fridges. Change ONLY every product package/label and any visible signage: remove ALL text, lettering, glyphs, brand marks and logos. Replace product fronts with realistic PLAIN SOLID COLOUR packaging, simple two-tone blocks or small abstract color bands without symbols. Drinks bottles and cans with blank color labels. Snack bags and boxes must have entirely TEXTLESS fronts; no pseudo letters or decorative typography anywhere. Keep shelves richly stocked and natural slight misalignment. Photorealistic materials, same landscape frame. No people."
+    },
+    {
+      "type": "pharmacy",
+      "view": 2,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photo of SAME white/green pharmacy in reference. View2: new side angle closer to dispensing counter, eye level 1.5m, 28mm lens. Show densely packed wall shelving of generic small medicine boxes behind counter, clear staff workspace with monitor and papers, counter surface in detail; foreground edges of stocked OTC gondolas and waiting bench along window. Preserve white cabinetry, sage/lime green accents, pale commercial floor and even ceiling panels, same 55m\u00b2 single room, 2.9m ceiling. Medicine box fronts have simple plain white and muted color blocks, no letters or numbers or logos. Natural uneven stock and small paper on counter. No people, brands, readable text, collage or new rooms."
+    },
+    {
+      "type": "convenience_store",
+      "view": 2,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photo of SAME convenience store in reference. View2: camera halfway down an aisle, angled toward the back-wall glass-door beverage fridges and stocked gondola shelves close up; eye level 1.5m, 28mm lens. Preserve parallel low gondolas, gray/white commercial tile floor, bright even ceiling panel lighting, densely stocked colorful packages, partial checkout counter by entrance and red baskets in distant side. ALL products have PLAIN SOLID COLOUR PACKAGING or simple color bands; NO LETTERS, NUMBERS, GLYPHS, BRAND SYMBOLS or LOGOS on bags, boxes, cans or bottles. Entirely textless product fronts. Natural slightly uneven stocking. Same 65m\u00b2 single room and 3m ceiling, no people or collage. Show shelf construction and products/fridge contents in detail."
+    },
+    {
+      "type": "boutique",
+      "view": 1,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Small clothing boutique, single room about 55m\u00b2, 3m ceiling. View1: wide shot from entrance into main merchandise zone. CLOTHING RAILS along walls densely but neatly holding varied-colour shirts, jackets and dresses on hangers, central DISPLAY TABLES with folded knits, FULL-LENGTH MIRROR, a fitting room CURTAIN at rear, small CHECKOUT COUNTER. Warm track lighting, natural WOOD FLOOR, neutral plaster walls and simple black metal/wood furniture family, modest plant. Natural use: a slightly offset knit stack, cup and plain paper at checkout, some hangers not aligned. No mannequins needed, no people, brands, logos or readable text on clothes, tags or signs. Believable mid-priced neighborhood boutique, coherent circulation."
+    },
+    {
+      "type": "boutique",
+      "view": 2,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural interior photo of SAME boutique in reference. View2: new side angle near checkout looking diagonally across central folded-knit display tables and wall clothing rails, eye level 1.5m, 28mm lens. Bring varied coloured clothes on hangers and neatly folded textured sweaters into foreground detail; show tall full-length mirror and fitting-room curtain. Preserve warm track lighting, natural wood floor, black metal/wood furniture, warm beige walls and plants, single 55m\u00b2 room with 3m ceiling. Checkout counter has plain paper and cup; slight unevenness in hanger spacing and folds. No people, mannequins, brand logos, readable text or signs. Different camera direction with consistent design."
+    },
+    {
+      "type": "warehouse_packing",
+      "view": 1,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Packing/dispatch area of SMALL e-commerce warehouse, SINGLE room about 80m\u00b2, ceiling 4.8m with visible simple industrial structure. View1: wide from personnel entrance toward main packing zone. TWO OR THREE long packing workbenches IN A ROW, stools at benches, tape dispensers, cardboard boxes being packed, weighing scales and packing paper. Metal shelving racks filled with cardboard boxes along walls, pallets of stacked boxes near a closed ROLLER LOADING DOOR, utility cart in aisle. Bright even fluorescent strip lighting, sealed concrete floor, practical work circulation, no giant logistics hall. Natural signs of work: open boxes, loose packing paper, tape roll, slightly pulled-out stool, boxes not perfectly aligned. All boxes have BLANK labels with NO text, barcodes or logos."
+    },
+    {
+      "type": "warehouse_packing",
+      "view": 2,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photo of SAME small e-commerce packing warehouse in reference. View2: new eye-level 1.5m, 28mm angle across packing bench surfaces in close detail: two or three long workbenches in a row, tape dispenser, weighing scale, open cardboard carton being packed, kraft paper, flattened boxes and pulled-out stool. Show metal box shelving along wall and utility cart; roller loading door with pallets of stacked boxes remains visible in background. Preserve bright even fluorescent strips, exposed structure 4.8m high, sealed concrete floor, same 80m\u00b2 single room. Generic blank box labels without any text, barcodes or logos. Natural working disorder with clear aisles. No people, collage, giant hall or extra rooms."
+    },
+    {
+      "type": "warehouse_storage",
+      "view": 1,
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape photorealistic interior architectural photograph, eye level about 1.5m, 26mm lens. Single room, realistic materials and practical layout. No people, brand logos or readable text. Labels and packaging are unbranded, no legible writing. Use reproducible furniture, equipment, shelving and lighting, modest decor rather than elaborate ornament. Natural signs of use: a few papers, cup, slightly pulled-out chair, items not perfectly aligned. Small storage warehouse, SINGLE room about 85m\u00b2, ceiling 5m, exposed STEEL ROOF structure. View1: wide from entrance into parallel aisles of TALL STEEL PALLET RACKS/SHELVING, densely stocked with varied cardboard boxes and plastic bins. Several pallets of boxes on floor at aisle ends, a leaning LADDER, a HAND TRUCK, an industrial FAN, overhead HIGH-BAY lights. Concrete floor with FADED MARKING LINES, gray industrial walls, blue/gray uprights and orange rack beams. Modest believable local warehouse footprint, not enormous distribution center; racks about 3.5m high and clear walking aisles. Natural slight stocking irregularity and scuffed surfaces. NO text or logos or barcodes on boxes; plain blank labels."
+    },
+    {
+      "type": "warehouse_storage",
+      "view": 2,
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural interior photo of SAME small storage warehouse in reference. View2: new oblique eye-level 1.5m, 28mm angle from side aisle close to blue steel rack uprights and orange crossbeams, with stocked cardboard boxes, plastic bins and wood pallets in foreground detail. Reveal parallel rack aisles behind; include the leaning aluminum ladder, hand truck and industrial fan at side, a few pallets on floor. Preserve exposed steel roof, overhead high-bay lights, concrete floor with worn yellow marking lines, gray walls, same single 60\u201390m\u00b2 warehouse with 5m ceiling. Box labels entirely BLANK, no readable words, numbers, logos or barcodes. Natural scuffs and irregular stacking, unobstructed practical aisle. No people, collage, new architecture or huge warehouse expansion. Make perspective visibly different from entrance-centered reference."
+    }
+  ]
+}

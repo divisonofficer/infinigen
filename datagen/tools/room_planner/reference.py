@@ -40,7 +40,8 @@ def spec_tool(venue):
         "description": "Submit what the reference space is made of, in the pipeline's own vocabulary.",
         "input_schema": {
             "type": "object",
-            "required": ["brief", "wall", "floor", "counter_front", "counter_top", "backbar", "fixture", "must_have"],
+            "required": ["brief", "wall", "floor", "counter_front", "counter_top", "backbar", "fixture", "must_have", "concept", "relations",
+                         "architecture", "lighting", "density", "mood", "floor_tone", "table_top", "chair_style", "decor", "metal_finish"],
             "properties": {
                 "brief": {"type": "string", "description": "3-5 sentences: the zones of the space and how they relate to the window, walls "
                                                            "and counter; the mood; what sits on the surfaces"},
@@ -55,6 +56,36 @@ def spec_tool(venue):
                 "must_have": {"type": "array", "items": {"type": "object", "required": ["category", "count"], "properties": {
                     "category": {"type": "string", "enum": cats}, "count": {"type": "integer", "minimum": 1, "maximum": 20},
                     "where": {"type": "string"}}}},
+                "mood": {"type": "string", "enum": ["bright_daylight", "warm_evening", "dark_moody"],
+                         "description": "overall light: bright daylit / warm evening light with glowing fixtures / dark, low, candle-like"},
+                "floor_tone": {"type": "string", "enum": ["pale", "medium", "dark"], "description": "floor lightness (pale oak, mid wood, dark wood)"},
+                "floor_srgb": {"type": "array", "items": {"type": "number"}, "minItems": 3, "maxItems": 3, "description": "dominant floor colour, sRGB 0-1"},
+                "upholstery_srgb": {"type": "array", "items": {"type": "number"}, "minItems": 3, "maxItems": 3,
+                                    "description": "colour of the main upholstery (banquette, upholstered chairs), sRGB 0-1; omit if none"},
+                "table_top": {"type": "string", "enum": ["light_wood", "dark_wood", "white_stone", "black_stone", "butcher_block"]},
+                "chair_style": {"type": "string", "enum": ["bentwood", "light_wood", "metal_bistro", "upholstered", "mixed"]},
+                "decor": {"type": "array", "items": {"type": "string", "enum": ["framed_art", "hanging_plants", "potted_plants", "rugs", "candles",
+                                                                               "flowers"]}},
+                "concept": {"type": "string", "description": "the design concept in one sentence (what ties light, materials and furniture together)"},
+                "relations": {"type": "array", "items": {"type": "string"}, "minItems": 3,
+                              "description": "how the elements depend on each other, e.g. 'dark wood + low 2200K light + candles + dense seating = intimate'"},
+                "architecture": {"type": "object", "required": ["ceiling", "feature_wall", "other_walls"], "properties": {
+                    "ceiling": {"type": "string", "enum": ["plaster_white", "exposed_dark", "exposed_white", "timber_slats", "dark_painted"]},
+                    "feature_wall": {"type": "string", "enum": ["brick", "wood_panel", "tile", "paint_dark", "paint_light", "concrete", "shelving"]},
+                    "other_walls": {"type": "string", "enum": ["brick", "wood_panel", "tile", "paint_dark", "paint_light", "concrete"]},
+                    "ducts_visible": {"type": "boolean"}}},
+                "lighting": {"type": "object", "required": ["color_temp_k", "ambient", "daylight", "key_fixture"], "properties": {
+                    "color_temp_k": {"type": "integer", "minimum": 2000, "maximum": 6000},
+                    "ambient": {"type": "string", "enum": ["low", "medium", "high"], "description": "overall room brightness from fixtures"},
+                    "daylight": {"type": "string", "enum": ["none", "low", "medium", "high"], "description": "light through the windows"},
+                    "key_fixture": {"type": "string", "enum": ["pendant_row", "chandelier", "track_spots", "linear", "mixed"]},
+                    "accents": {"type": "array", "items": {"type": "string", "enum": ["backbar_strip", "wall_sconces", "candles", "table_lamps",
+                                                                                     "string_lights"]}}}},
+                "metal_finish": {"type": "string", "enum": ["black", "brass", "chrome"]},
+                "density": {"type": "object", "required": ["seats_per_10m2", "props_per_table", "plants"], "properties": {
+                    "seats_per_10m2": {"type": "number", "minimum": 1, "maximum": 12},
+                    "props_per_table": {"type": "number", "minimum": 0, "maximum": 6},
+                    "plants": {"type": "integer", "minimum": 0, "maximum": 20}}},
                 "not_reproducible": {"type": "string", "description": "what the pipeline has no asset for (people, laptops, the street)"},
             },
         },
@@ -67,22 +98,35 @@ def _lin(c):
 
 def read(paths, venue) -> dict:
     ids = image_ids(paths)
-    key = "ref-" + hashlib.sha256(json.dumps({"v": client.PROMPT_VERSION, "m": client.MODEL, "venue": venue, "ids": ids}).encode()).hexdigest()[:24]
+    key = "kit2-" + hashlib.sha256(json.dumps({"v": client.PROMPT_VERSION, "m": client.MODEL, "venue": venue, "ids": ids}).encode()).hexdigest()[:24]
     req = {
         "model": client.MODEL,
         "max_tokens": 3000,
         "system": [{"type": "text", "text": "You read interior reference photos (a real photo and/or an image-generated multi-view of the same "
-                                            "space) and describe the space for a procedural furnishing pipeline. Pick the closest option "
-                                            "for every field; list the furniture a viewer would miss if it were absent, with counts for "
-                                            "the room in the photos. Return the spec by calling submit_venue_spec exactly once."}],
+                                            "space) and describe the space for a procedural furnishing pipeline as ONE coherent style kit: "
+                                            "the architecture, light, materials, furniture family, density and decor of a design concept that "
+                                            "belong together. Do not describe colours alone -- a style is the relation between its parts "
+                                            "(e.g. dark wood needs low warm light, many small light sources and dense seating). Write those "
+                                            "relations out. Pick the closest option for every field; list the furniture a viewer would miss if "
+                                            "it were absent, with counts for the room in the photos. Return the spec by calling "
+                                            "submit_venue_spec exactly once."}],
         "tools": [spec_tool(venue)],
         "tool_choice": {"type": "auto"} if client.MODEL in client.NO_FORCED_TOOL else {"type": "tool", "name": "submit_venue_spec"},
         "messages": [{"role": "user", "content": image_blocks(paths) + [{"type": "text", "text": f"Venue type: {venue}."}]}],
     }
-    spec = client._submit(req, key, {"id": f"reference:{venue}"}, 0, tool="submit_venue_spec")
-    spec = dict(spec)
+    for attempt in range(3):                                     # the object fields came back as one string of leaked tool markup
+        spec = dict(client._submit(req, key if attempt == 0 else f"{key}-r{attempt}", {"id": f"reference:{venue}"}, 0,
+                                   tool="submit_venue_spec"))       # (warehouse_storage kit, 2026-10-16): re-ask, uncached
+        if all(isinstance(spec.get(f), dict) for f in ("architecture", "lighting", "density")):
+            break
+    else:
+        raise ValueError(f"reference kit for {venue}: architecture/lighting/density not objects after 3 tries")
     if spec.get("wall_srgb"):
         spec["wall_rgb"] = [round(_lin(c), 4) for c in spec["wall_srgb"]]
+    if spec.get("floor_srgb"):
+        spec["floor_rgb"] = [round(_lin(c), 4) for c in spec["floor_srgb"]]
+    if spec.get("upholstery_srgb"):
+        spec["upholstery_rgb"] = [round(_lin(c), 4) for c in spec["upholstery_srgb"]]
     spec["reference_ids"] = ids
     spec["venue"] = venue
     return spec

@@ -40,6 +40,7 @@ ARCHETYPES = {
     "bakery":     dict(pilaster=.3, beam=.2, column=.2, soffit=.8, duct=.1, pipe=.05, track=.5, ac=.5, sprinkler=.7),
     "office":     dict(pilaster=0, beam=0, column=.3, soffit=0, duct=0, pipe=0, track=0, ac=.3, sprinkler=.9, grid=1),
     "office_exposed": dict(pilaster=0, beam=.7, column=.4, soffit=0, duct=.6, pipe=.3, track=0, ac=1, sprinkler=.9, grid=0, linear=1),
+    "warehouse":  dict(pilaster=.3, beam=0, column=.5, soffit=0, duct=.4, pipe=.8, track=0, ac=0, sprinkler=1, warehouse=1),
     "default":    dict(pilaster=.6, beam=.6, column=.6, soffit=.6, duct=.35, pipe=.3, track=.7, ac=.45, sprinkler=.8),
 }
 
@@ -122,6 +123,51 @@ def linear_pendants(L, S, zc, at, name, rng, stats):
     for k in range(max(1, int(L / 4.0))):
         cx, cy = at(2.0 + k * 4.0, S * (0.3 if k % 2 else 0.7))
         _box(name("AcCassette"), [(cx, cy, zc - 0.04, 0.84, 0.84, 0.06), (cx, cy, zc - 0.09, 0.62, 0.62, 0.04)], ac)
+
+
+def warehouse_roof(L, S, zc, at, name, rng, stats):
+    """Industrial roof (warehouse r1 critic: 'a flat white plaster ceiling with dome/pendant lights reads as a basement'): a
+    corrugated deck of ribs, steel girders every ~4.5 m with purlins, and high-bay dome lights on cords in rows over the aisles.
+    Infinigen's ceiling pucks in the room are removed, so the fixture pass does not hang household lamps here."""
+    steel = _mat("ir_wh_steel", rng.choice(((0.32, 0.36, 0.42), (0.55, 0.56, 0.58), (0.12, 0.2, 0.36))), 0.5, 0.6)
+    deck = _mat("ir_wh_deck", (0.62, 0.63, 0.64), 0.45, 0.8)
+    alu = _mat("ir_wh_alu", (0.8, 0.8, 0.82), 0.3, 1.0)
+    glow = pa._flat("ir_highbay_glow", (1.0, 1.0, 1.0), 0.3)
+    glow.node_tree.nodes["Principled BSDF"].inputs["Emission Color"].default_value = (1.0, 0.97, 0.92, 1)
+    glow.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"].default_value = 12.0
+    ribs = [(*at(L / 2, S / 2), zc - 0.004, L, S, 0.008)]      # the deck sheet hides the plaster; ribs give it the corrugation
+    ribs += [(*at(0.15 + k * 0.3, S / 2), zc - 0.035, 0.1, S, 0.06) for k in range(int(L / 0.3))]
+    _box(name("RoofDeck"), ribs, deck)
+    gird = []
+    n_g = max(1, round(L / 4.5))
+    for k in range(1, n_g):
+        cx, cy = at(L * k / n_g, S / 2)
+        gird += [(cx, cy, zc - 0.08, 0.2, S, 0.02), (cx, cy, zc - 0.5, 0.2, S, 0.02), (cx, cy, zc - 0.29, 0.015, S, 0.42)]
+    for v in [0.6 + k * 1.2 for k in range(int((S - 0.6) / 1.2))]:
+        cx, cy = at(L / 2, v)
+        gird.append((cx, cy, zc - 0.14, L, 0.08, 0.15))
+    _box(name("RoofGirder"), gird, steel)
+    rows = max(2, round(S / 4.0)); per = max(2, round(L / 4.0)); zh = zc - rng.uniform(0.9, 1.3)
+    for r_ in range(rows):
+        for k in range(per):
+            cx, cy = at(L * (k + 0.5) / per, S * (r_ + 0.5) / rows)
+            _cyl(name("HighBayCord"), (cx, cy, zc - 0.05), (cx, cy, zh + 0.2), 0.006, steel, n=6)
+            _cyl(name("HighBayLamp"), (cx, cy, zh + 0.2), (cx, cy, zh), 0.09, alu, n=20)
+            o = pa._prims(name("HighBayLamp"), [(alu, [("cyl", (cx, cy, zh - 0.12), (0.28, 0.1, 0.24), (0, 0, 0))]),
+                                                (glow, [("cyl", (cx, cy, zh - 0.235), (0.24, 0.24, 0.01), (0, 0, 0))])])
+            ld = bpy.data.lights.new(f"ir_highbay_{r_}_{k}", "POINT"); ld.energy = 350.0; ld.color = (1.0, 0.97, 0.92); ld.shadow_soft_size = 0.2
+            lo = bpy.data.objects.new(f"PointLampFactory(highbay).spawn_asset({r_}_{k})", ld)
+            bpy.context.scene.collection.objects.link(lo); lo.location = (cx, cy, zh - 0.3)
+            stats["highbay"] = stats.get("highbay", 0) + 1
+    x0, x1 = min(at(0, 0)[0], at(L, S)[0]), max(at(0, 0)[0], at(L, S)[0])
+    y0, y1 = min(at(0, 0)[1], at(L, S)[1]), max(at(0, 0)[1], at(L, S)[1])
+    for o in [o for o in bpy.data.objects if rd._factory(o.name) == "CeilingLightFactory"]:
+        t = o.matrix_world.translation
+        if x0 <= t.x <= x1 and y0 <= t.y <= y1:
+            for c in list(o.children_recursive):
+                bpy.data.objects.remove(c, do_unlink=True)
+            bpy.data.objects.remove(o, do_unlink=True)
+            stats["pucks_removed"] = stats.get("pucks_removed", 0) + 1
 
 
 def room_frame(room):
@@ -225,6 +271,8 @@ def build(room, rng, pal, stats, seed, track=True, archetype="default"):
         office_ceiling(L, S, zc, at, name, rng, stats)
     if has.get("linear"):
         linear_pendants(L, S, zc, at, name, rng, stats)
+    if has.get("warehouse"):
+        warehouse_roof(L, S, zc, at, name, rng, stats)
     cx, cy = at(L * rng.uniform(0.6, 0.8), S * 0.2)
     if has["ac"]:
         _box(name("AcCassette"), [(cx, cy, zc - 0.04, 0.84, 0.84, 0.06), (cx, cy, zc - 0.09, 0.62, 0.62, 0.04)],
@@ -295,18 +343,24 @@ def main() -> int:
     bpy.ops.wm.open_mainfile(filepath=a.blend)
     rng = random.Random(a.seed)
     pal = dict(PALETTE_DEFAULT)
-    if a.palette:
-        pal.update(json.loads(Path(a.palette).read_text()).get("palette", {}))
+    spec = json.loads(Path(a.palette).read_text()) if a.palette else {}
+    pal.update(spec.get("palette", {}))
+    kit = spec.get("architecture")                             # a style kit: the feature wall comes from rematerial, ducts follow the ceiling
+    if kit and kit.get("ceiling") in ("exposed_dark", "dark_painted"):
+        pal["duct"] = (0.03, 0.03, 0.032); pal["structure"] = (0.03, 0.03, 0.032)
+    if spec.get("metal_finish") == "brass":
+        pal["frame"] = (0.55, 0.38, 0.12)
     stats = {}
     scene, deps = bpy.context.scene, bpy.context.evaluated_depsgraph_get()
     for nm, parts in sorted(rd._rooms().items()):
         if "floor" not in parts or "wall" not in parts:
             continue
         room = fr.Room(nm, parts, scene, deps)
-        accent = _mat("ir_arch_accent", pal["accent"], 0.8)
-        stats["accent"] = accent_wall(room, accent, rng, stats)
+        if not kit:                                             # with a kit the feature wall is rematerial's (one concept, not a random accent)
+            accent = _mat("ir_arch_accent", pal["accent"], 0.8)
+            stats["accent"] = accent_wall(room, accent, rng, stats)
         build(room, rng, pal, stats, a.seed, track=not a.no_track, archetype=a.archetype)
-    if a.archetype.startswith("office"):
+    if a.archetype.startswith("office") or a.archetype == "warehouse":   # warehouse r3: mauve residential panel doors
         office_doors(rng, stats)
     if a.exterior:
         exterior(a.exterior, rng, stats)

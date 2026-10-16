@@ -1,0 +1,93 @@
+{
+ "brief": "A single clinical treatment room with the dental chair in the middle of the floor. It faces the window wall, and the overhead lamp and instrument tray sit beside it. A white run of cabinets and drawers with a white stone worktop, sink and under-cabinet LED strip fills the left wall. A wall-mounted x-ray monitor hangs above the worktop. A mobile drawer cabinet stands on the right with a teal tray on top. A teal operator stool on casters sits by the cabinets, and a pale guest chair stands in the corner. Light is clean, cool and even, from ceiling panels and a frosted-bottom window. The mood is calm and sterile. Surfaces hold only dispensers, instrument trays, a small potted plant by the window and one pale framed print.",
+ "wall": "paint",
+ "floor": "concrete",
+ "counter_front": "white_panel",
+ "counter_top": "white_stone",
+ "backbar": "matte_black",
+ "fixture": "flush",
+ "must_have": [
+  {
+   "category": "dental_chair",
+   "count": 1,
+   "where": "centre of room, head toward the back wall, instrument tray to the right, lamp overhead"
+  },
+  {
+   "category": "desk_chair",
+   "count": 1,
+   "where": "teal operator stool on casters beside the cabinet run on the left"
+  },
+  {
+   "category": "medical_cabinet",
+   "count": 3,
+   "where": "continuous white base and wall cabinets with sink on the left wall, plus a mobile drawer unit on the right"
+  }
+ ],
+ "concept": "A sterile, daylit clinical room in white, pale grey and a single teal accent. Upholstery, trays and stool share the teal, and the clean cool light makes every surface read as hygienic.",
+ "relations": [
+  "White walls, white cabinetry and pale grey resilient floor + cool 4500-5000K flush ceiling panels + daylight from the window = bright, hygienic, shadow-free clinical feel",
+  "One teal accent repeated on chair upholstery, stool, trays and dispensers ties the equipment together against the neutral white shell",
+  "Low density: one chair and the stool in the open centre, cabinets pushed to the walls = clear circulation and easy cleaning",
+  "Under-cabinet LED strip + operating lamp give task light over the worktop and the patient, on top of even ambient light",
+  "Minimal decor (one plant, one pale print) softens the clinical room without adding clutter"
+ ],
+ "architecture": {
+  "ceiling": "plaster_white",
+  "ducts_visible": false,
+  "feature_wall": "paint_light",
+  "other_walls": "paint_light"
+ },
+ "lighting": {
+  "color_temp_k": 4800,
+  "ambient": "high",
+  "daylight": "high",
+  "key_fixture": "linear",
+  "accents": [
+   "backbar_strip"
+  ]
+ },
+ "density": {
+  "seats_per_10m2": 1.5,
+  "props_per_table": 3,
+  "plants": 1
+ },
+ "mood": "bright_daylight",
+ "floor_srgb": [
+  0.72,
+  0.72,
+  0.73
+ ],
+ "floor_tone": "pale",
+ "table_top": "light_wood",
+ "chair_style": "upholstered",
+ "decor": [
+  "framed_art",
+  "potted_plants"
+ ],
+ "metal_finish": "chrome",
+ "wall_srgb": [
+  0.95,
+  0.96,
+  0.97
+ ],
+ "not_reproducible": "The x-ray image on the monitor, the hoses and handpieces, the overhead articulated lamp arm detail, the instruments on the tray, the soap and hand-sanitiser bottles, the tree view through the window, and the door in the foreground.",
+ "wall_rgb": [
+  0.89,
+  0.9114,
+  0.9331
+ ],
+ "floor_rgb": [
+  0.477,
+  0.477,
+  0.4919
+ ],
+ "reference_ids": [
+  "4d9d805d1ee51720",
+  "deca789af0efc5c5"
+ ],
+ "venue": "dental-room",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/dental_room_gen/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/dental_room_gen/view2.png"
+ ]
+}

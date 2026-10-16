@@ -1,0 +1,113 @@
+{
+  "generator": "built-in image_gen",
+  "synthetic": true,
+  "usage": "Synthetic design references for procedural café generation",
+  "limitations": "Independent generated perspectives are approximate design references, not calibrated multiview measurements; exact dimensions and spacing are prompt targets rather than measured guarantees.",
+  "images": [
+    {
+      "style": "nordic_bakery",
+      "view": 1,
+      "path": "nordic_bakery/view1.png",
+      "prompt": "Use case: photorealistic-natural. Create ONE landscape architectural interior photograph, eye level 1.5m, 26mm lens: a Nordic bakery café, single rectangular room 50–70 square meters, ceiling 3m. Camera view1: from street entrance looking toward service counter, show overall layout. White wood-panelled counter with white top, espresso machine, grinder, glass pastry display case, register, glass cake domes and bread baskets. Behind counter: shelves with cups, bottles and beans; a menu board with no legible writing. Light wood floor, white and light-wood tables and chairs, calm natural daylight. One wall is glass storefront with an entrance door and window bar with stools. Small tables for 2–4 people spaced at least 0.9m apart; every chair belongs to a table. Cups, plates, pastries, a notebook, chairs slightly pulled out and turned. Restrict decor to pendant/track lights and plants. Real materials, plausible circulation, modest neighborhood café scale. No people, no brands, no logos, no readable text, no collage.",
+      "reference": null
+    },
+    {
+      "style": "nordic_bakery",
+      "view": 2,
+      "path": "nordic_bakery/view2.png",
+      "prompt": "Use case: identity-preserve. ONE photorealistic landscape architectural photo of the SAME Nordic bakery café in the input reference, camera view2. Move camera to beside the service counter and turn it toward the seating and street-facing glass storefront/entrance, a strongly different viewpoint. Eye level 1.5m, 26mm lens. Maintain single room about 60m² and 3m ceiling, same white panelled counter, light oak floor, white/light wood tables and matching chairs, white pendant/track lights, plants, wood floating back-bar shelves. Include the window bar and stools, entrance door and widely spaced 2–4 person tables, at least 0.9m between tables. Every chair at a table or window bar, a few pulled out at natural angles; cups, plates, pastries and notebook. Calm natural daylight. Same spatial arrangement and materials; no added rooms or furniture types. No people, brands, logos or readable text. One image, no panels.",
+      "reference": "nordic_bakery/view1.png"
+    },
+    {
+      "style": "nordic_bakery",
+      "view": 3,
+      "path": "nordic_bakery/view3.png",
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photo of the SAME Nordic bakery café in the reference. View3: close, eye-level oblique view of the service counter filling most of the frame. Clearly show white wood-panelled front and white top, espresso machine, grinder, glass pastry display, glass cake domes, bread baskets and register; behind them the light wood shelves stocked with white cups, bean bags, jars and bottles, blank dark menu board and white vertical panel wall. Same pale oak floor, white pendant lights, plants and calm window daylight from left. Maintain the objects/materials of reference and plausible 60m² room with 3m ceiling; 26–28mm lens. Leave enough width to see espresso machine AND glass display AND back bar in one frame. No people, logos, readable writing, collage or added rooms.",
+      "reference": "nordic_bakery/view1.png"
+    },
+    {
+      "style": "industrial_brick",
+      "view": 1,
+      "path": "industrial_brick/view1.png",
+      "prompt": "Use case: photorealistic-natural. ONE landscape photorealistic interior architectural photograph, eye level 1.5m, 26mm lens. A single-room café 50–70m², ceiling 3m, one street-facing glass storefront wall with entrance door and window bar with stools. Practical service counter with espresso machine, grinder, glass pastry display case and register; back-bar shelves holding cups, bottles and beans, blank menu board. Small tables with 2–4 chairs, tables at least 0.9m apart, all chairs belong to a table or window bar, some pulled out and turned. Signs of use: cups, plates, pastries, phone or notebook. Pendant or track lighting, plants, realistic materials, coherent circulation. No people, brand logos, readable text, collage or extra rooms. Style: industrial brick café. At least TWO exposed red brick walls, exposed ceiling ducts, row of black metal pendant lamps, long wooden communal table plus smaller tables, black metal and bentwood chairs, blank chalkboard menu. View1: wide shot from entrance toward counter, show two brick walls and communal table with its chairs; warm daylight and practical task lighting.",
+      "reference": null
+    },
+    {
+      "style": "minimal_bar",
+      "view": 1,
+      "path": "minimal_bar/view1.png",
+      "prompt": "Use case: photorealistic-natural. ONE landscape photorealistic interior architectural photograph, eye level 1.5m, 26mm lens. A single-room café 50–70m², ceiling 3m, one street-facing glass storefront wall with entrance door and window bar with stools. Practical service counter with espresso machine, grinder, glass pastry display case and register; back-bar shelves holding cups, bottles and beans, blank menu board. Small tables with 2–4 chairs, tables at least 0.9m apart, all chairs belong to a table or window bar, some pulled out and turned. Signs of use: cups, plates, pastries, phone or notebook. Pendant or track lighting, plants, realistic materials, coherent circulation. No people, brand logos, readable text, collage or extra rooms. Style: minimal café with sage-green fluted counter and WHITE STONE counter top, WHITE TILE back wall with floating shelves holding jars, bottles and unbranded coffee bags. Large windows, restrained neutral furniture, 2–3 bar stools at window bar, clean minimal composition with a few small tables. View1: wide shot from entrance toward counter, clearly show green fluting, white stone and tiled back wall, soft natural daylight.",
+      "reference": null
+    },
+    {
+      "style": "industrial_brick",
+      "view": 2,
+      "path": "industrial_brick/view2.png",
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic photo of SAME industrial café as reference, new camera view2 from near counter facing back toward seating and street entrance. Eye level 1.5m, 26mm lens. Preserve two red brick walls, black exposed ceiling with silver ducts, row of black metal pendants, gray concrete floor, long wooden communal table with black metal chairs and smaller round tables with bentwood/black metal chairs. Clearly show table/chair groups, at least 0.9m spacing between tables, all chairs belong to tables, window bar with stools and glass street-front entrance. Preserve plants, warm daylight with warm lamps, cups, pastries and notebook with chairs at natural angles. Same 50–70m² single room and 3m ceiling. No people, logos or readable text. Do not replicate reference camera position; look toward storefront and seating.",
+      "reference": "industrial_brick/view1.png"
+    },
+    {
+      "style": "minimal_bar",
+      "view": 2,
+      "path": "minimal_bar/view2.png",
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic photo of SAME minimal café as reference, new camera view2: stand beside sage green counter and look across seating toward street-facing glass wall and entrance. Eye level 1.5m, 26mm lens. Preserve sage-green FLUTED counter with WHITE STONE top, white tiled back wall, wood floating shelves with jars, bottles and unbranded coffee bags, light wood furniture, gray floor, white lights and plants. Show small tables with 2–4 chairs spaced at least 0.9m apart, every chair at table; 2–3 window bar stools. Cups, plates, pastries and notebook, chairs slightly turned/pulled out. Large windows and soft bright daylight, simple restrained decor, same 60m² room and 3m ceiling. No people, brands, logos or readable writing. Strongly different camera direction from input.",
+      "reference": "minimal_bar/view1.png"
+    },
+    {
+      "style": "industrial_brick",
+      "view": 3,
+      "path": "industrial_brick/view3.png",
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic interior photograph of same industrial brick café in reference. View3: eye-level 1.5m, 28mm close oblique framing of counter. MUST show espresso machine, grinder, pastry glass display case and register on counter together with back-bar shelving of cups, bottles and beans behind. Preserve dark counter, two exposed red brick walls, warm tile backsplash, blank chalkboard menu, exposed black ceiling and silver ducts, black metal pendant lamps in a row. Practical modest 60m² café with 3m ceiling, plants and soft daylight from left, warm lights. Counter equipment and materials consistent with reference. No people, brands, logos, readable writing or collage.",
+      "reference": "industrial_brick/view1.png"
+    },
+    {
+      "style": "minimal_bar",
+      "view": 3,
+      "path": "minimal_bar/view3.png",
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic interior photo of same minimal café in reference. View3: eye-level 1.5m, 28mm close oblique shot of sage-green fluted counter and WHITE STONE top, clearly including espresso machine, grinder, glass pastry display and register together. Behind: white tiled wall and floating natural wood shelves with white cups, glass jars, bottles, blank coffee bags; blank pale menu board. Preserve calm minimal light wood and white palette, green counter, white pendant/track lighting, plants and natural daylight from left. Same modest 60m² single room, 3m ceiling. No people, brands, logos, readable text or panels.",
+      "reference": "minimal_bar/view1.png"
+    },
+    {
+      "style": "chain_banquette",
+      "view": 1,
+      "path": "chain_banquette/view1.png",
+      "prompt": "Use case: photorealistic-natural. ONE landscape photorealistic interior architectural photograph, eye level 1.5m, 26mm lens. A single-room café 50–70m², ceiling 3m, one street-facing glass storefront wall with entrance door and window bar with stools. Practical service counter with espresso machine, grinder, glass pastry display case and register; back-bar shelves holding cups, bottles and beans, blank menu board. Small tables with 2–4 chairs, tables at least 0.9m apart, all chairs belong to a table or window bar, some pulled out and turned. Signs of use: cups, plates, pastries, phone or notebook. Pendant or track lighting, plants, realistic materials, coherent circulation. No people, brand logos, readable text, collage or extra rooms. Style: bright welcoming chain-style café without any branding. RED BRICK counter front, warm wood feature wall. A LONG upholstered banquette sofa along one wall with a row of separate small tables in front and metal chairs opposite, each table at least 0.9m from next. A few mustard upholstered chairs at other tables. Hanging and standing plants. View1: wide shot from entrance toward counter, showing banquette/table arrangement and mustard chairs as well as espresso counter and storefront edge. Bright daylight and warm pendants, realistic modest room scale.",
+      "reference": null
+    },
+    {
+      "style": "floral_moody",
+      "view": 1,
+      "path": "floral_moody/view1.png",
+      "prompt": "Use case: photorealistic-natural. ONE landscape photorealistic interior architectural photograph, eye level 1.5m, 26mm lens. A single-room café 50–70m², ceiling 3m, one street-facing glass storefront wall with entrance door and window bar with stools. Practical service counter with espresso machine, grinder, glass pastry display case and register; back-bar shelves holding cups, bottles and beans, blank menu board. Small tables with 2–4 chairs, tables at least 0.9m apart, all chairs belong to a table or window bar, some pulled out and turned. Signs of use: cups, plates, pastries, phone or notebook. Pendant or track lighting, plants, realistic materials, coherent circulation. No people, brand logos, readable text, collage or extra rooms. Style: floral moody café, DARK WOOD wall panelling, BLACK service counter with glass cake display. Fresh flowers in vases on EVERY table AND on the counter. A chandelier above the counter, warm low lighting with DIM overall atmosphere, limited soft light through street-front glass entrance. Dark wood small tables and chairs, restrained floral color accents. View1: wide shot from entrance toward counter showing chandelier, black counter, flower vases and dark panelled walls. Maintain a believable modest café, not a wedding hall. Image should be noticeably darker than a typical daylight café but all room forms visible.",
+      "reference": null
+    },
+    {
+      "style": "chain_banquette",
+      "view": 2,
+      "path": "chain_banquette/view2.png",
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic architectural photo of SAME café as reference. View2: eye level 1.5m, 26mm lens, stand near counter looking toward seating and storefront entrance. Clearly feature long tan banquette against wood feature wall, separate small wooden tables in front at least 0.9m apart, black metal chairs opposite; foreground round table with a few mustard upholstered chairs. Glass storefront with entrance and window bar stools, hanging and standing plants, warm pendants and bright natural daylight. Same red brick counter, neutral concrete floor and 60m² single room with 3m ceiling. Cups, pastries, plates and phone/notebook on tables, all chairs belong to tables and a few are pulled out naturally. Maintain consistent materials and layout with reference. No people, brands, logos or readable text.",
+      "reference": "chain_banquette/view1.png"
+    },
+    {
+      "style": "floral_moody",
+      "view": 2,
+      "path": "floral_moody/view2.png",
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic photo of SAME floral moody café in reference. View2: camera beside black service counter looking toward seating and street-facing glass entrance, eye level 1.5m, 26mm lens, clearly distinct angle. Preserve DARK WOOD panelling, dark round wood tables with matching bentwood chairs, fresh flowers in vase on EVERY TABLE and counter, chandelier above counter, warm low light with overall DIM atmosphere, limited daylight at windows. Window bar with stools, plants; cups, pastries, notebook and pulled out chairs associated with tables. Table groups spaced at least 0.9m apart; coherent 60m² single room and 3m ceiling. Keep black counter and cake display partly visible at edge with same back-bar shelving. No people, logos, readable text, collage or bright white redesign.",
+      "reference": "floral_moody/view1.png"
+    },
+    {
+      "style": "chain_banquette",
+      "view": 3,
+      "path": "chain_banquette/view3.png",
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic interior photo of same bright chain-style café in reference. View3: close eye-level 1.5m oblique view of RED BRICK service counter, espresso machine, grinder, glass pastry case and register must ALL be visible, plus back-bar wood shelving stocked with cups, beans and bottles and blank dark menu board. Warm wood feature wall, hanging and standing plants, warm pendants, bright daylight from right. At edge allow long tan banquette with separate wooden tables and black metal chairs, mustard upholstered chairs. Same 60m² single-room café with 3m ceiling; preserve material palette, no redesign. No people, brand logos, readable text or collage.",
+      "reference": "chain_banquette/view1.png"
+    },
+    {
+      "style": "floral_moody",
+      "view": 3,
+      "path": "floral_moody/view3.png",
+      "prompt": "Use case: identity-preserve. ONE landscape photorealistic interior photo of same floral moody café in reference. View3: close eye-level 1.5m oblique view of BLACK counter with espresso machine, grinder, glass cake display case and register together, behind them dark wood back-bar shelves with cups, bottles, beans and blank dark menu board. Fresh flowers in vases on counter, chandelier immediately above counter visibly within frame, DARK WOOD panelling. Low warm light, overall DIM rich brown/black mood with restrained daylight at frame edge. Same modest 60m² single room with 3m ceiling; no people, logos, readable writing or collage. Preserve design and realistic service equipment, show counter's flowers and cakes clearly.",
+      "reference": "floral_moody/view1.png"
+    }
+  ]
+}
