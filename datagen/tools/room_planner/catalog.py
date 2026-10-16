@@ -124,7 +124,7 @@ LIVED_IN = {
     "dry_goods":       {"src": "proc:DryGoodsFactory", "on": ["stock_shelf", "storage_rack", "supply_shelf", "floor"], "rooms": ["warehouse", "utility"]},
     "cardboard_box":   {"src": "proc:CardboardBoxFactory", "on": ["storage_rack", "wide_shelf", "pallet", "workbench", "floor", "supply_shelf", "stock_shelf"],
                         "rooms": ["warehouse", "garage", "utility", "grocery"]},
-    "storage_bin":     {"src": "abo:BOX", "on": ["storage_rack", "wide_shelf", "workbench", "floor"], "rooms": ["warehouse", "garage", "utility"]},
+    "storage_bin":     {"src": "abo:BOX", "on": ["storage_rack", "wide_shelf", "workbench", "floor", "supply_shelf"], "rooms": ["warehouse", "garage", "utility"]},
     "bottle":          {"src": "inf:BottleFactory", "on": ["workbench", "storage_rack"], "rooms": ["warehouse", "garage", "cafe", "grocery", "convenience", "pharmacy", "exam-room", "dental-room"]},
     "can":             {"src": "inf:CanFactory", "on": ["workbench", "storage_rack"], "rooms": ["warehouse", "garage"]},
     "monitor":         {"src": "inf:MonitorFactory", "on": ["desk", "office_desk", "reception_desk"], "rooms": ["office", "open-office", "exam-room", "dental-room", "clinic-reception", "pharmacy"]},
@@ -157,7 +157,7 @@ LIVED_IN = {
     "kraft_roll":      {"src": "proc:KraftRollFactory", "on": ["workbench"], "rooms": ["warehouse", "garage"]},
     "towel_stack":     {"src": "proc:TowelStackFactory", "on": ["exam_table", "changing_bench"], "rooms": ["physio-room", "exam-room", "closet"]},
     # clinical counter / desk props (clinic r6 critic: 'no glove boxes, sanitizer or trays -- an unfurnished showroom')
-    "glove_box":       {"src": "proc:GloveBoxFactory", "on": ["medical_cabinet", "clinic_desk", "reception_desk"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},
+    "glove_box":       {"src": "proc:GloveBoxFactory", "on": ["medical_cabinet", "clinic_desk", "reception_desk"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy", "utility"]},
     "sanitizer":       {"src": "proc:SanitizerFactory", "on": ["medical_cabinet", "clinic_desk", "reception_desk", "counter", "wash_basin"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},
     "paper_towel":     {"src": "proc:PaperTowelFactory", "on": ["medical_cabinet"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},
     "clipboard":       {"src": "proc:ClipboardFactory", "on": ["medical_cabinet", "clinic_desk", "reception_desk", "exam_table"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},

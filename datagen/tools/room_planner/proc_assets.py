@@ -754,10 +754,10 @@ class ClinicWallItemFactory:
     yellow sharps bin, a paper-towel dispenser, a sanitizer dispenser."""
     KINDS = ("eye_chart", "clinic_poster", "glove_holder", "sharps_bin", "towel_dispenser", "wall_sanitizer", "wall_clock", "brochure_rack",
              "grab_bar", "hand_dryer", "toilet_roll", "waste_bin", "coat_hooks", "baby_change", "door_sign", "diagnostic_set",
-             "cleaning_kit", "roll_shelf")
+             "cleaning_kit", "roll_shelf", "handrail")
 
-    def __init__(self, seed, kind="clinic_poster"):
-        self.kind, self.r = kind, random.Random(seed)
+    def __init__(self, seed, kind="clinic_poster", length=1.0):
+        self.kind, self.r, self.length = kind, random.Random(seed), length
 
     def spawn_asset(self, i):
         r, k = self.r, self.kind
@@ -776,6 +776,13 @@ class ClinicWallItemFactory:
             return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(frame, [("box", (0.004, 0, H / 2), (0.008, W + 0.03, H + 0.03), (0, 0, 0))]),
                                                                           (white, [("box", (0.009, 0, H / 2), (0.002, W, H), (0, 0, 0))]),
                                                                           (col, [("sph", (0.012, 0, H - 0.15), (0.002, W * 0.25, 0.1), (0, 0, 0))]), (ink, lines)])
+        if k == "handrail":                                      # a clinic corridor's wall rail, door to door: the posters and plates
+            # alone read as 'four bare white walls' (floor F3 r19: corridor use 4, 3 of 3)
+            L = self.length; wood = _flat("ir_rail_oak", (0.42, 0.28, 0.16), 0.45); steel = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0)
+            n = max(2, int(L / 1.0) + 1)
+            brk = [("box", (0.035, -L / 2 + 0.08 + j * (L - 0.16) / (n - 1), 0.0), (0.07, 0.02, 0.03), (0, 0, 0)) for j in range(n)]
+            return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(wood, [("cyl", (0.075, 0, 0.0), (0.022, 0.022, L), (math.pi / 2, 0, 0))]),
+                                                                          (steel, brk)])
         if k == "roll_shelf":                                    # spare toilet rolls on a small wall shelf: a restroom someone restocks
             # ('no spare paper rolls, nothing used', floors F3 r18 / H r26, 3 of 3) -- quieter than the mop kit, which read as clutter
             shelf = _flat("ir_ac_white", (0.86, 0.86, 0.85), 0.4); paper = _flat("ir_paper", (0.93, 0.93, 0.9), 0.7)

@@ -70,6 +70,57 @@ def add_point(name, at, energy, color, radius=0.05):
     return lo
 
 
+def street_backdrop(stats):
+    """A street outside every shop front (a panoramic window >= 4 m): pavement, road and the building opposite with its windows.
+    Through the glass the bare sky rendered pure white, so the glazing read as a white panelled wall (floor I r21: 'no storefront,
+    no glass, no entrance', 3 of 3) -- the same in the cafés."""
+    floors = [p_["floor"] for p_ in rd._rooms().values() if "floor" in p_]
+    if not floors:
+        return
+    pts = [f.matrix_world @ Vector(c) for f in floors for c in f.bound_box]
+    cx, cy, fz = (min(q.x for q in pts) + max(q.x for q in pts)) / 2, (min(q.y for q in pts) + max(q.y for q in pts)) / 2, max(q.z for q in pts)
+    pave = pa._flat("ir_street_pavement", (0.42, 0.41, 0.39), 0.85); road = pa._flat("ir_street_asphalt", (0.09, 0.09, 0.1), 0.8)
+    kerb = pa._flat("ir_street_kerb", (0.6, 0.6, 0.58), 0.7); brick = pa._flat("ir_street_facade", (0.36, 0.24, 0.17), 0.85)
+    glass = pa._flat("ir_street_glass", (0.03, 0.035, 0.045), 0.08, 0.6); trim = pa._flat("ir_street_trim", (0.75, 0.73, 0.68), 0.6)
+    n = 0
+    gl = pa._flat("ir_shopfront_glass", (0.92, 0.94, 0.95), 0.02, transmission=1.0)
+    fr_ = bpy.data.materials.get("ir_office_door_frame") or pa._flat("ir_shopfront_frame", (0.3, 0.31, 0.33), 0.4, 0.8)
+    for o in [o for o in bpy.data.objects if o.type == "MESH" and o.name.startswith("WindowFactory(")]:
+        if not any(o.data.materials):                            # the runtime's panoramic window comes with no material at all and
+            # rendered as an opaque white slab -- the shop front read as 'a white panelled wall' (floor I r21, 3 of 3): big faces glass,
+            # the rest frame
+            o.data.materials.clear(); o.data.materials.append(fr_); o.data.materials.append(gl)
+            for f in o.data.polygons:
+                f.material_index = 1 if f.area > 0.25 else 0
+            stats["windows_glazed"] = stats.get("windows_glazed", 0) + 1
+    for o in [o for o in bpy.data.objects if o.type == "MESH" and o.name.startswith("WindowFactory(")]:
+        d = o.dimensions; along_x = d.x >= d.y; W = max(d.x, d.y)
+        if W < 4.0:
+            continue
+        c = o.matrix_world.translation
+        out = Vector((0, -1 if c.y < cy else 1, 0)) if along_x else Vector((-1 if c.x < cx else 1, 0, 0))
+        L = W + 30.0
+        parts_p = [("box", (2.0, 0, -0.06), (4.0, L, 0.12), (0, 0, 0))]
+        parts_k = [("box", (4.05, 0, -0.03), (0.15, L, 0.18), (0, 0, 0))]
+        parts_r = [("box", (8.5, 0, -0.1), (9.0, L, 0.1), (0, 0, 0)), ("box", (15.0, 0, -0.06), (4.0, L, 0.12), (0, 0, 0))]
+        parts_b = [("box", (17.5, 0, 6.0), (1.0, L, 12.0), (0, 0, 0))]
+        parts_g, parts_t = [], []
+        for j in range(int(L / 3.0)):
+            y = -L / 2 + 1.5 + j * 3.0
+            parts_g.append(("box", (16.98, y, 1.6), (0.05, 2.6, 2.6), (0, 0, 0)))       # ground-floor shop windows
+            parts_t.append(("box", (16.97, y, 3.1), (0.06, 2.9, 0.25), (0, 0, 0)))
+            for z in (5.0, 8.2):
+                parts_g.append(("box", (16.98, y, z), (0.05, 1.3, 1.7), (0, 0, 0)))
+                parts_t.append(("box", (16.97, y, z - 0.95), (0.08, 1.5, 0.12), (0, 0, 0)))
+        b = pa._prims(f"ir_street_backdrop_{n}", [(pave, parts_p), (kerb, parts_k), (road, parts_r), (brick, parts_b), (glass, parts_g),
+                                                  (trim, parts_t)])
+        b.location = (c.x if along_x else c.x, c.y if not along_x else c.y, fz)
+        b.location += out * 0.15
+        b.rotation_euler.z = math.atan2(out.y, out.x)
+        n += 1
+    stats["street_backdrops"] = n
+
+
 def service_room_lights(stats):
     """Ceiling fixtures in restrooms, stockrooms, changing and staff rooms become flush LED panels: the Infinigen ceiling light drew
     'a residential crystal flush-mount' and 'an industrial dome' (floor H r15, 3 of 3). The fixture's own light sources stay."""
@@ -253,6 +304,7 @@ def main() -> int:
         n_svc += 1
     stats["service_lights"] = n_svc
     service_room_lights(stats)
+    street_backdrop(stats)
     # monitor shells in plain dark plastic: an Infinigen monitor variant rendered 'purple speckled, gemstone-like' (floor D3 r12, 3 of 3)
     blk = pa._flat("ir_monitor_plastic", (0.035, 0.035, 0.04), 0.45)
     n_mon = 0
