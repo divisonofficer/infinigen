@@ -416,6 +416,52 @@
    "status": "proposed",
    "rule": "Kit densities (plants, seats, props per table) are targets the realizer fills to, not hints to the planner. The planner asks for 3-4 plants whatever the reference shows.",
    "evidence": "kit F: kits asked 9-14 plants, renders had 1-3; decor 3-5/10 in all four style evals"
+  },
+  {
+   "id": "expose-to-the-reference",
+   "rooms": [
+    "cafe",
+    "*"
+   ],
+   "applied_to": "render",
+   "status": "validated",
+   "rule": "Exposure is a camera setting: set it so the render's mean lightness matches the reference's (two low-res probe frames). Light-level tweaks did not move brightness; exposure did.",
+   "evidence": "café L: chain colour_score 2.1 -> 5.2 (d_mean_L +17 -> -4), industrial 6.1 -> 7.1; daylight capping by mood (J) moved chain 0 L and cost industrial 6 rubric points"
+  },
+  {
+   "id": "kit-colours-read-under-the-refs-light",
+   "rooms": [
+    "cafe",
+    "*"
+   ],
+   "applied_to": "generator",
+   "status": "proposed",
+   "rule": "A colour the kit reads off a warm-lit photo carries the light's cast. Neutral materials (concrete, white walls) are desaturated toward grey before use, and floors get the finish the reference shows (polished concrete: low roughness plus mottling; oiled wood: matte, no clear coat).",
+   "evidence": "café K: kit floor (0.55,0.50,0.43) rendered as 'beige carpet' against grey polished concrete in three critics; the wood preset's clear coat kept a mirror gloss at roughness 0.6"
+  },
+  {
+   "id": "function-overrides-reference-mood",
+   "rooms": [
+    "clinic-reception",
+    "exam-room",
+    "dental-room",
+    "physio-room",
+    "pharmacy"
+   ],
+   "applied_to": "generator",
+   "status": "proposed",
+   "rule": "When the reference's mood contradicts the venue's function (a spa-like 2800 K clinic lobby with an oak wall), the function wins: clinics stay at 3800 K or cooler, with washable walls and at most one picture and one plant.",
+   "evidence": "clinic r9/r10: reception scored 3-7 with the faithful spa kit; critics read it as a café or lounge"
+  },
+  {
+   "id": "critic-perspective-false-positives",
+   "rooms": [
+    "*"
+   ],
+   "applied_to": "critic",
+   "status": "validated",
+   "rule": "Check a critic's geometry claim against the scene before acting: a wide-angle view of open wall shelves was reported as a 'tilted floating shelf' three rounds running; a matrix_world tilt scan found nothing.",
+   "evidence": "shop r3-r5 pharmacy; fix was giving the shelf a back panel so it reads as furniture, not rotating anything"
   }
  ]
 }

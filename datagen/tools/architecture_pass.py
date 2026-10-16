@@ -243,7 +243,7 @@ def build(room, rng, pal, stats, seed, track=True, archetype="default"):
         sx, sy = (L, sd) if long_x else (sd, L)
         _box(name("Soffit"), [(cx, cy, zc - sh / 2, sx, sy, sh)], struct)
     # ceiling kit: a duct run, a pipe pair, two track rails with spot heads, an AC cassette, sprinklers
-    zd = zc - beam_h - 0.25
+    zd = zc - 0.3                                               # tight under the ceiling (café L: 'a duct at eye level cuts the frame')
     vduct = S * rng.uniform(0.3, 0.45)
     a, b = at(0.2, vduct), at(L - 0.2, vduct)
     if has["duct"]:

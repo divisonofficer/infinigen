@@ -116,5 +116,6 @@
  "clutter_exclude": [
   "wine_glass"
  ],
- "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/nordic_bakery/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact."
+ "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/nordic_bakery/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact.",
+ "pendant_shade": "white_enamel_dome"
 }

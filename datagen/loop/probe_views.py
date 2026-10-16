@@ -23,7 +23,7 @@ for name, parts in rd._rooms().items():
         views.insert(0, {"name": f"{lab}_ref_entrance", "location": [c.x, y0 + 0.7, room.z + 1.5], "target": [c.x, y1, room.z + 1.3], "hfov": HFOV, "res": [512, 384]})
         views.insert(1, {"name": f"{lab}_ref_seating", "location": [x0 + 0.7, y0 + 0.9, room.z + 1.45], "target": [x1, (y0 + y1) / 2, room.z + 0.9], "hfov": HFOV, "res": [512, 384]})
 objs = [o for o in rd._tops() if rd._factory(o.name) not in ("CeilingLightFactory",) and "Door" not in o.name and "Window" not in o.name]
-big = [o for o in objs if max(o.dimensions) >= 0.5 and not any(k in o.name for k in ("Curtain", "Pilaster", "WallArt", "Lamp", "Light"))]  # these fill the frame or hang from the ceiling (clinic r5, cafe kits)          # close-ups on furniture/equipment, not desk clutter (clinic r1 critic)
+big = [o for o in objs if max(o.dimensions) >= 0.5 and not any(k in o.name for k in ("Curtain", "Pilaster", "WallArt", "Lamp", "Light", "Plant", "OliveTree"))]  # these fill the frame or hang from the ceiling (clinic r5, cafe kits)          # close-ups on furniture/equipment, not desk clutter (clinic r1 critic)
 small = [o for o in objs if o not in big]
 rng.shuffle(big); rng.shuffle(small)
 # each venue's defining piece gets the first close-up (chain H: the banquette was placed but never framed; 'no banquette' twice)

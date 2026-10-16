@@ -60,6 +60,9 @@ def spec_tool(venue):
                          "description": "overall light: bright daylit / warm evening light with glowing fixtures / dark, low, candle-like"},
                 "floor_tone": {"type": "string", "enum": ["pale", "medium", "dark"], "description": "floor lightness (pale oak, mid wood, dark wood)"},
                 "floor_srgb": {"type": "array", "items": {"type": "number"}, "minItems": 3, "maxItems": 3, "description": "dominant floor colour, sRGB 0-1"},
+                "pendant_shade": {"type": "string", "enum": ["black_metal_dome", "white_enamel_dome", "brass_dome", "copper_dome", "glass_globe",
+                                                             "fabric_drum", "bare_bulb"],
+                                  "description": "the hanging lights over tables / counter, if any"},
                 "upholstery_srgb": {"type": "array", "items": {"type": "number"}, "minItems": 3, "maxItems": 3,
                                     "description": "colour of the main upholstery (banquette, upholstered chairs), sRGB 0-1; omit if none"},
                 "table_top": {"type": "string", "enum": ["light_wood", "dark_wood", "white_stone", "black_stone", "butcher_block"]},
@@ -98,7 +101,7 @@ def _lin(c):
 
 def read(paths, venue) -> dict:
     ids = image_ids(paths)
-    key = "kit2-" + hashlib.sha256(json.dumps({"v": client.PROMPT_VERSION, "m": client.MODEL, "venue": venue, "ids": ids}).encode()).hexdigest()[:24]
+    key = "kit3-" + hashlib.sha256(json.dumps({"v": client.PROMPT_VERSION, "m": client.MODEL, "venue": venue, "ids": ids}).encode()).hexdigest()[:24]
     req = {
         "model": client.MODEL,
         "max_tokens": 3000,

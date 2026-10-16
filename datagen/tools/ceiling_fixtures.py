@@ -203,6 +203,8 @@ def _over_service(rooms, chosen, rng, stats):
         if spec is None:
             continue
         n, above = spec
+        if rd._factory(t.name) == "CafeTableFactory" and len(hung) >= 7:   # a few pendants, not one per table (café M: '~15 cone pendants
+            continue                                                        # with blown undersides' over a 12-table room)
         f = fr.footprint(t)
         name, room = _room_at(rooms, (f[0] + f[1]) / 2, (f[2] + f[3]) / 2)
         if room is None or room.wall is None:
@@ -217,8 +219,13 @@ def _over_service(rooms, chosen, rng, stats):
                 continue
             from room_planner import proc_assets
             kind = proc_assets.STYLE.get("fixture", "pendant") if rd._factory(t.name) == "CafeCounterFactory" else "pendant"
-            o = _fixture(chosen, name + ":service", kind, ceiling, f[5] + above, rng, stats) or \
-                _fixture(chosen, name + ":service", "pendant", ceiling, f[5] + above, rng, stats)
+            shade = proc_assets.STYLE.get("pendant_shade")
+            if shade:                                            # the reference's pendant (style evals: random ABO domes, copper x15)
+                drop = max(0.5, min(1.2, ceiling - (f[5] + above) - 0.25))
+                o = proc_assets.DomePendantFactory(0, shade, drop).spawn_asset(len(hung))
+            else:
+                o = _fixture(chosen, name + ":service", kind, ceiling, f[5] + above, rng, stats) or \
+                    _fixture(chosen, name + ":service", "pendant", ceiling, f[5] + above, rng, stats)
             if o is None:
                 break
             ff = fr.footprint(o)

@@ -28,11 +28,11 @@ FURNITURE = {
     "floor_plant":    {"src": "inf:LargePlantContainerFactory", "size": [0.5, 0.5, 1.1], "rooms": ["living-room", "bedroom", "dining-room", "office", "open-office", "meeting-room", "cafe", "grocery", "clinic-reception", "physio-room", "boutique", "pharmacy"]},
     # workplaces: warehouse / garage / utility
     "storage_rack":   {"src": "proc:StorageRackFactory", "size": [2.1, 0.7, 2.3], "rooms": ["warehouse", "garage", "utility"]},
-    "wide_shelf":     {"src": "inf:LargeShelfFactory", "size": [1.6, 0.5, 2.0], "rooms": ["warehouse", "garage"]},
+    "wide_shelf":     {"src": "proc:StorageRackFactory", "size": [2.1, 0.7, 2.3], "rooms": ["warehouse", "garage"]},
     "pallet":         {"src": "proc:PalletFactory", "size": [1.2, 0.8, 0.14], "rooms": ["warehouse"]},
     "box_pile":       {"src": "proc:BoxPileFactory", "size": [1.2, 0.8, 0.9], "rooms": ["warehouse", "garage", "grocery"]},
     "workbench":      {"src": "proc:WorkbenchFactory", "size": [1.8, 0.75, 0.9], "rooms": ["warehouse", "garage"]},
-    "ladder":         {"src": "abo:ladder",      "size": [0.5, 0.7, 1.5], "rooms": ["warehouse", "garage", "utility"]},
+    "ladder":         {"src": "proc:StepLadderFactory", "size": [0.6, 0.5, 1.5], "rooms": ["warehouse", "garage", "utility"]},
     "stool":          {"src": "proc:ShopStoolFactory", "size": [0.35, 0.35, 0.7], "rooms": ["warehouse", "garage"]},
     "utility_cart":   {"src": "proc:PlatformCartFactory", "size": [0.95, 0.6, 1.0], "rooms": ["warehouse", "grocery"]},
     "fan":            {"src": "abo:fan",         "size": [0.4, 0.3, 1.0], "rooms": ["warehouse", "garage"]},
@@ -134,6 +134,9 @@ LIVED_IN = {
     "snack":           {"src": "proc:SnackFactory", "on": ["desk", "office_desk", "meeting_table", "break_table"], "rooms": ["office", "open-office", "meeting-room", "break-room"]},
     "phone":           {"src": "proc:PhoneFactory", "on": ["desk", "office_desk", "meeting_table", "break_table", "cafe_table", "reception_desk"], "rooms": ["office", "open-office", "meeting-room", "break-room", "cafe", "clinic-reception", "pharmacy", "boutique", "convenience"]},
     "notebook":        {"src": "proc:NotebookFactory", "on": ["desk", "office_desk", "meeting_table", "reception_desk"], "rooms": ["office", "open-office", "meeting-room", "clinic-reception", "exam-room", "dental-room"]},
+    "open_box":        {"src": "proc:OpenBoxFactory", "on": ["workbench"], "rooms": ["warehouse", "garage"]},
+    "tape_gun":        {"src": "proc:TapeGunFactory", "on": ["workbench"], "rooms": ["warehouse", "garage"]},
+    "kraft_roll":      {"src": "proc:KraftRollFactory", "on": ["workbench"], "rooms": ["warehouse", "garage"]},
     # clinical counter / desk props (clinic r6 critic: 'no glove boxes, sanitizer or trays -- an unfurnished showroom')
     "glove_box":       {"src": "proc:GloveBoxFactory", "on": ["medical_cabinet", "clinic_desk", "reception_desk"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},
     "sanitizer":       {"src": "proc:SanitizerFactory", "on": ["medical_cabinet", "clinic_desk", "reception_desk", "counter"], "rooms": ["clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"]},

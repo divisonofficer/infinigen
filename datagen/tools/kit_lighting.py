@@ -81,10 +81,13 @@ def main() -> int:
     stats = {}
     if L:
         rng = random.Random(a.seed)
-        warm = kelvin_rgb(L.get("color_temp_k", 3000))
+        kk = L.get("color_temp_k", 3000)
+        if spec.get("venue") in ("clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"):                          # a clinic is lit neutral whatever its reference's mood
+            kk = max(kk, 3800)                                   # (clinic r10: a 2800 K 'spa' kit read as a café or lounge)
+        warm = kelvin_rgb(kk)
         amb = AMBIENT.get(L.get("ambient", "medium"), 1.0)
         n = 0
-        key = 3.0 if L.get("key_fixture") == "track_spots" else 1.0   # the key fixture carries the room (shop r3: a track-lit boutique
+        key = 5.0 if L.get("key_fixture") == "track_spots" else 1.0   # the key fixture carries the room (shop r3: a track-lit boutique
         for o in bpy.data.objects:                               # rendered near black at the default 12 W per spot)
             if o.type == "LIGHT" and not is_window_light(o):
                 o.data.color = warm; o.data.energy *= amb * (key if o.data.name.startswith("ir_track_spot") else 1.0); n += 1
@@ -119,6 +122,7 @@ def main() -> int:
                     add_point(f"candle{k}", Vector((c.location.x, c.location.y, top + 0.12)), 3.0, (1.0, 0.55, 0.22), 0.02)
                     k += 1
             stats["candles"] = k
+    # no mood cap on daylight: tried 2026-10-16 (round J) -- chain stayed +16 L bright, industrial fell 50 -> 44 in the style eval
     bpy.context.scene["ir_daylight"] = (L or {}).get("daylight", "high")
     bpy.context.scene["ir_mood"] = spec.get("mood", "bright_daylight") if L else "bright_daylight"
     bpy.ops.wm.save_as_mainfile(filepath=a.out, compress=True)

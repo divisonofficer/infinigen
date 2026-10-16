@@ -28,6 +28,33 @@ if os.environ.get("CLAY") == "1":
     clay.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value = 0.8
     bpy.context.view_layer.material_override = clay
 cd = bpy.data.cameras.new("cmp"); cam = bpy.data.objects.new("cmp", cd); scene.collection.objects.link(cam); scene.camera = cam
+
+
+def _mean_L(path):
+    """Mean CIE L* of a rendered sRGB PNG (style_metrics' formula)."""
+    import numpy as np
+    im = bpy.data.images.load(path); a = np.array(im.pixels[:]).reshape(-1, 4)[:, :3]; bpy.data.images.remove(im)
+    lin = np.where(a <= 0.04045, a / 12.92, ((a + 0.055) / 1.055) ** 2.4)
+    Y = lin @ np.array([0.2126, 0.7152, 0.0722])
+    f = np.where(Y > 0.008856, np.cbrt(Y), 7.787 * Y + 16 / 116)
+    return float((116 * f - 16).mean())
+
+
+if os.environ.get("REF_L"):
+    # auto-exposure toward the reference's mean lightness (a camera setting): two low-res test frames of the first wide view
+    target = float(os.environ["REF_L"]); wide = next((p for p in views if "wide" in p["name"]), views[0])
+    loc, tgt = Vector(wide["location"]), Vector(wide["target"]); cam.location = loc
+    cam.rotation_euler = (tgt - loc).to_track_quat("-Z", "Y").to_euler(); cd.angle = math.radians(wide["hfov"])
+    keep = (c.samples, r.resolution_x, r.resolution_y); c.samples = 24; r.resolution_x, r.resolution_y = 160, 120
+    for _ in range(2):
+        r.filepath = f"{out}/_exposure_probe.png"; bpy.ops.render.render(write_still=True)
+        L = _mean_L(r.filepath)
+        Y = lambda l: ((l + 16) / 116) ** 3                     # noqa: E731
+        ev = max(-1.5, min(1.0, math.log2(Y(target) / max(Y(L), 1e-4))))
+        scene.view_settings.exposure = max(-2.5, min(1.5, scene.view_settings.exposure + ev))
+        print(f"[exposure] probe L {L:.1f} target {target:.1f} -> exposure {scene.view_settings.exposure:+.2f}", flush=True)
+    os.remove(r.filepath)
+    c.samples, r.resolution_x, r.resolution_y = keep
 cd.sensor_fit = "HORIZONTAL"; cd.clip_start = 0.05
 for p in views:
     cd.angle = math.radians(p["hfov"]); r.resolution_x, r.resolution_y = p["res"]

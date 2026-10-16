@@ -10,22 +10,22 @@ Done means: every applicable critic criterion ≥ 7 (target 8), a sheet the user
 | 2 | Office | open office, high-rise ref | loop r7 | 6–8 |
 | 3 | Office | meeting room | loop r7 | 7–8 |
 | 4 | Office | private office | loop r7 | 7–8 |
-| 5 | Office | pantry | r13: run 2.4 m complete, stools without a table → small-room ledge + coffee slot priority; r14 running | 5–6 (r13) |
-| 6 | Café | industrial brick | H; café fridge under-counter, finer grain; I running | style Δ +10 (H), +8 (G) |
-| 7 | Café | nordic bakery | H best so far; I running | style Δ +23 (H), +8 (G), +18 (F) |
-| 8 | Café | minimal bar | H; I running | style Δ +17 (H), +14 (G) |
-| 9 | Café | chain banquette | H: banquette placed but never in a view → hero close-ups; I running | style Δ +3 (H), +9 (G) |
+| 5 | Office | pantry | r17 best; one stool model per scene, fridge handles/dispenser; r18 running | 6–8 (r17) |
+| 6 | Café | industrial brick | M: auto-exposure, reference pendants (black dome), duct raised; colour 7.2; N running | raw 50 (M), 44 (L) |
+| 7 | Café | nordic bakery | M: 15 cone pendants → bowl domes, max 7; colour 8.2; N running | raw 43 (M), 48 (L) |
+| 8 | Café | minimal bar | M best; colour 8.0; N running | raw 50 (M), 48 (L) |
+| 9 | Café | chain banquette | auto-exposure fixed brightness (colour 2.1 → 5.2); N running | raw 49 (M), 49 (L) |
 | 10 | Café | floral moody | ablation s0–s3c done (lighting is the lever) | coherence 2→6; colour 0→7.5 |
-| 11 | Warehouse | racks / storage | r3: racks stocked, roof industrial; r4 with image kit, 5 m, bench props running | 4–7 (r3) |
-| 12 | Warehouse | packing / loading | r3: loaded pallet carries it; r4 with image kit running | 3–6 (r3) |
+| 11 | Warehouse | racks / storage | r8: function/coherence/ceiling 8; signs of use 5 | 5–8 (r8) |
+| 12 | Warehouse | packing / loading | r8: benches not aisles; props reached only the first bench of a row → every copy; r9 running | 4–7 (r8) |
 | 13 | Shop | grocery sales floor | earlier sample | – |
-| 14 | Shop | convenience store | r3: lit coolers convincing; r4 with kit + one floor basket running | 5–7 (r3) |
-| 15 | Shop | clothing boutique | r3: underlit → image kit, track spots ×3; r4 running | 5–7 (r3) |
-| 16 | Shop | pharmacy | r3: stocked; desk mid-floor → counter + shelves on walls; r4 running | 5–8 (r3) |
-| 17 | Clinic | reception + waiting room | r7: olive trees, chair on the patient side → 1 plant, 'behind' relation; r8 running | 3–8 (r7) |
-| 18 | Clinic | exam room | r7: signs of use 2→6; r8 running | 5–8 (r7) |
-| 19 | Clinic | dental treatment room | r7; r8 running | 5–8 (r7) |
-| 20 | Clinic | physiotherapy room | r7: olive grove on the floor → cap 1 plant; r8 running | 3–8 (r7) |
+| 14 | Shop | convenience store | r6; wide views 85° → 65° (lens distortion) | 5–7 (r6) |
+| 15 | Shop | clothing boutique | r6; garments still read as slabs | 5–7 (r6) |
+| 16 | Shop | pharmacy | r6 checkout 8; 'diamond shelf' = 85° lens distortion of the wall shelf (4 rounds) | 5–8 (r6) |
+| 17 | Clinic | reception + waiting room | r11 function 8, ceiling 9; desk 1.3 m off the wall + staff chair; r12 running | 3–9 (r11) |
+| 18 | Clinic | exam room | r11: all but signs of use ≥ 7 | 5–8 (r11) |
+| 19 | Clinic | dental treatment room | r11: all but signs of use ≥ 7 | 5–8 (r11) |
+| 20 | Clinic | physiotherapy room | r11 | 4–8 (r11) |
 
 Style-fidelity eval (critic_style.md, 9 axes 0–10, anchor = floral s0 render in every call; compare by variant − anchor):
 reference images are synthetic (Codex imagegen), the room shell is generated per seed and not judged.

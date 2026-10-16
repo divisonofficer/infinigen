@@ -111,5 +111,6 @@
   "/jarvis/project/robomituba/data/venue_refs/cafe_gen/industrial_brick/view2.png",
   "/jarvis/project/robomituba/data/venue_refs/cafe_gen/industrial_brick/view3.png"
  ],
- "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/industrial_brick/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact."
+ "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/industrial_brick/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact.",
+ "pendant_shade": "black_metal_dome"
 }

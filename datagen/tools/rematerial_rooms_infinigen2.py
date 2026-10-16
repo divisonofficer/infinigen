@@ -209,7 +209,9 @@ def kit_finish(name, st):
         return _paint(st.get("wall_rgb") if st.get("wall_rgb") and sum(st["wall_rgb"]) >= 0.6 else (0.85, 0.83, 0.78))
     if name == "wood_panel":
         return (lambda r, v: fl.wood_planks.wood_planks_brown_preset(v)) if dark else (lambda r, v: fl.wood_planks.wood_planks_blonde_preset(v))
-    return {"brick": _bricks, "concrete": fl.concrete.concrete_rand, "tile": tiles.tile_indoor_wall_rand}[name]
+    if name == "tile":                                          # the random wall-tile shader drew olive swirl mosaics where the refs
+        return _paint((0.92, 0.92, 0.9))                        # show plain white tile (style evals I/J); a plain light finish instead
+    return {"brick": _bricks, "concrete": fl.concrete.concrete_rand}[name]
 
 
 def kit_floor(st):
@@ -230,6 +232,55 @@ def feature_wall_mask(o):
     if not back.any():
         return back
     return back & (cy > cy[back].max() - 0.3)
+
+
+def finish_floor(mat, rgb, rough, tint=0.0, mottle=0.0):
+    """A kit floor's finish (café style evals I/J, all four: 'flat matte beige where the ref has glossy mottled polished concrete';
+    'orange high-gloss parquet where the ref has matte pale oak'): every BSDF's colour is pulled `tint` of the way to the kit's floor
+    colour and multiplied by a low-frequency noise of +-`mottle`; its roughness is set to `rough` (nested groups included)."""
+    if mat is None or not mat.use_nodes:
+        return 0
+    seen, n = set(), 0
+    def walk(nt):
+        nonlocal n
+        if nt.name in seen:
+            return
+        seen.add(nt.name)
+        for node in list(nt.nodes):
+            if node.type == "GROUP" and node.node_tree is not None:
+                walk(node.node_tree)
+            elif node.type == "BSDF_PRINCIPLED":
+                sock = node.inputs["Base Color"]
+                src = sock.links[0].from_socket if sock.is_linked else None
+                mix = nt.nodes.new("ShaderNodeMix"); mix.data_type = "RGBA"; mix.inputs[0].default_value = tint
+                mix.inputs[7].default_value = (*rgb, 1)       # colour sockets by index: "A"/"B" name the float ones first
+                if src is not None:
+                    nt.links.new(src, mix.inputs[6])
+                else:
+                    mix.inputs[6].default_value = sock.default_value
+                out = mix.outputs[2]
+                if mottle:
+                    tc = nt.nodes.new("ShaderNodeTexCoord"); nz = nt.nodes.new("ShaderNodeTexNoise")
+                    nz.inputs["Scale"].default_value = 1.2; nz.inputs["Detail"].default_value = 6.0
+                    mr = nt.nodes.new("ShaderNodeMapRange"); mr.inputs["To Min"].default_value = 1 - mottle; mr.inputs["To Max"].default_value = 1 + mottle
+                    mul = nt.nodes.new("ShaderNodeMix"); mul.data_type = "RGBA"; mul.blend_type = "MULTIPLY"; mul.inputs[0].default_value = 1.0
+                    nt.links.new(tc.outputs["Object"], nz.inputs["Vector"]); nt.links.new(nz.outputs["Fac"], mr.inputs["Value"])
+                    nt.links.new(out, mul.inputs[6]); nt.links.new(mr.outputs["Result"], mul.inputs[7])
+                    out = mul.outputs[2]
+                nt.links.new(out, sock)
+                r_ = node.inputs["Roughness"]
+                for l in list(r_.links):
+                    nt.links.remove(l)
+                r_.default_value = rough
+                if rough >= 0.5:                                 # matte: the wood preset's clear coat kept a mirror gloss at roughness 0.6
+                    for nm, v in (("Coat Weight", 0.0), ("Specular IOR Level", 0.25)):   # (café K nordic: 'mirror specular highlights')
+                        if nm in node.inputs:
+                            for l in list(node.inputs[nm].links):
+                                nt.links.remove(l)
+                            node.inputs[nm].default_value = v
+                n += 1
+    walk(mat.node_tree)
+    return n
 
 
 def darken(mat, k):
@@ -294,6 +345,17 @@ for o in targets:
         if part == "floor" or KIT["architecture"]["other_walls"] in ("wood_panel",):
             nd = sum(darken(sl.material, 0.32) for sl in o.material_slots)   # dark stained wood, not orange
             print(f"[kit] darkened {o.name}: {nd} BSDFs", flush=True)
+    if KIT is not None and part == "floor" and KIT.get("floor_rgb"):
+        conc = KIT.get("floor") != "wood"
+        frgb = KIT["floor_rgb"]
+        if conc:                                                 # concrete is near neutral: the kit reads it beige off a warm-lit photo
+            lum = 0.2126 * frgb[0] + 0.7152 * frgb[1] + 0.0722 * frgb[2]   # (café K: 'matte beige, carpet-like' vs grey polished concrete)
+            frgb = [0.4 * c + 0.6 * lum for c in frgb]
+        nf = sum(finish_floor(sl.material, frgb, 0.22 if conc else 0.6, tint=1.0 if conc else 0.55, mottle=0.14 if conc else 0.0)
+                 for sl in o.material_slots)
+        print(f"[kit] floor finish {'polished concrete' if conc else 'matte tinted wood'}: {nf} BSDFs", flush=True)
+    if KIT is not None and KIT.get("venue") in ("clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy") and KIT["architecture"].get("feature_wall") in ("wood_panel", "brick"):
+        KIT["architecture"]["feature_wall"] = "paint_light"      # washable walls in a clinic (clinic r10: wood-plank wall read as a lounge)
     if KIT is not None and part == "wall" and KIT["architecture"]["feature_wall"] != KIT["architecture"]["other_walls"]:
         (r2,) = rng.spawn(1)
         fm = kit_finish(KIT["architecture"]["feature_wall"], KIT)(r2, pf.nodes.shader.uv_map(uv_map="m_uv"))

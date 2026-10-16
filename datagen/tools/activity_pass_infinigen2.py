@@ -462,8 +462,8 @@ def main() -> int:
     stats.update(appliance_slots=0, lonely_plants_removed=0, wall_art_added=0, mirrors_added=0, rugs_muted=0)
     _kit = (json.loads(a.plans.read_text()).get("style_spec") or {}) if a.plans else {}
     if "framed_art" in (_kit.get("decor") or []):              # a styled venue hangs pictures (cafe refs: framed prints on the walls)
-        for _rt in ("break-room", "cafe"):
-            room_dressing.ART_ROOMS[_rt] = 4
+        for _rt in ("break-room", "cafe"):                     # clinics and shops borrow break-room too: one picture there, not a gallery
+            room_dressing.ART_ROOMS[_rt] = 4 if _kit.get("venue") == "cafe" else 1   # (clinic r9: 4 oil paintings read as a home)
     if not a.no_dressing:
         room_dressing.neutral_appliances(rng, stats)
         room_dressing.mute_rugs(rng, stats)
