@@ -44,8 +44,20 @@ WET_FNS = {"wall": wet_wall, "floor": tiles.tile_indoor_ground_rand}
 # tiled, with a fixed neutral ceramic: painted plaster and the office floor read as 'an office with a toilet in it' (floors A2/G/H r4-r8,
 # 3 of 3 each); the random tile material gave a pink diagonal (floor E), so the tile colour is pinned and only the pattern varies
 from infinigen2.shaders.base_materials import ceramic as _ceramic  # noqa: E402
-WET_FNS_WORK = {"wall": lambda rng, vec: tiles.tile_indoor_wall_rand(rng, vec, tile=_ceramic.ceramic(vec, (0.86, 0.87, 0.86))),
-                "floor": lambda rng, vec: tiles.tile_indoor_ground_rand(rng, vec, tile=_ceramic.ceramic(vec, (0.42, 0.44, 0.45), roughness=0.4))}
+from infinigen2.shaders.masks import tile_shapes as _shapes  # noqa: E402
+
+
+def _plain_tile(rgb, per_m, rough=0.3):
+    """Plain square ceramic tile, straight grid: the random pattern gave cube / circle motifs that read as a decorative home bathroom
+    (floor F3 r5, coherence 6, 3 of 3)."""
+    def fn(rng, vec):
+        tv = _shapes.tile_coord_transform_rand(rng, vec, rotation_deg=0.0, scale=per_m, flip=1.0)
+        mask = _shapes.square(vector=tv, subtiles_number=1.0, aspect_ratio=1.0, border=0.04, flatness=0.92)
+        return tiles.tile_indoor_wall_rand(rng, vec, tile=_ceramic.ceramic(vec, rgb, roughness=rough), tile_mask=mask, scale=per_m)
+    return fn
+
+
+WET_FNS_WORK = {"wall": _plain_tile((0.86, 0.87, 0.86), 6.7), "floor": _plain_tile((0.42, 0.44, 0.45), 4.0, rough=0.4)}
 
 # Workplaces stand on concrete (a carpet-patterned warehouse read wrong, user 2026-10-16); half get a scratch/splat overlay.
 WORK_ROOMS = {"warehouse", "garage", "utility"}

@@ -203,6 +203,9 @@ def build(room, rng, pal, stats, seed, track=True, archetype="default"):
     odds = ARCHETYPES.get(archetype, ARCHETYPES["default"])
     has = {k: rng.random() < p for k, p in odds.items()}
     has["track"] = has["track"] and track
+    if str(getattr(room, "name", "")).split("_")[0] in ("restroom", "utility", "closet", "bathroom"):   # a service room keeps a plain
+        for k in ("duct", "pipe", "track", "beam", "column", "pilaster", "soffit", "linear"):   # ceiling: 'a low diagonal duct and track spots
+            has[k] = False                                                             # in a customer WC' (floor H r12-r14, 3 of 3)
     stats["archetype"], stats["elements"] = archetype, sorted(k for k, v in has.items() if v)
     x0, x1, y0, y1, z0, zc = room_frame(room)
     W, D = x1 - x0, y1 - y0
@@ -337,6 +340,145 @@ def office_doors(rng, stats):
     stats["office_windows"] = w
 
 
+def flush_doors(stats):
+    """Every door leaf becomes a flush commercial leaf -- one slab, a narrow vision panel, a lever handle and a kick plate on both
+    faces -- with the same hinge and swing. The Infinigen runtime (/root/module/infinigen) draws panelled, louvred, multi-lite and
+    glass-panel leaves; critics read them as 'six-panel residential doors' (floors B, C, F3), 'a bank of steel lockers' (E3 r9) and
+    'a free-standing wardrobe' (E3 r8). The closed pose is found the way room_dressing shuts exterior doors: the z rotation that lays
+    the leaf thinnest across the wall normal, centred in the opening."""
+    import bmesh
+    leaf_m = bpy.data.materials.get("ir_office_door_leaf") or _mat("ir_office_door_leaf", (0.86, 0.86, 0.84), 0.45)
+    glass = pa._flat("ir_door_vision_glass", (0.25, 0.3, 0.32), 0.05, transmission=0.85)
+    chrome = pa._flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0)
+    n_done = 0
+    svc = []                                                     # service rooms keep their doors shut: an open leaf standing in a small
+    for nm, parts in rd._rooms().items():                        # stockroom or WC read as 'the door swings into the rack' (floor H
+        if nm.split("_")[0] in ("restroom", "utility", "closet", "bathroom") and "floor" in parts:   # r15-r17, 3 of 3 each)
+            pts = [parts["floor"].matrix_world @ Vector(c) for c in parts["floor"].bound_box]
+            svc.append((min(q.x for q in pts), max(q.x for q in pts), min(q.y for q in pts), max(q.y for q in pts)))
+    halls = []
+    for nm, parts in rd._rooms().items():
+        if nm.split("_")[0] == "hallway" and "floor" in parts:
+            pts = [parts["floor"].matrix_world @ Vector(c) for c in parts["floor"].bound_box]
+            halls.append((min(q.x for q in pts), max(q.x for q in pts), min(q.y for q in pts), max(q.y for q in pts)))
+    n_shut = n_flip = 0
+    for o in list(bpy.data.objects):
+        f = o.name.split("(")[0]
+        if o.type != "MESH" or "Door" not in f or "Casing" in f or o.parent is None or not o.data.polygons:
+            continue
+        c = o.parent.matrix_world.translation.copy()
+        nrm = o.parent.matrix_world.to_3x3() @ Vector((0, 1, 0)); nrm.z = 0
+        if nrm.length < 1e-6:
+            continue
+        nrm.normalize(); t = Vector((-nrm.y, nrm.x, 0))
+        fs = [(pg.center.copy(), pg.area) for pg in o.data.polygons]
+        A = sum(a for _, a in fs) or 1.0
+        o.rotation_mode = "XYZ"
+        rz0 = o.rotation_euler[2]
+        def cost(rz):
+            o.rotation_euler[2] = rz
+            bpy.context.view_layer.update()
+            M = o.matrix_world
+            w = [((M @ q - c).dot(nrm), (M @ q - c).dot(t), a) for q, a in fs]
+            mn = sum(x * a for x, _, a in w) / A
+            return (sum(a * (x - mn) ** 2 for x, _, a in w) / A) ** 0.5 + 0.1 * abs(sum(y * a for _, y, a in w) / A)
+        rzc = min((math.radians(d) for d in range(-180, 180, 2)), key=cost)
+        o.rotation_euler[2] = rzc; bpy.context.view_layer.update()
+        M = o.matrix_world.copy()
+        vs = [M @ v.co for v in o.data.vertices]
+        ts = [(v - c).dot(t) for v in vs]; ns = [(v - c).dot(nrm) for v in vs]; zs = [v.z for v in vs]
+        t0, t1 = sorted(ts)[int(0.02 * len(ts))], sorted(ts)[int(0.98 * len(ts)) - 1]   # percentiles: handles stick out
+        z0, z1 = min(zs), max(zs); nm = sum(ns) / len(ns)
+        W, H, T = t1 - t0, z1 - z0, 0.045
+        if W < 0.4 or H < 1.6:                                   # not a leaf (a fragment): leave it
+            o.rotation_euler[2] = rz0
+            continue
+        hinge = 1 if (M.translation - c).dot(t) > (t0 + t1) / 2 else -1
+        tc = (t0 + t1) / 2
+        def box(tm, zm, nn, wt, hz, dn):                         # a box centred at (t, z, n) in the opening frame
+            ctr = c + t * tm + nrm * (nm + nn); ctr.z = zm
+            return ctr, (wt, hz, dn)
+        parts = {"leaf": [box(tc, z0 + H / 2, 0, W, H, T)], "glass": [box(tc + hinge * W * 0.12, z0 + H * 0.62, 0, 0.14, H * 0.38, T + 0.006)],
+                 "metal": [box(tc - hinge * (W / 2 - 0.09), z0 + 1.02, sg * (T / 2 + 0.03), 0.14, 0.02, 0.02) for sg in (1, -1)] +
+                          [box(tc - hinge * (W / 2 - 0.03), z0 + 1.02, sg * (T / 2 + 0.015), 0.025, 0.06, 0.03) for sg in (1, -1)] +
+                          [box(tc, z0 + 0.1, sg * (T / 2 + 0.002), W - 0.04, 0.2, 0.004) for sg in (1, -1)]}
+        bm = bmesh.new()
+        Minv = M.inverted()
+        mats = [leaf_m, glass, chrome]
+        for slot, key in enumerate(("leaf", "glass", "metal")):
+            for ctr, (wt, hz, dn) in parts[key]:
+                r = bmesh.ops.create_cube(bm, size=1.0)
+                for v in r["verts"]:                             # opening frame -> world -> the leaf's local frame
+                    lw = ctr + t * (v.co.x * wt) + nrm * (v.co.y * dn) + Vector((0, 0, v.co.z * hz))
+                    v.co = Minv @ lw
+                for fc in {fc for v in r["verts"] for fc in v.link_faces}:
+                    fc.material_index = slot
+        me = bpy.data.meshes.new(f"ir_flush_leaf_{n_done}")
+        bm.to_mesh(me); bm.free()
+        for m_ in mats:
+            me.materials.append(m_)
+        o.data = me
+        shut = any(b[0] < q.x < b[1] and b[2] < q.y < b[3] for b in svc for q in (c + nrm * 0.7, c - nrm * 0.7))
+        o.rotation_euler[2] = rzc if shut else rz0               # shut into a service room, else back to its swing
+        n_shut += shut
+        if not shut and halls:                                   # a leaf open into the corridor half-blocked it (floor D3 r12, 3 of 3):
+            bpy.context.view_layer.update()                      # swing it into the room instead
+            m_ = o.matrix_world @ (sum((v.co for v in o.data.vertices), Vector()) / max(1, len(o.data.vertices)))
+            if any(b[0] < m_.x < b[1] and b[2] < m_.y < b[3] for b in halls):
+                o.rotation_euler[2] = 2 * rzc - rz0
+                n_flip += 1
+        n_done += 1
+    bpy.context.view_layer.update()
+    stats["flush_doors"] = n_done
+    stats["service_doors_shut"] = n_shut
+    stats["corridor_doors_flipped"] = n_flip
+
+
+def frosted_restroom_windows(stats):
+    """Restroom windows get obscure glass (floors C, D3, H: 'a large clear window beside the toilet', 3 of 3 calls each)."""
+    blind = pa._flat("ir_venetian_slat", (0.78, 0.79, 0.8), 0.35, metallic=0.4)
+    frost = pa._flat("ir_frosted_glass", (0.95, 0.96, 0.97), 0.75, transmission=0.7)   # 0.45 / 1.0 still read as clear (floor I r10, 2 of 3)
+    boxes = []
+    for nm, parts in rd._rooms().items():
+        if nm.split("_")[0] in ("restroom", "bathroom", "closet") and "floor" in parts:   # changing rooms too: a fabric drape there read as
+            # a bedroom (floor F3 r8, 3 of 3)
+            pts = [parts["floor"].matrix_world @ Vector(c) for c in parts["floor"].bound_box]
+            boxes.append((min(p.x for p in pts), max(p.x for p in pts), min(p.y for p in pts), max(p.y for p in pts)))
+    n = 0
+    for o in bpy.data.objects:
+        if o.type != "MESH" or "Window" not in o.name.split("(")[0]:
+            continue
+        p = o.matrix_world @ (sum((Vector(c) for c in o.bound_box), Vector()) / 8)
+        wp = [o.matrix_world @ Vector(c) for c in o.bound_box]
+        along_y = max(q.x for q in wp) - min(q.x for q in wp) < max(q.y for q in wp) - min(q.y for q in wp)
+        # 0.45 m out across the wall (an exterior window sits mid-wall, 0.31 m out: floor G), none along it -- a 0.45 m box margin also
+        # took a neighbour's window past the corner and hung slats on a blank tiled wall (floor E3 r12, 3 of 3)
+        m_x, m_y = (0.45, 0.0) if along_y else (0.0, 0.45)
+        hit = next((b for b in boxes if b[0] - m_x < p.x < b[1] + m_x and b[2] - m_y < p.y < b[3] + m_y), None)
+        if hit:
+            for sl in o.material_slots:
+                if sl.material and "glass" in sl.material.name.lower():
+                    sl.material = frost
+            # a roller blind over the whole opening on the room side: sun through the gap round the pane drew hard white L-shaped strips
+            # on the floor (floor H r12, 3 of 3: 'a light leak')
+            pts = [o.matrix_world @ Vector(c) for c in o.bound_box]
+            x0, x1 = min(q.x for q in pts), max(q.x for q in pts); y0, y1 = min(q.y for q in pts), max(q.y for q in pts)
+            z0, z1 = min(q.z for q in pts), max(q.z for q in pts)
+            rc = Vector(((hit[0] + hit[1]) / 2, (hit[2] + hit[3]) / 2, 0))
+            # venetian slats, not one sheet: a flat white blind read as 'a blank white panel' (floor H r13, 3 of 3)
+            nz = max(6, int((z1 - z0 + 0.08) / 0.05))
+            zs = [z0 - 0.04 + (k + 0.5) * (z1 - z0 + 0.08) / nz for k in range(nz)]
+            if x1 - x0 < y1 - y0:                                # the window runs along y: slats are thin x boxes on the room side
+                xs = (x1 + 0.04) if rc.x > p.x else (x0 - 0.04)
+                slats = [(xs, (y0 + y1) / 2, z, 0.04, y1 - y0 + 0.08, 0.004) for z in zs]
+            else:
+                ys = (y1 + 0.04) if rc.y > p.y else (y0 - 0.04)
+                slats = [((x0 + x1) / 2, ys, z, x1 - x0 + 0.08, 0.04, 0.004) for z in zs]
+            _box(f"RollerBlindFactory({n}).spawn_asset({n})", slats, blind)
+            n += 1
+    stats["frosted_windows"] = n
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("blend"); ap.add_argument("--out", required=True); ap.add_argument("--seed", type=int, default=0)
@@ -361,13 +503,16 @@ def main() -> int:
         if "floor" not in parts or "wall" not in parts:
             continue
         room = fr.Room(nm, parts, scene, deps)
-        if not kit:                                             # with a kit the feature wall is rematerial's (one concept, not a random accent)
+        if not kit and nm.split("_")[0] not in ("restroom", "utility", "closet", "kitchen", "hallway", "bathroom"):   # with a kit the feature
+            # wall is rematerial's; never in service rooms (floor A2 r5: a charcoal wall in the tiled restroom)
             accent = _mat("ir_arch_accent", pal["accent"], 0.8)
             stats["accent"] = accent_wall(room, accent, rng, stats)
         build(room, rng, pal, stats, a.seed, track=not a.no_track, archetype=a.archetype)
+    frosted_restroom_windows(stats)
     if a.archetype.startswith("office") or a.archetype == "warehouse" or kit:   # warehouse r3: mauve residential panel doors;
         # café N: 'a purple door frame' against a white/sage/oak kit -- any styled venue gets the neutral leaf and metal casing
         office_doors(rng, stats)
+        flush_doors(stats)
     if a.archetype == "warehouse":                              # no skirting in an industrial unit (wh r22, 3 of 3: 'white skirting
         sk = [o for o in bpy.data.objects if o.name.startswith("skirtingboard")]   # boards on every wall say apartment')
         for o in sk:

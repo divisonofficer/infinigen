@@ -70,6 +70,46 @@ def add_point(name, at, energy, color, radius=0.05):
     return lo
 
 
+def service_room_lights(stats):
+    """Ceiling fixtures in restrooms, stockrooms, changing and staff rooms become flush LED panels: the Infinigen ceiling light drew
+    'a residential crystal flush-mount' and 'an industrial dome' (floor H r15, 3 of 3). The fixture's own light sources stay."""
+    import bmesh
+    boxes = []
+    for nm, parts in rd._rooms().items():
+        if nm.split("_")[0] in ("restroom", "utility", "closet", "kitchen", "bathroom") and "floor" in parts:
+            pts = [parts["floor"].matrix_world @ Vector(c) for c in parts["floor"].bound_box]
+            boxes.append((min(q.x for q in pts), max(q.x for q in pts), min(q.y for q in pts), max(q.y for q in pts)))
+    panel = pa._flat("ir_led_panel", (0.95, 0.95, 0.93), 0.3)
+    b = panel.node_tree.nodes["Principled BSDF"]
+    b.inputs["Emission Color"].default_value = (1.0, 0.98, 0.95, 1); b.inputs["Emission Strength"].default_value = 4.0
+    trim = pa._flat("ir_ac_white", (0.86, 0.86, 0.85), 0.4)
+    n = 0
+    for o in list(bpy.data.objects):
+        if o.type != "MESH" or o.name.split("(")[0] not in ("CeilingLightFactory", "AboCeilingFixtureFactory") or \
+                (o.parent is not None and o.parent.type == "MESH"):    # the activity pass hangs ABO fixtures (floor H r15)
+            continue
+        pts = [o.matrix_world @ Vector(c) for c in o.bound_box]
+        cx, cy, top = sum(q.x for q in pts) / 8, sum(q.y for q in pts) / 8, max(q.z for q in pts)
+        if not any(b_[0] < cx < b_[1] and b_[2] < cy < b_[3] for b_ in boxes):
+            continue
+        Minv = o.matrix_world.inverted()
+        bm = bmesh.new()
+        for slot, (hz, half, dz) in enumerate(((0.04, 0.31, 0.02), (0.012, 0.28, 0.046))):   # white frame, then the glowing diffuser below it
+            r = bmesh.ops.create_cube(bm, size=1.0)
+            for v in r["verts"]:
+                v.co = Minv @ Vector((cx + v.co.x * 2 * half, cy + v.co.y * 2 * half, top - dz + v.co.z * hz))
+            for fc in {fc for v in r["verts"] for fc in v.link_faces}:
+                fc.material_index = slot
+        me = bpy.data.meshes.new(f"ir_led_panel_{n}"); bm.to_mesh(me); bm.free()
+        me.materials.append(trim); me.materials.append(panel)
+        o.data = me
+        for ch in o.children_recursive:                      # a glTF fixture's other parts
+            if ch.type == "MESH":
+                ch.hide_render = True; ch.hide_viewport = True
+        n += 1
+    stats["service_led_panels"] = n
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("blend"); ap.add_argument("--out", required=True); ap.add_argument("--plans", required=True)
@@ -122,6 +162,29 @@ def main() -> int:
                     add_point(f"candle{k}", Vector((c.location.x, c.location.y, top + 0.12)), 3.0, (1.0, 0.55, 0.22), 0.02)
                     k += 1
             stats["candles"] = k
+    # staff rooms inside a high hall get a suspended ceiling at 2.8 m: they kept the 5 m warehouse height and read as 'tall empty cells cut
+    # out of the hall' (floor J r11, 3 of 3); their fixtures and lights come down under it
+    tile = pa._flat("ir_drop_ceiling", (0.88, 0.88, 0.86), 0.8)
+    n_drop = 0
+    for name, room in rd._rooms().items():
+        if "floor" not in room or "wall" not in room or name.split("_")[0] in ("warehouse", "garage"):
+            continue
+        pts = [room["floor"].matrix_world @ Vector(c) for c in room["floor"].bound_box]
+        fz = max(p.z for p in pts)
+        top = max((room["wall"].matrix_world @ Vector(c)).z for c in room["wall"].bound_box)
+        if top - fz < 3.6:
+            continue
+        x0, x1 = min(p.x for p in pts), max(p.x for p in pts); y0, y1 = min(p.y for p in pts), max(p.y for p in pts)
+        zc = fz + 2.8
+        pa._parts_object(f"DropCeilingFactory({n_drop}).spawn_asset({n_drop})", [(tile, [((x0 + x1) / 2, (y0 + y1) / 2, zc + 0.015, x1 - x0, y1 - y0, 0.03)])])
+        for o in bpy.data.objects:
+            if o.parent is not None or not (o.type == "LIGHT" or "Ceiling" in o.name or "LampFactory" in o.name):
+                continue
+            t = o.matrix_world.translation
+            if x0 <= t.x <= x1 and y0 <= t.y <= y1 and t.z > zc:
+                o.location.z -= (t.z - (zc - 0.06))
+        n_drop += 1
+    stats["drop_ceilings"] = n_drop
     # lights buried in architecture: a ceiling fixture placed after the exposed ducts/beams ended up inside a duct, 2 cm of metal under
     # the bulb (floor H r4: the restroom read near black, 3 of 3) -- drop the light just below whatever covers it
     sc_, dg_ = bpy.context.scene, bpy.context.evaluated_depsgraph_get()
@@ -154,13 +217,39 @@ def main() -> int:
         pts = [room["floor"].matrix_world @ Vector(c) for c in room["floor"].bound_box]
         x0, x1 = min(p.x for p in pts), max(p.x for p in pts); y0, y1 = min(p.y for p in pts), max(p.y for p in pts)
         fz = max(p.z for p in pts)
+        ceil = max((room["wall"].matrix_world @ Vector(c)).z for c in room["wall"].bound_box) if "wall" in room else fz + 2.7
+        for o in bpy.data.objects:                       # under a suspended ceiling
+            if o.name.startswith("DropCeilingFactory"):
+                ps_ = [o.matrix_world @ Vector(c) for c in o.bound_box]
+                cx_, cy_ = sum(q.x for q in ps_) / 8, sum(q.y for q in ps_) / 8
+                if x0 <= cx_ <= x1 and y0 <= cy_ <= y1:
+                    ceil = min(ceil, min(q.z for q in ps_))
+        cz = ceil - 0.25
+        fixture = any(o.type == "MESH" and ("Ceiling" in o.name.split("(")[0] or o.data.name.startswith("ir_led_panel")) and not o.name.startswith("DropCeiling")
+                      and x0 <= o.matrix_world.translation.x <= x1 and y0 <= o.matrix_world.translation.y <= y1 for o in bpy.data.objects)
+        if not fixture:                          # a visible flush panel: back rooms lit 'from nowhere' (floor G r16, 3 of 3)
+            led = pa._flat("ir_led_panel", (0.95, 0.95, 0.93), 0.3)
+            bb = led.node_tree.nodes["Principled BSDF"]
+            bb.inputs["Emission Color"].default_value = (1.0, 0.98, 0.95, 1); bb.inputs["Emission Strength"].default_value = 4.0
+            pa._parts_object(f"CeilingLightFactory(svc).spawn_asset(p{n_svc})", [(led, [((x0 + x1) / 2, (y0 + y1) / 2, ceil - 0.02, 0.6, 0.6, 0.03)])])
         if sum(e for q, e in lit if x0 <= q.x <= x1 and y0 <= q.y <= y1 and q.z > fz) >= 150.0:
+            n_svc += 0 if fixture else 1
             continue                             # one 92 W lamp over a stall row left a restroom near black (floor H r5)
-        cz = (max((room["wall"].matrix_world @ Vector(c)).z for c in room["wall"].bound_box) if "wall" in room else fz + 2.7) - 0.25
         add_point(f"svc{n_svc}", Vector(((x0 + x1) / 2, (y0 + y1) / 2, cz)), 40.0 * max(1.0, (x1 - x0) * (y1 - y0) / 6.0),
                   kelvin_rgb(4000), 0.3)
         n_svc += 1
     stats["service_lights"] = n_svc
+    service_room_lights(stats)
+    # monitor shells in plain dark plastic: an Infinigen monitor variant rendered 'purple speckled, gemstone-like' (floor D3 r12, 3 of 3)
+    blk = pa._flat("ir_monitor_plastic", (0.035, 0.035, 0.04), 0.45)
+    n_mon = 0
+    for o in bpy.data.objects:
+        if o.type == "MESH" and o.name.split("(")[0] in ("MonitorFactory", "TVFactory"):
+            for sl in o.material_slots:
+                if sl.material and not any(k in sl.material.name.lower() for k in ("screen", "display", "emission")):
+                    sl.material = blk
+            n_mon += 1
+    stats["monitors_matte"] = n_mon
     # no mood cap on daylight: tried 2026-10-16 (round J) -- chain stayed +16 L bright, industrial fell 50 -> 44 in the style eval
     bpy.context.scene["ir_daylight"] = (L or {}).get("daylight", "high")
     bpy.context.scene["ir_mood"] = spec.get("mood", "bright_daylight") if L else "bright_daylight"

@@ -9,7 +9,9 @@ for n in names:
     if "_wide" in n:
         rooms.setdefault(n.split("_wide")[0], []).append(n)
 close = [n for n in names if re.match(r"c\d+_", n)]      # not "closet_0-0_wide0" (floor F3 r1)               # two rows: a floor has a hero per room (floor I r2: the till was close-up 5,
-rows = [(r, ns[:4]) for r, ns in rooms.items()] + [("close-ups", close[:4]), ("close-ups", close[4:8])]   # off the sheet; 3/3 'no checkout')
+rows = ([(r, ns[i:i + 4]) for r, ns in rooms.items() for i in range(0, len(ns), 4)] +   # the hub's wide4/5 were cut by [:4] (floor I r14)
+        [("close-ups", close[i:i + 4]) for i in (0, 4, 8)])   # off the sheet; 3/3 'no checkout'; floor I r14: the till was
+# close-up 10 of 10, past an 8-slot cap, 3/3 'no checkout' again)
 rows = [(l, ns) for l, ns in rows if ns]
 rows += [(r + " (clay)", [n for n in ns if os.path.exists(f"{O}/rv_{tag}_clay/{n}")]) for r, ns in rows[:-1]][:0]
 sheet = Image.new("RGB", (W * 4, (H + 18) * len(rows)), "white"); d = ImageDraw.Draw(sheet)

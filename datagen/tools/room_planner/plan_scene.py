@@ -56,27 +56,35 @@ def main() -> int:
             # floors: service rooms no venue covers get a fixed fit-out (floor E: the sterilisation room rendered empty)
             clinic = any(v in ("clinic-reception", "exam-room", "dental-room", "physio-room") for v in room_venues.values())
             furn = ([{"id": "run", "category": "medical_cabinet", "relation": "against_wall"},          # sterilisation / supply: counter
-                     {"id": "racks", "category": "storage_rack", "relation": "against_wall", "away_from": "run"}]   # run + stocked rack
+                     {"id": "racks", "category": "supply_shelf", "relation": "against_wall", "away_from": "run", "count": 2}]   # white shelving
                     if clinic and room["type"] == "utility" else
                     [{"id": "lockers", "category": "locker", "relation": "against_wall", "count": 2},
                      {"id": "bench", "category": "changing_bench", "relation": "in_front_of", "target": "lockers", "gap_m": 0.6},
                      {"id": "mirror", "category": "mirror", "relation": "against_wall", "away_from": "lockers"}]
                     if room["type"] == "closet" else
                     [{"id": "racks", "category": "storage_rack", "relation": "against_wall", "count": 2}])
-            stock = ([{"category": "cardboard_box", "on": "racks", "fill": True}] if any(f["id"] == "racks" for f in furn) else   # every level
+            stock = ([{"category": "cardboard_box", "on": "racks", "fill": True}] +
+                     ([{"category": "autoclave", "on": "run", "count": 2}] if furn[0]["category"] == "medical_cabinet" else [])   # two units
+                     if any(f["id"] == "racks" for f in furn) else   # every level
                                                                  # (floor E3 r3: one box tried, 'no fit', a bare rack)
                      [{"category": "towel_stack", "on": "bench"}, {"category": "laundry_basket", "on": "floor"}]   # a changing room in use
                      if furn[0]["id"] == "lockers" else [])                                                       # (floor F r2: use 3, 3 of 3)
             out["rooms"][room["id"]] = {"plan": {"occupant": "staff", "tidiness": 0.8, "lived_in": stock, "furniture": furn, "fixed": True}, "room": room}
             continue
+        if room["type"] == "hallway" and room_venues:
+            # floors: a corridor gets wall fittings only -- notices, a clock, sanitiser (floors D3/E3/F3: 'a bare tube', use 3-4, 3 of 3)
+            out["rooms"][room["id"]] = {"plan": {"occupant": "staff and visitors", "tidiness": 0.8, "lived_in": [], "furniture": [],
+                                                 "fixed": True}, "room": room}
+            continue
         if room["type"] == "restroom":
             # floors: a restroom gets fixed sanitary ware, no LLM call (the solver that would fit it is off on floors, 2026-10-16)
             # always one open WC: the stall factory's panels read as 'loose boards at odd angles' in every floor (A, B, D3, E3, J, 3/3
             # each), while the open WC + basin restrooms scored 7 on function; a large room gets a second basin, not a second stall
-            n_basin = 2 if room.get("area_m2", 0) >= 18 else 1
-            plan = {"occupant": "staff and visitors", "tidiness": 0.8, "lived_in": [], "fixed": True,
-                    "furniture": [{"id": "wc", "category": "wc", "relation": "against_wall"},
-                                  {"id": "basin", "category": "wash_basin", "relation": "beside", "target": "wc", "gap_m": 0.4, "count": n_basin}]}
+            n_basin = 1                                         # one basin + mirror (floor D3 r6: two basins and two mirrors, 3 of 3)
+            plan = {"occupant": "staff and visitors", "tidiness": 0.8, "fixed": True,
+                    "lived_in": [{"category": "sanitizer", "on": "basin"}],   # a soap bottle at the basin (floors G/H r14-r16: 'no soap')
+                    "furniture": [{"id": "wc", "category": "wc", "relation": "against_wall", "avoid_windows": True},
+                                  {"id": "basin", "category": "wash_basin", "relation": "against_wall", "near_to": "wc", "count": n_basin}]}
             # (an open WC with its basin on the far wall read as 'a toilet alone in an empty room' -- floor A2 r4; fixtures go together)
             out["rooms"][room["id"]] = {"plan": plan, "room": room}
             continue
