@@ -1511,7 +1511,9 @@ class RoomRealizer:
             cx, cy = ox + sum(r["x_range"]) / 2, oy + sum(r["y_range"]) / 2
             tid = f"fill_t{k}"
             o, front = self._make("cafe_table")
-            yaw = self.rng.uniform(0, math.pi / 2)                # any angle: a grid of square tables read as a conference room (r2)
+            yaw = self.rng.uniform(-0.17, 0.17)                   # a small turn: a grid of square tables read as a conference room (r2), but a
+            # table at 45 deg has an axis-aligned obstacle box 1.4x wide that covered every chair spot -- 'table placed, no chair
+            # fitted', +0 groups, half the hall empty (floor H r35-r38, debug: every spot hit the table's own box)
             cand = [(cx + dx, cy + dy) for dx in (0, 0.4, -0.4, 0.8, -0.8) for dy in (0, 0.4, -0.4, 0.8, -0.8)]   # cafe r3: +0 groups
             gx0, gx1 = ox + r["x_range"][0] + 0.6, ox + r["x_range"][1] - 0.6
             gy0, gy1 = oy + r["y_range"][0] + 0.6, oy + r["y_range"][1] - 0.6
