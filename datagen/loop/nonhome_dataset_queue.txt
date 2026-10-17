@@ -1,0 +1,9 @@
+# SCENE_ID SOURCE_BLEND   (non-home 20, done by the median rule; user 2026-10-16: hover + walk, 30+ takes each, as soon as a scene passes)
+infinigen_warehouse_storage_v2_1_46200001 /jarvis/project/robomituba/out/infinigen_v2/kr_whL_storage_46200001/full/scene_mat2_activity.blend
+infinigen_clinic_exam_v2_1_47310702 /jarvis/project/robomituba/out/infinigen_v2/kr_clinicV_exam_47310702/full/scene_mat2_activity.blend
+infinigen_clinic_dental_v2_1_47310803 /jarvis/project/robomituba/out/infinigen_v2/kr_clinicW_dental_47310803/full/scene_mat2_activity.blend
+infinigen_warehouse_packing_v2_1_46200002 /jarvis/project/robomituba/out/infinigen_v2/kr_whA2_packing_46200002/full/scene_mat2_activity.blend
+infinigen_office_private_v2_1_47308703 /jarvis/project/robomituba/out/infinigen_v2/kr_officeJ_private_47308703/full/scene_mat2_activity.blend
+infinigen_office_open_v2_1_47308706 /jarvis/project/robomituba/out/infinigen_v2/kr_officeK_highrise_47308706/full/scene_mat2_activity.blend
+infinigen_office_meeting_v2_1_47308702 /jarvis/project/robomituba/out/infinigen_v2/kr_officeK_meeting_47308702/full/scene_mat2_activity.blend
+infinigen_floor_cafe_small_v2_1_48400701 /jarvis/project/robomituba/out/infinigen_v2/kr_floorG_cafe_48400701/full/scene_passed_r36.blend
