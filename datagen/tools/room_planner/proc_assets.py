@@ -321,14 +321,22 @@ SCANS = {"wood": (_TC + "wood_0002", _TC + "wood_0054"),       # continuous grai
                    _TS + "metal_0042"),   # black (A/B pbr1-pbr2); staging metal_0009/0014 are mottled: fridge fronts read
                                           # as 'crumpled foil or stone' (floor J r28)
          "fabric": (_TC + "fabric_0022", _TC + "fabrics_0076", _TC + "fabrics_0085"),   # brushed/plain metal, plain weaves
+         "laminate": (_TC + "wood_0002", _TC + "wood_0054"),     # desk / table / counter tops: a faint grain under the top's own colour
+         "paint": (_TC + "metal_0024", _TC + "metal_0038"),      # painted cabinet, locker and panel fronts: smooth scans only (the brushed
+                                                                 # ones striped a blue locker -- user mark 'too much texture', 2026-10-17)
          "card": (_TS + "paper_0008",),                         # kraft board: 228 plain cartons in floors I/J (census 10-17)
          "plastic": (_TS + "plastic_0003", _TS + "plastic_0005", _TS + "plastic_0007", _TS + "plastic_0021")}
-SCAN_TILE = {"wood": 1.0, "metal": 0.8, "fabric": 0.4, "card": 0.6, "plastic": 0.5}   # metres per tile
+SCAN_TILE = {"wood": 1.0, "metal": 0.8, "fabric": 0.4, "card": 0.6, "plastic": 0.5, "laminate": 0.9, "paint": 1.2}   # metres per tile
+SCAN_CONTRAST = {"laminate": 0.4, "paint": 0.22}                # share of the scan's luminance variation kept (default 0.6)
 _SCAN_MEAN = {}
 
 
 def _scan_kind(name, metallic, wood):
     n_ = name.lower()
+    if not wood and any(k in n_ for k in ("desk_top", "conf_top", "disp_top", "checkout_top", "counter_top", "work_top", "table_top")) and "stone" not in n_:
+        return "laminate"
+    if any(k in n_ for k in ("locker", "pantry_cab", "office_shelf", "desk_panel", "reception_front", "cabinet", "ac_white")):
+        return "paint"
     if metallic > 0.5 or any(k in n_ for k in ("steel", "chrome", "metal", "alu")):
         return "metal"
     if wood:
@@ -363,7 +371,8 @@ def _scan(m, rgb, rough, kind, name):
         L.new(mp.outputs["Vector"], t.inputs["Vector"]); return t, _SCAN_MEAN[d + f]
     bc, mean = tex("base_color.jpg", True)
     bw = N.new("ShaderNodeRGBToBW"); L.new(bc.outputs["Color"], bw.inputs["Color"])
-    k_ = N.new("ShaderNodeMath"); k_.operation = "MULTIPLY_ADD"; k_.inputs[1].default_value = 0.6 / mean; k_.inputs[2].default_value = 0.4
+    c_ = SCAN_CONTRAST.get(kind, 0.6)
+    k_ = N.new("ShaderNodeMath"); k_.operation = "MULTIPLY_ADD"; k_.inputs[1].default_value = c_ / mean; k_.inputs[2].default_value = 1.0 - c_
     L.new(bw.outputs["Val"], k_.inputs[0])                        # 0.4 + 0.6 lum/mean: the grain at 60% contrast, mean 1
     cc = N.new("ShaderNodeCombineColor"); [L.new(k_.outputs["Value"], cc.inputs[i]) for i in range(3)]
     mul = N.new("ShaderNodeMix"); mul.data_type = "RGBA"; mul.blend_type = "MULTIPLY"; mul.inputs["Factor"].default_value = 1.0

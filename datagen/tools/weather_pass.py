@@ -57,6 +57,12 @@ def _weather_principled(nt, b, name, strength):
     patch.inputs["Roughness"].default_value = 0.65; L.new(tc.outputs["Object"], patch.inputs["Vector"])
     streak = nt.nodes.new("ShaderNodeTexNoise"); streak.inputs["Scale"].default_value = 9.0; streak.inputs["Detail"].default_value = 4
     L.new(tc.outputs["Object"], streak.inputs["Vector"])
+    # the same again at 15x the frequency: the 0.6 m features above are one constant over a 30 cm box or crate, so small props
+    # stayed 'flat' in the user's review marks (22 of 23, 2026-10-17); 4 cm / 1 cm features reach them
+    fine = nt.nodes.new("ShaderNodeTexNoise"); fine.inputs["Scale"].default_value = 26.0; fine.inputs["Detail"].default_value = 7
+    fine.inputs["Roughness"].default_value = 0.6; L.new(tc.outputs["Object"], fine.inputs["Vector"])
+    fine2 = nt.nodes.new("ShaderNodeTexNoise"); fine2.inputs["Scale"].default_value = 70.0; fine2.inputs["Detail"].default_value = 4
+    L.new(tc.outputs["Object"], fine2.inputs["Vector"])
     grain = nt.nodes.new("ShaderNodeTexNoise"); grain.inputs["Scale"].default_value = 220.0; grain.inputs["Detail"].default_value = 3
     L.new(tc.outputs["Object"], grain.inputs["Vector"])
     ao = nt.nodes.new("ShaderNodeAmbientOcclusion"); ao.inputs["Distance"].default_value = 0.18; ao.samples = 4
@@ -64,7 +70,10 @@ def _weather_principled(nt, b, name, strength):
     crev = _math(nt, "SUBTRACT", 1.0, ao.outputs["AO"])
     soft = nt.nodes.new("ShaderNodeMapRange"); soft.inputs["From Min"].default_value = 0.38; soft.inputs["From Max"].default_value = 0.72
     L.new(patch.outputs["Fac"], soft.inputs["Value"])
-    dirt = _math(nt, "ADD", _math(nt, "MULTIPLY", crev, 0.9), _math(nt, "MULTIPLY", soft.outputs["Result"], 0.55), clamp=True)
+    sf = nt.nodes.new("ShaderNodeMapRange"); sf.inputs["From Min"].default_value = 0.40; sf.inputs["From Max"].default_value = 0.66
+    L.new(fine.outputs["Fac"], sf.inputs["Value"])
+    dirt = _math(nt, "ADD", _math(nt, "ADD", _math(nt, "MULTIPLY", crev, 0.9), _math(nt, "MULTIPLY", soft.outputs["Result"], 0.55)),
+                 _math(nt, "MULTIPLY", sf.outputs["Result"], 0.5), clamp=True)
     dirt = _math(nt, "MULTIPLY", dirt, 0.55 * strength, clamp=True)
     # base colour: keep what the material had, multiply a warm grey by the dirt
     src = b.inputs["Base Color"].links[0].from_socket if b.inputs["Base Color"].is_linked else None
@@ -77,7 +86,8 @@ def _weather_principled(nt, b, name, strength):
     L.new(mix.outputs[2], b.inputs["Base Color"])
     # roughness: smudges (+-0.22) and more roughness where dirty
     r0 = b.inputs["Roughness"].links[0].from_socket if b.inputs["Roughness"].is_linked else _val(nt, b.inputs["Roughness"].default_value)
-    sm = _math(nt, "MULTIPLY", _math(nt, "SUBTRACT", streak.outputs["Fac"], 0.5), 0.45 * strength)
+    sm = _math(nt, "MULTIPLY", _math(nt, "ADD", _math(nt, "SUBTRACT", streak.outputs["Fac"], 0.5),
+                                    _math(nt, "SUBTRACT", fine2.outputs["Fac"], 0.5)), 0.45 * strength)
     rough = _math(nt, "ADD", _math(nt, "ADD", r0, sm), _math(nt, "MULTIPLY", dirt, 0.25), clamp=True)
     L.new(rough, b.inputs["Roughness"])
     # micro normal, chained after the material's own
