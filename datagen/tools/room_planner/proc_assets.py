@@ -23,6 +23,8 @@ def _material(name, colors, rough):
     ramp.color_ramp.elements[0].color = (*colors[0], 1); ramp.color_ramp.elements[1].color = (*colors[1], 1)
     nt.links.new(info.outputs["Random"], ramp.inputs["Fac"]); nt.links.new(ramp.outputs["Color"], b.inputs["Base Color"])
     b.inputs["Roughness"].default_value = rough
+    if SURFACE_DETAIL and (k_ := _scan_kind(name, 0.0, False)):
+        _scan(m, colors[1], rough, k_, name)
     return m
 
 
@@ -298,11 +300,15 @@ def _flat(name, rgb, rough, metallic=0.0, transmission=0.0, wood=False):
 # shader-only noise was invisible at 512 px under the denoiser (mean |d| 0.5 grey levels); scans + bevels read as real oak and
 # brushed steel. IR_SURFACE_DETAIL=0 restores the flat look.
 SURFACE_DETAIL = os.environ.get("IR_SURFACE_DETAIL", "1") != "0"
-SCAN_ROOT = "/bean/ir_pbr_assets/texturecan_environment_merged_v1/texturecan/"
-SCANS = {"wood": ("wood_0002", "wood_0054"),                    # continuous grain: the library's planks/parquet/dark ebony read as
-         "metal": ("metal_0024", "metal_0038", "metal_0058", "metal_0062"),   # floorboards or turned light oak black (A/B pbr1-pbr2)
-         "fabric": ("fabric_0022", "fabrics_0076", "fabrics_0085")}   # brushed/plain metal, plain weaves -- no paint, no patterns
-SCAN_TILE = {"wood": 1.0, "metal": 0.8, "fabric": 0.4}           # metres per tile
+_TC = "/bean/ir_pbr_assets/texturecan_environment_merged_v1/texturecan/texturecan_"
+_TS = "/bean/ir_pbr_assets/texturecan_staging_v1/assets/texturecan_"   # the full staging set (497): plastics, paper, more metals
+SCANS = {"wood": (_TC + "wood_0002", _TC + "wood_0054"),       # continuous grain: the library's planks/parquet/dark ebony read as
+         "metal": (_TC + "metal_0024", _TC + "metal_0038", _TC + "metal_0058", _TC + "metal_0062",   # floorboards or turned light oak
+                   _TS + "metal_0009", _TS + "metal_0014", _TS + "metal_0042"),                        # black (A/B pbr1-pbr2)
+         "fabric": (_TC + "fabric_0022", _TC + "fabrics_0076", _TC + "fabrics_0085"),   # brushed/plain metal, plain weaves
+         "card": (_TS + "paper_0008",),                         # kraft board: 228 plain cartons in floors I/J (census 10-17)
+         "plastic": (_TS + "plastic_0003", _TS + "plastic_0005", _TS + "plastic_0007", _TS + "plastic_0021")}
+SCAN_TILE = {"wood": 1.0, "metal": 0.8, "fabric": 0.4, "card": 0.6, "plastic": 0.5}   # metres per tile
 _SCAN_MEAN = {}
 
 
@@ -314,15 +320,22 @@ def _scan_kind(name, metallic, wood):
         return "wood"
     if any(k in n_ for k in ("fabric", "cushion", "upholst", "seat", "banquette", "felt", "towel")):
         return "fabric"
+    if any(k in n_ for k in ("cardboard", "kraft", "carton", "card_")):
+        return "card"
+    if "pallet_wood" in n_:
+        return "wood"
+    if any(k in n_ for k in ("plastic", "ir_bin_", "crate", "tub", "monitor", "ladder_grip")):
+        return "plastic"
     return None
 
 
 def _scan(m, rgb, rough, kind, name):
     import zlib
-    d = SCAN_ROOT + "texturecan_" + SCANS[kind][zlib.crc32(name.encode()) % len(SCANS[kind])] + "/"
+    d = SCANS[kind][zlib.crc32(name.encode()) % len(SCANS[kind])] + "/"
     if not os.path.isfile(d + "base_color.jpg"):
         return False
     nt = m.node_tree; N, L = nt.nodes, nt.links; b = N["Principled BSDF"]
+    src = b.inputs["Base Color"].links[0].from_socket if b.inputs["Base Color"].is_linked else None   # a per-object ramp (cardboard)
     tc = N.new("ShaderNodeTexCoord"); mp = N.new("ShaderNodeMapping"); s_ = 1.0 / SCAN_TILE[kind]
     mp.inputs["Scale"].default_value = (s_, s_, s_); L.new(tc.outputs["Object"], mp.inputs["Vector"])
     def tex(f, color):
@@ -340,6 +353,8 @@ def _scan(m, rgb, rough, kind, name):
     cc = N.new("ShaderNodeCombineColor"); [L.new(k_.outputs["Value"], cc.inputs[i]) for i in range(3)]
     mul = N.new("ShaderNodeMix"); mul.data_type = "RGBA"; mul.blend_type = "MULTIPLY"; mul.inputs["Factor"].default_value = 1.0
     mul.inputs[6].default_value = (*rgb, 1); L.new(cc.outputs["Color"], mul.inputs[7]); L.new(mul.outputs[2], b.inputs["Base Color"])
+    if src is not None:
+        L.new(src, mul.inputs[6])
     rt, rmean = tex("roughness.jpg", False)
     rm = N.new("ShaderNodeMath"); rm.operation = "MULTIPLY"; rm.use_clamp = True; rm.inputs[1].default_value = rough / rmean
     L.new(rt.outputs["Color"], rm.inputs[0]); L.new(rm.outputs["Value"], b.inputs["Roughness"])
