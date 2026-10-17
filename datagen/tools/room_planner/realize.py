@@ -180,7 +180,8 @@ class RoomRealizer:
             src = "proc:CheckoutCounterFactory"
         if cat == "break_chair" and self.doc.get("type") == "break-room" and self.doc.get("area_m2", 99) >= 12:   # a dining-height staff table takes
             src = "proc:CafeChairFactory"                        # chairs, not counter stools (floor I r9: 'bar stools at a low table', 3/3)
-        if cat == "break_table" and self.doc.get("type") == "break-room" and 12 <= self.doc.get("area_m2", 99) < 16:   # a small staff room's table is a
+        if cat == "break_table" and self.doc.get("type") == "break-room" and 12 <= self.doc.get("area_m2", 99) < 15:   # (15.7 m2: the
+            # 1.2 m table with 4 chairs -- the round one seated one, 'a kitchenette corner', floor H r40)   # a small staff room's table is a
             src = "proc:CafeTableFactory"                        # café round: the 1.2 m table fell back to a wall with one chair (floor G r31)
         if cat == "break_table" and _pa.VENUE == "break-room" and self.doc.get("area_m2", 99) < 12:   # 15.7 m2 staff room needs a table (floor H r7)
             src = "proc:WindowBarFactory"                        # a small pantry gets a wall ledge (pantry r13: stools with no table)
@@ -2137,10 +2138,7 @@ class RoomRealizer:
             fs = [f for f in fs if f["category"] not in ("pallet", "box_pile", "stool")]   # door path (floor H r11: layout 5, 3/3); no stool
             # without a bench (floor I r11: 'a lone bar stool'); a cart and a ladder stand on a wall (I r11: 'half empty, no hand truck')
             fs = [({**f, "relation": "against_wall", "target": None} if f["category"] in ("utility_cart", "ladder") else f) for f in fs]
-            from room_planner import proc_assets as _pa_f
-            if "cafe" in getattr(_pa_f, "FLOOR_VENUES", ()) and not any(f["category"] == "beverage_fridge" for f in fs):
-                fs.append({"id": "stock_fridge", "category": "beverage_fridge", "relation": "against_wall", "forced": True})   # a café's
-                # milk and syrups need a fridge: 'two racks and bare walls, nothing a café stockroom needs' (floor G r35, 3 of 3)
+            # (no forced cooler: wedged between the racks it closed the aisle, floor H r40 layout 6, 3 of 3)
             if not any(f["category"] == "utility_cart" for f in fs):   # a cart with the ladder (floor G r16: 'one rack and a step stool')
                 fs.append({"id": "cart_x", "category": "utility_cart", "relation": "against_wall"})
             plan = {**plan, "lived_in": [({**x, "category": "dry_goods"} if x.get("category") == "storage_bin" else x)   # no primary-colour

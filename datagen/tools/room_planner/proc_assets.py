@@ -904,10 +904,13 @@ class ClinicWallItemFactory:
             return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(chrome, [("box", (0.01, 0, 0.06), (0.02, 0.16, 0.08), (0, 0, 0)),
                                                                                     ("cyl", (0.07, 0, 0.04), (0.008, 0.008, 0.15), (math.pi / 2, 0, 0))]),
                                                                           (paper, [("cyl", (0.07, 0, 0.04), (0.055, 0.055, 0.1), (math.pi / 2, 0, 0))])])
-        if k == "waste_bin":                                     # a pedal bin standing at the wall (z = 0)
+        if k == "waste_bin":                                     # an open bin at the wall (z = 0) with used paper towels above its rim:
+            # a closed pedal bin showed 'nothing in the bins, no sign of use' in every restroom (floors H/I/J r24-r40, 3 of 3 each)
             steel = _flat("ir_bin_steel", (0.62, 0.63, 0.64), 0.3, 1.0); blk = _flat("ir_black_plastic", (0.04, 0.04, 0.045), 0.5)
-            return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(steel, [("cyl", (0.16, 0, 0.21), (0.14, 0.14, 0.42), (0, 0, 0)),
-                                                                                   ("cyl", (0.16, 0, 0.43), (0.145, 0.145, 0.02), (0, 0, 0))]),
+            paper = _flat("ir_paper", (0.93, 0.93, 0.9), 0.7)
+            wads = [("sph", (0.16 + dx, dy, 0.42 + dz), (0.05, 0.045, 0.035), (0, 0, 0)) for dx, dy, dz in
+                    ((0, 0, 0.02), (0.05, 0.04, 0.0), (-0.04, -0.05, 0.01), (0.03, -0.03, 0.045), (-0.05, 0.03, 0.03))]
+            return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(paper, wads), (steel, [("cyl", (0.16, 0, 0.21), (0.14, 0.14, 0.42), (0, 0, 0))]),
                                                                           (blk, [("box", (0.32, 0, 0.02), (0.06, 0.1, 0.02), (0, 0, 0)),
                                                                                  ("cyl", (0.16, 0, 0.01), (0.145, 0.145, 0.02), (0, 0, 0))])])
         if k == "hand_dryer":                                    # brushed steel: a white box on white tile was never seen (floor H r27, 3 of 3)
