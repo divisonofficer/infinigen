@@ -9,6 +9,8 @@ from __future__ import annotations
 import math
 import os
 import random
+import zlib
+from pathlib import Path
 
 import bpy
 
@@ -44,9 +46,9 @@ def pallet_wood():
 def _boxes(name, parts, mat):
     """One mesh object from axis-aligned boxes [(cx, cy, cz, sx, sy, sz)], origin at the bottom centre."""
     import bmesh
-    bm = bmesh.new()
+    bm = bmesh.new(); bm.loops.layers.uv.verify()
     for cx, cy, cz, sx, sy, sz in parts:
-        r = bmesh.ops.create_cube(bm, size=1.0)
+        r = bmesh.ops.create_cube(bm, size=1.0, calc_uvs=True)
         bmesh.ops.scale(bm, vec=(sx, sy, sz), verts=r["verts"])
         bmesh.ops.translate(bm, vec=(cx, cy, cz), verts=r["verts"])
     me = bpy.data.meshes.new(name); bm.to_mesh(me); bm.free()
@@ -376,6 +378,53 @@ def _scan(m, rgb, rough, kind, name):
     return True
 
 
+PRINT_ROOT = Path("/jarvis/project/robomituba/data/venue_refs/prop_textures")
+
+
+def _pick_print(prefix, key):
+    """A generated image of kind `prefix` (whiteboard / screen / poster_health / wall_art / safety_sign / doc / form / nbpage) chosen
+    deterministically by `key`, or None when there are none (or surface detail is off): the caller keeps its flat material."""
+    if not SURFACE_DETAIL or not PRINT_ROOT.is_dir():
+        return None
+    fs = sorted(PRINT_ROOT.glob(prefix + "_*.png"))
+    return fs[zlib.crc32(f"{prefix}:{key}".encode()) % len(fs)] if fs else None
+
+
+def _printed(path, rgb, rough):
+    """A matte-to-glossy material carrying one printed image on the UVs of the box faces that use it (whiteboard writing, screen
+    content, a poster, a page of text), shared by every object that picked the same image."""
+    name = "ir_print_" + path.stem
+    m = bpy.data.materials.get(name)
+    if m is not None:
+        return m
+    m = bpy.data.materials.new(name); m.use_nodes = True
+    b = m.node_tree.nodes["Principled BSDF"]; b.inputs["Roughness"].default_value = rough
+    im = bpy.data.images.load(str(path), check_existing=True); im.colorspace_settings.name = "sRGB"
+    t = m.node_tree.nodes.new("ShaderNodeTexImage"); t.image = im; t.extension = "EXTEND"
+    m.node_tree.links.new(t.outputs["Color"], b.inputs["Base Color"])
+    return m
+
+
+def _screen(i, kind="desk"):
+    """The glass of a monitor / register / wall display: generated screen content when there is some, else the flat dark slab."""
+    pick = {"desk": (1, 2, 3, 4, 8), "register": (7,), "wall": (3, 5, 6)}[kind]
+    path = _pick_print("screen", f"{kind}{i}")
+    if path is not None:
+        want = [x for x in PRINT_ROOT.glob("screen_*.png") if int(x.stem.split("_")[1]) in pick]
+        path = want[zlib.crc32(f"{kind}{i}".encode()) % len(want)] if want else path
+        return _printed(path, (0.02, 0.03, 0.05), 0.15)
+    return _flat("ir_pos_screen", (0.02, 0.03, 0.05), 0.15)
+
+
+def _poster_prefix():
+    fv = set(globals().get("FLOOR_VENUES") or ()) | {VENUE}
+    if fv & {"clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"}:
+        return "poster_health"
+    if "warehouse" in fv:
+        return "safety_sign"
+    return "wall_art"
+
+
 def _bevel(o):
     """3 mm rounded edges: razor-sharp box edges are the CG tell next to flat colours (user 2026-10-17)."""
     if SURFACE_DETAIL:
@@ -464,10 +513,10 @@ from room_planner.styles import COUNTER_FRONTS, COUNTER_TOPS  # noqa: E402  (bpy
 def _parts_object(name, groups):
     """One object, one material slot per group: groups = [(material, [(cx, cy, cz, sx, sy, sz), ...]), ...]."""
     import bmesh
-    bm = bmesh.new()
+    bm = bmesh.new(); bm.loops.layers.uv.verify()
     for slot, (mat, parts) in enumerate(groups):
         for cx, cy, cz, sx, sy, sz in parts:
-            r = bmesh.ops.create_cube(bm, size=1.0)
+            r = bmesh.ops.create_cube(bm, size=1.0, calc_uvs=True)    # unit UVs per face: a printed image sits on a board or screen
             bmesh.ops.scale(bm, vec=(sx, sy, sz), verts=r["verts"])
             bmesh.ops.translate(bm, vec=(cx, cy, cz), verts=r["verts"])
             for f in {f for v in r["verts"] for f in v.link_faces}:
@@ -961,6 +1010,12 @@ class ClinicWallItemFactory:
                          for row in range(7) for n in [row + 1] for j in range(n)]
                 return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(frame, [("box", (0.004, 0, H / 2), (0.008, W + 0.03, H + 0.03), (0, 0, 0))]),
                                                                               (white, [("box", (0.009, 0, H / 2), (0.002, W, H), (0, 0, 0))]), (ink, marks)])
+            pp = _pick_print(_poster_prefix(), i)
+            if pp is not None:                                   # a printed poster / framed print / safety sign, at its own aspect
+                im_ = bpy.data.images.load(str(pp), check_existing=True); asp = im_.size[0] / max(im_.size[1], 1)
+                W, H = (0.9 * asp, 0.9) if asp < 1 else (0.9, 0.9 / asp)
+                return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(frame, [("box", (0.004, 0, H / 2), (0.008, W + 0.03, H + 0.03), (0, 0, 0))]),
+                                                                              (_printed(pp, (0.9, 0.9, 0.9), 0.5), [("box", (0.009, 0, H / 2), (0.002, W, H), (0, 0, 0))])])
             col = _flat(f"ir_poster_{r.randrange(4)}", r.choice(((0.75, 0.3, 0.3), (0.3, 0.5, 0.7), (0.4, 0.6, 0.4), (0.85, 0.7, 0.4))), 0.6)
             lines = [("box", (0.012, 0, H - 0.3 - j * 0.05), (0.002, W * 0.75, 0.012), (0, 0, 0)) for j in range(8)]
             return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(frame, [("box", (0.004, 0, H / 2), (0.008, W + 0.03, H + 0.03), (0, 0, 0))]),
@@ -1415,7 +1470,7 @@ class RegisterFactory:
         self.seed = seed
 
     def spawn_asset(self, i):
-        black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0); screen = _flat("ir_pos_screen", (0.02, 0.03, 0.05), 0.15)
+        black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0); screen = _screen(i, "register")
         return _parts_object(f"RegisterFactory({i}).spawn_asset({i})",
                              [(black, [(0, 0, 0.05, 0.36, 0.42, 0.1), (0.0, 0, 0.2, 0.04, 0.04, 0.2), (0.15, 0.25, 0.03, 0.08, 0.06, 0.06)]),
                               (screen, [(-0.02, 0, 0.36, 0.03, 0.34, 0.24)])])
@@ -1504,7 +1559,7 @@ class WorkstationPodFactory:
         n, w, d = self.n, self.w, self.d
         top = _flat(f"ir_desk_top_{int(self.top[0] * 100)}", self.top, 0.5); metal = _flat("ir_desk_frame", (0.75, 0.75, 0.76), 0.35, 0.8)
         div = _flat(f"ir_divider_{DIVIDER.index(self.div)}", self.div, 0.9); ped = _flat("ir_pedestal", (0.5, 0.5, 0.52), 0.4, 0.3)
-        black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0); screen = _flat("ir_pos_screen", (0.02, 0.03, 0.05), 0.15)
+        black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0); screen = _screen(i, "desk")
         tops, legs, peds, mons, scr, seats = [], [], [], [], [], []
         L = n * w
         for side in (1, -1):
@@ -1534,7 +1589,7 @@ class WallDisplayFactory:
         self.W = random.Random(seed).choice((1.45, 1.66))
 
     def spawn_asset(self, i):
-        black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0); screen = _flat("ir_pos_screen", (0.02, 0.03, 0.05), 0.15)
+        black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0); screen = _screen(i, "wall")
         W, H = self.W, self.W * 9 / 16
         return _parts_object(f"WallDisplayFactory({i}).spawn_asset({i})",
                              [(black, [(0, 0, 0.12 + H / 2, 0.05, W + 0.02, H + 0.02), (0.02, 0, 0.04, 0.05, 0.6, 0.06)]),
@@ -1544,10 +1599,12 @@ class WallDisplayFactory:
 class WhiteboardFactory:
     """Wall whiteboard (front +X): white panel in an aluminium frame with a marker tray. Origin at the bottom; mount at ~0.9 m."""
     def __init__(self, seed):
-        self.W = random.Random(seed).choice((1.2, 1.5, 1.8))
+        self.W = random.Random(seed).choice((1.5, 1.8))             # (1.2 m squashed the 16:9 writing)
 
     def spawn_asset(self, i):
-        white = _flat("ir_whiteboard", (0.93, 0.93, 0.92), 0.08); alu = _flat("ir_alu", (0.7, 0.7, 0.72), 0.3, 1.0)
+        pw = _pick_print("whiteboard", i)                          # hand-written marker content: a blank board read as 'nobody works here'
+        white = _printed(pw, (0.93, 0.93, 0.92), 0.08) if pw is not None else _flat("ir_whiteboard", (0.93, 0.93, 0.92), 0.08)
+        alu = _flat("ir_alu", (0.7, 0.7, 0.72), 0.3, 1.0)
         W, H = self.W, 1.0
         return _parts_object(f"WhiteboardFactory({i}).spawn_asset({i})",
                              [(white, [(0, 0, H / 2, 0.02, W, H)]),
@@ -1578,7 +1635,8 @@ class PaperStackFactory:
         self.col = r.choice(((0.1, 0.18, 0.4), (0.05, 0.05, 0.05), (0.55, 0.08, 0.06)))
 
     def spawn_asset(self, i):
-        paper = _flat("ir_paper", (0.86, 0.86, 0.84), 0.7)
+        pd = _pick_print("doc", i)
+        paper = _printed(pd, (0.86, 0.86, 0.84), 0.7) if pd is not None else _flat("ir_paper", (0.86, 0.86, 0.84), 0.7)
         groups = [(paper, [(0, 0, self.h / 2, 0.297, 0.21, self.h)])]
         if self.folder:
             groups.append((_flat(f"ir_folder_{int(self.col[0] * 100)}", self.col, 0.5), [(0, 0, self.h + 0.0015, 0.31, 0.225, 0.003)]))
@@ -1591,7 +1649,7 @@ def _prims(name, groups):
     rounded edges (upholstery: dental r20, the slab chair read as 'scattered planks')."""
     import bmesh
     from mathutils import Euler
-    bm = bmesh.new()
+    bm = bmesh.new(); bm.loops.layers.uv.verify()
     for slot, (mat, parts) in enumerate(groups):
         for kind, c, size, rot in parts:
             if kind == "rbox":                                   # bevelled in its own bmesh, then appended
@@ -1604,7 +1662,7 @@ def _prims(name, groups):
                 tm = bpy.data.meshes.new("_rbox"); tb.to_mesh(tm); tb.free(); bm.from_mesh(tm); bpy.data.meshes.remove(tm)
                 continue
             if kind == "box":
-                r = bmesh.ops.create_cube(bm, size=1.0)
+                r = bmesh.ops.create_cube(bm, size=1.0, calc_uvs=True)
                 bmesh.ops.scale(bm, vec=size, verts=r["verts"])
             elif kind == "sph":                                  # ellipsoid with semi-axes `size`
                 r = bmesh.ops.create_icosphere(bm, subdivisions=3, radius=1.0)   # 2 left the gym ball faceted (clinic r24)
@@ -1672,7 +1730,8 @@ class ClipboardFactory:
         self.r = random.Random(seed)
 
     def spawn_asset(self, i):
-        board = _flat("ir_clipboard", (0.45, 0.32, 0.2), 0.6); sheet = _flat("ir_paper", (0.93, 0.93, 0.9), 0.7)
+        board = _flat("ir_clipboard", (0.45, 0.32, 0.2), 0.6); pf = _pick_print("form", i)
+        sheet = _printed(pf, (0.93, 0.93, 0.9), 0.7) if pf is not None else _flat("ir_paper", (0.93, 0.93, 0.9), 0.7)
         clip = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0)
         return _prims(f"ClipboardFactory({i}).spawn_asset({i})",
                       [(board, [("box", (0, 0, 0.003), (0.23, 0.32, 0.006), (0, 0, 0))]),
@@ -1768,7 +1827,8 @@ class NotebookFactory:
     def spawn_asset(self, i):
         r = self.r
         cover = _flat(f"ir_notebook_{r.randrange(len(_BRIGHT))}", r.choice(_BRIGHT), 0.6)
-        paper = _flat("ir_paper", (0.86, 0.86, 0.84), 0.7)
+        pn = _pick_print("nbpage", i)
+        paper = _printed(pn, (0.86, 0.86, 0.84), 0.7) if pn is not None else _flat("ir_paper", (0.86, 0.86, 0.84), 0.7)
         w, h, t = r.choice(((0.15, 0.21, 0.012), (0.21, 0.297, 0.01)))
         groups = []
         if r.random() < 0.4:                                    # open: two pages side by side
@@ -1798,7 +1858,7 @@ class OfficeDeskFactory:
         L, D = self.L, self.D
         top = _flat(f"ir_desk_top_{int(self.top[0] * 100)}", self.top, 0.45); panel = _flat("ir_desk_panel", (0.3, 0.3, 0.31), 0.5, 0.2)
         ped = _flat("ir_pedestal", (0.5, 0.5, 0.52), 0.4, 0.3); black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
-        screen = _flat("ir_pos_screen", (0.02, 0.03, 0.05), 0.15)
+        screen = _screen(i, "desk")
         mons = [(-D / 2 + 0.15, 0, 0.82, 0.18, 0.22, 0.012), (-D / 2 + 0.17, 0, 0.92, 0.03, 0.05, 0.2)]
         scr = [(-D / 2 + 0.19, dy, 1.08, 0.02, 0.56, 0.33) for dy in ((-0.29, 0.29) if self.dual else (0.0,))]
         return _parts_object(f"OfficeDeskFactory({i}).spawn_asset({i})",
@@ -1838,7 +1898,7 @@ class ReceptionDeskFactory:
         L = self.L
         front = _flat(f"ir_reception_front_{int(self.front[2] * 100)}", self.front, 0.5); top = _flat("ir_counter_top_white_stone", (0.86, 0.85, 0.82), 0.25)
         work = _flat("ir_desk_top_88", (0.88, 0.87, 0.84), 0.45); black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
-        screen = _flat("ir_pos_screen", (0.02, 0.03, 0.05), 0.15)
+        screen = _screen(i, "desk")
         return _parts_object(f"ReceptionDeskFactory({i}).spawn_asset({i})",
                              [(front, [(0.33, 0, 0.55, 0.04, L, 1.1)] + [(0.0, sy * (L / 2 - 0.02), 0.37, 0.66, 0.04, 0.74) for sy in (1, -1)]),
                               (top, [(0.3, 0, 1.115, 0.3, L + 0.04, 0.03)]), (work, [(-0.05, 0, 0.745, 0.7, L - 0.04, 0.03)]),

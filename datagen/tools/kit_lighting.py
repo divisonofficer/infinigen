@@ -337,6 +337,10 @@ def main() -> int:
     # no mood cap on daylight: tried 2026-10-16 (round J) -- chain stayed +16 L bright, industrial fell 50 -> 44 in the style eval
     bpy.context.scene["ir_daylight"] = (L or {}).get("daylight", "high")
     bpy.context.scene["ir_mood"] = spec.get("mood", "bright_daylight") if L else "bright_daylight"
+    import os
+    if os.environ.get("IR_WEATHER", "1") != "0":                 # wear and grime on every material (user 2026-10-17: 'PBR parameters are flat
+        import weather_pass                                      # constants', 'too smooth / too clean'); IR_WEATHER=0 keeps the flat look
+        stats["weathered"] = weather_pass.weather_materials(float(os.environ.get("IR_WEATHER_STRENGTH", "1.0")))
     bpy.ops.wm.save_as_mainfile(filepath=a.out, compress=True)
     print("KITLIGHT " + json.dumps(stats), flush=True)
     return 0
