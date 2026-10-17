@@ -43,6 +43,20 @@ def pallet_wood():
     return _material("ir_pallet_wood", ((0.45, 0.33, 0.2), (0.62, 0.5, 0.34)), 0.8)
 
 
+def _face_uvs(bm, verts):
+    """Give every face of the boxes made from `verts` its own full 0..1 UV square, upright as seen from outside: bmesh's cube UVs share
+    one atlas, so a printed image showed rotated and zoomed to a corner of the board (whiteboard / screen test, 2026-10-17).
+    Call after the box is scaled and before it is rotated."""
+    uv = bm.loops.layers.uv.verify()
+    table = {(0, 1): (1, 1, 2), (0, -1): (1, -1, 2), (1, 1): (0, -1, 2), (1, -1): (0, 1, 2), (2, 1): (0, 1, 1), (2, -1): (0, 1, 1)}
+    for f in {f for v in verts for f in v.link_faces}:
+        f.normal_update(); n = f.normal; ax = max(range(3), key=lambda k: abs(n[k])); u_ax, u_s, v_ax = table[(ax, 1 if n[ax] > 0 else -1)]
+        us = [u_s * l.vert.co[u_ax] for l in f.loops]; vs = [l.vert.co[v_ax] for l in f.loops]
+        u0, u1, v0, v1 = min(us), max(us), min(vs), max(vs)
+        for l, u, v in zip(f.loops, us, vs):
+            l[uv].uv = ((u - u0) / max(u1 - u0, 1e-9), (v - v0) / max(v1 - v0, 1e-9))
+
+
 def _boxes(name, parts, mat):
     """One mesh object from axis-aligned boxes [(cx, cy, cz, sx, sy, sz)], origin at the bottom centre."""
     import bmesh
@@ -50,6 +64,7 @@ def _boxes(name, parts, mat):
     for cx, cy, cz, sx, sy, sz in parts:
         r = bmesh.ops.create_cube(bm, size=1.0, calc_uvs=True)
         bmesh.ops.scale(bm, vec=(sx, sy, sz), verts=r["verts"])
+        _face_uvs(bm, r["verts"])
         bmesh.ops.translate(bm, vec=(cx, cy, cz), verts=r["verts"])
     me = bpy.data.meshes.new(name); bm.to_mesh(me); bm.free()
     me.materials.append(mat)
@@ -527,6 +542,7 @@ def _parts_object(name, groups):
         for cx, cy, cz, sx, sy, sz in parts:
             r = bmesh.ops.create_cube(bm, size=1.0, calc_uvs=True)    # unit UVs per face: a printed image sits on a board or screen
             bmesh.ops.scale(bm, vec=(sx, sy, sz), verts=r["verts"])
+            _face_uvs(bm, r["verts"])
             bmesh.ops.translate(bm, vec=(cx, cy, cz), verts=r["verts"])
             for f in {f for v in r["verts"] for f in v.link_faces}:
                 f.material_index = slot
@@ -1673,6 +1689,7 @@ def _prims(name, groups):
             if kind == "box":
                 r = bmesh.ops.create_cube(bm, size=1.0, calc_uvs=True)
                 bmesh.ops.scale(bm, vec=size, verts=r["verts"])
+                _face_uvs(bm, r["verts"])
             elif kind == "sph":                                  # ellipsoid with semi-axes `size`
                 r = bmesh.ops.create_icosphere(bm, subdivisions=3, radius=1.0)   # 2 left the gym ball faceted (clinic r24)
                 bmesh.ops.scale(bm, vec=size, verts=r["verts"])

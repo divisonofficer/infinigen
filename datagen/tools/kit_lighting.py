@@ -338,6 +338,8 @@ def main() -> int:
     bpy.context.scene["ir_daylight"] = (L or {}).get("daylight", "high")
     bpy.context.scene["ir_mood"] = spec.get("mood", "bright_daylight") if L else "bright_daylight"
     import os
+    import fix_print_uvs                                         # printed boards / screens / papers built before the UV fix (proc_assets._face_uvs)
+    stats["print_uvs_fixed"] = fix_print_uvs.fix()
     if os.environ.get("IR_ARCH_TEX", "1") != "0":                # scanned texturecan walls / floors in place of Infinigen 2.0's flat `paint`
         import architecture_textures
         plans = json.loads(Path(a.plans).read_text())
