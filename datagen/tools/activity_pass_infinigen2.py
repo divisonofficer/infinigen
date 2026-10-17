@@ -242,6 +242,13 @@ def plain_material(name, palette):
     return m
 
 
+def _has_product_label(m):
+    """True when the material's image node already carries one of the generated product-label designs."""
+    if not m.use_nodes:
+        return False
+    return any(n.type == "TEX_IMAGE" and n.image is not None and "product_labels" in (n.image.filepath or "") for n in m.node_tree.nodes)
+
+
 def plain_prints(stats):
     """Swap the procedural print on books and packaging for plain per-item colours."""
     books, pack = plain_material("ir_book_cloth", BOOK_CLOTH), plain_material("ir_packaging", PACKAGING)
@@ -252,6 +259,8 @@ def plain_prints(stats):
         for ob in [o, *o.children_recursive]:
             for slot in getattr(ob, "material_slots", []):
                 if slot.material and tidy.ART_MAT.match(slot.material.name):
+                    if _has_product_label(slot.material):    # printed packaging from room_planner (data/venue_refs/product_labels) stays:
+                        continue                              # the plain per-item colours below made every shelf good a flat block
                     slot.material = books if f.startswith("Book") else pack
                     stats["prints_replaced"] += 1
 
