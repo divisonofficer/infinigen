@@ -60,6 +60,9 @@ def _cls(src):
     kind, name = src.split(":")
     if kind == "proc":
         from room_planner import proc_assets
+        if not hasattr(proc_assets, name):                       # bookstore / flagship props live in their own modules
+            from room_planner import proc_bookstore, proc_boutique_flagship, proc_rooftop
+            return getattr(next(m for m in (proc_bookstore, proc_boutique_flagship, proc_rooftop) if hasattr(m, name)), name)
         return getattr(proc_assets, name)
     if kind == "abo":
         import abo_assets as abo
@@ -127,6 +130,12 @@ def _frange(a, b, step):
 #: flagship boutique (reference set boutique_large_flagship_01): wall rails + stone tables + lattice screens in _fill_boutique; opt-in
 FLAGSHIP = os.environ.get("ROOM_FLAGSHIP") == "1"
 FLAGSHIP_CATS = ("stone_table", "clothing_rack", "lattice_screen", "stone_table")
+BOOKSTORE = os.environ.get("ROOM_BOOKSTORE") == "1"      # underground bookstore: _fill_bookstore replaces the boutique fill
+ROOFTOP = os.environ.get("ROOM_ROOFTOP") == "1"          # rooftop fine-dining restaurant (cafe venue): _fill_rooftop replaces fill_empty
+ROOFTOP_CATS = {"banquette": "rt_banquette", "velvet_booth": "rt_booth", "marble_table_low": "rt_table_low", "marble_table_high": "rt_table_high",
+                "marble_table_round": "rt_table_round", "cube_ottoman": "rt_ottoman", "mirror_column": "rt_mirror_column", "floor_ac": "rt_floor_ac",
+                "patio_heater": "rt_heater", "counter": "counter"}
+ROOFTOP_CHANDELIERS = ("PH_Chandelier_01", "PH_Chandelier_02", "PH_Chandelier_03", "PH_chinese_chandelier")
 REAL_FURNITURE = {"desk_chair": "officechair", "conference_chair": "officechair", "meeting_table": "conftable"}   # category -> furnish_rooms ABO pool
 LABELS = Path("/jarvis/project/robomituba/data/venue_refs/product_labels")
 LABEL_POOL = {"FoodBoxFactory": ("box_snack", "box_cereal", "box_ramen", "box_tea"), "FoodBagFactory": ("bag_chips",),
@@ -1463,6 +1472,8 @@ class RoomRealizer:
         """Cafes only: no large empty floor (user 2026-10-16: a busy cafe's usable floor is all seating, circulation, queue or
         counter). The largest empty region >= 3 m2 gets a cafe table with 2 (4 if >= 6 m2) chairs around it, until none is left;
         door zones and the counter front are already obstacles. A spot that fails is blocked so the next try moves on."""
+        if ROOFTOP:                                              # the layout already ran first in run(); the standard cafe fill must not add to it
+            return 0
         from room_planner import proc_assets
         if proc_assets.VENUE in ("clinic-reception", "exam-room", "dental-room", "physio-room") or self.doc.get("type") in ("restroom", "hallway", "closet") or \
                 getattr(self, "staff_hooks", False) or \
@@ -1868,8 +1879,127 @@ class RoomRealizer:
             self.ids[f"fill_i{k}"] = (o, front); self.stats["furniture_added"] += 1; added += 1
         _log(f"fill items {cats}: +{added}")
 
+    def _hall_keepouts(self):
+        """Door points (world xy) and column / pilaster footprints (xmin, xmax, ymin, ymax) for the deterministic hall layouts."""
+        doors = []
+        for dd in self.doc.get("doors", []):
+            if dd["wall"] in self.walls:
+                p = self.walls[dd["wall"]][0] + self.walls[dd["wall"]][1] * dd["at_m"]
+                doors.append((p.x, p.y))
+        cols = [fr.footprint(o)[:4] for o in bpy.data.objects if o.type == "MESH" and ("Column" in o.name or "Pilaster" in o.name)]
+        return doors, cols
+
+    def _fill_rooftop(self, plan):
+        """Rooftop fine-dining restaurant (ROOM_ROOFTOP=1): room_planner/rooftop_layout places banquettes, velvet booths, marble tables with
+        stools, mirror columns, air conditioners and heaters; a table setting on every table; Poly Haven chandeliers (needs the Poly Haven
+        index in ROOM_EXTRA_ASSET_INDEXES, else skipped) made emissive by rooftop_shell.light_chandelier."""
+        from room_planner import rooftop_layout as rl, rooftop_shell as rs
+        x0, x1, y0, y1 = self.room.box
+        doors, cols = self._hall_keepouts()
+        lay = rl.layout(x0, x1, y0, y1, self.rng.randrange(1 << 20), obstacles=cols, doors=doors)
+        placed, failed, counter_placed = 0, {}, False
+        for e in lay["items"]:
+            cat = f"rt_stool_{e.get('kind', 'white')}" if e["cat"] == "bar_stool" else ROOFTOP_CATS[e["cat"]]
+            o, front = self._make(cat)
+            if o is None:
+                failed.setdefault(e["cat"], {}).setdefault("spawn_failed", 0)
+                failed[e["cat"]]["spawn_failed"] += 1
+                continue
+            if fr._place(o, e["x"], e["y"], e["yaw"], self.room, self.obstacles, front):
+                placed += 1; self.stats["furniture_added"] += 1
+                counter_placed = counter_placed or e["cat"] == "counter"
+            else:
+                why = self._why_not_placed(e, doors, rl)
+                failed.setdefault(e["cat"], {}).setdefault(why, 0)
+                failed[e["cat"]][why] += 1
+                bpy.data.objects.remove(o, do_unlink=True)
+        sets = 0
+        for st in lay["settings"]:
+            o, _front = self._make("rt_setting")
+            if o is None:
+                continue
+            o.rotation_mode = "XYZ"; o.rotation_euler = (0, 0, st["yaw"]); o.location = (st["x"], st["y"], self.room.z + st["z"] + 0.002)
+            sets += 1
+        chand = 0
+        try:
+            import abo_assets as abo
+            pool = [e for e in abo.entries() if e["id"] in ROOFTOP_CHANDELIERS]
+            for c in lay["chandeliers"] if pool else ():
+                e = self.rng.choice(pool)
+                o = abo._import(e, f"RooftopChandelier({e['id']}).spawn_asset({chand})")
+                o.rotation_mode = "XYZ"; o.location = (c["x"], c["y"], self.room.z + c["z"] - o.dimensions[2] / 2)
+                rs.light_chandelier(o)
+                chand += 1
+        except Exception as ex:                                   # noqa: BLE001 -- chandeliers are an optional extra
+            self.stats["rooftop_chandelier_error"] = str(ex)[:80]
+        self.stats["rooftop"] = {"placed": placed, "wanted": len(lay["items"]), "settings": sets, "chandeliers": chand, "failed": failed,
+                                 "counter_placed": counter_placed}
+        return placed
+
+    def _why_not_placed(self, e, doors, mod=None):
+        """Best-effort reason a layout piece was refused by furnish_rooms._place: 'door' (inside a door keep-out), 'obstacle' (overlaps a placed
+        footprint) or 'off_floor' (the rest: a corner off the floor mesh)."""
+        from room_planner import flagship_layout as fll
+        fll = mod or fll                                         # any layout module with SIZE and DOOR_CLEAR (flagship_layout, rooftop_layout)
+        d, l = fll.SIZE.get(e["cat"], (0.6, 1.0))
+        c, s = abs(math.cos(e["yaw"])), abs(math.sin(e["yaw"]))
+        hx, hy = (d * c + l * s) / 2, (d * s + l * c) / 2
+        b = (e["x"] - hx, e["x"] + hx, e["y"] - hy, e["y"] + hy)
+        if any(abs(e["x"] - dx) < fll.DOOR_CLEAR and abs(e["y"] - dy) < fll.DOOR_CLEAR for dx, dy in doors):
+            return "door"
+        if any(fr._overlap(b, ob) for ob in self.obstacles):
+            return "obstacle"
+        return "off_floor"
+
+    def _fill_flagship(self, plan):
+        """Flagship hall (ROOM_FLAGSHIP=1, area > 150 m2): a deterministic plan from room_planner/flagship_layout, placed piece by piece (the region
+        finder of _fill_boutique is sized for rooms, not halls). Doors and column / pilaster footprints are kept clear."""
+        from room_planner import flagship_layout as fll
+        x0, x1, y0, y1 = self.room.box
+        doors, cols = self._hall_keepouts()
+        lay = fll.layout(x0, x1, y0, y1, self.rng.randrange(1 << 20), obstacles=cols, doors=doors)
+        placed, failed, counter_placed = 0, {}, False
+        for e in lay["items"]:
+            o, front = self._make(e["cat"])
+            if o is None:
+                continue
+            if fr._place(o, e["x"], e["y"], e["yaw"], self.room, self.obstacles, front):
+                o.location.z += e.get("lift", 0.0)
+                placed += 1; self.stats["furniture_added"] += 1
+                counter_placed = counter_placed or e["cat"] == "counter"
+            else:
+                why = self._why_not_placed(e, doors)
+                failed.setdefault(e["cat"], {}).setdefault(why, 0)
+                failed[e["cat"]][why] += 1
+                bpy.data.objects.remove(o, do_unlink=True)
+        self.stats["flagship_layout"] = {"placed": placed, "wanted": len(lay["items"]), "failed": failed, "counter_placed": counter_placed}
+        return placed
+
+    def _fill_bookstore(self, plan):
+        """Bookstore (ROOM_BOOKSTORE=1): wall shelving, book islands in rows, pop-up tables and section signs from room_planner/bookstore_layout."""
+        from room_planner import bookstore_layout as bl
+        x0, x1, y0, y1 = self.room.box
+        doors, cols = self._hall_keepouts()
+        lay = bl.layout(x0, x1, y0, y1, self.rng.randrange(1 << 20), obstacles=cols, doors=doors)
+        placed = 0
+        for key, cat in (("wall_shelves", "book_wall_shelf"), ("islands", "book_island"), ("popups", "book_island"), ("signs", "section_sign")):
+            for e in lay[key]:
+                o, front = self._make(cat)
+                if o is None:
+                    continue
+                if fr._place(o, e["x"], e["y"], e["yaw"], self.room, self.obstacles, front):
+                    placed += 1; self.stats["furniture_added"] += 1
+                else:
+                    bpy.data.objects.remove(o, do_unlink=True)
+        self.stats["bookstore"] = {"placed": placed, "zones": sorted({e["zone"] for k in ("islands", "wall_shelves") for e in lay[k]})}
+        return placed
+
     def _fill_boutique(self, plan):
         """Boutique floor: the largest empty region >= 3 m2 gets a display table or a clothing rack (alternating), until none is left."""
+        if BOOKSTORE:
+            return self._fill_bookstore(plan)
+        if FLAGSHIP and self.doc.get("area_m2", 0) > 150:        # already placed first in run()
+            return 0
         ox, oy = self.doc["_origin"]
         added = 0
         for _ in range(8 if FLAGSHIP else 0):                    # flat-bar wall rails along the free walls (a wall id can be 0: test for False)
@@ -2269,6 +2399,18 @@ class RoomRealizer:
                       "pharmacy": [("reception_desk", "against_wall"), ("backbar_shelf", "against_wall")]}
 
     def run(self, plan):
+        if FLAGSHIP and self.doc.get("area_m2", 0) > 150:        # the deterministic hall layout goes first (flagship r6: 14 of 36 placed, 18 refused as
+            self._fill_flagship(plan)                            # 'obstacle' = the planner's own 12-16 pieces); the plan then fills around it
+            drop = {"clothing_rack", "display_table", "mirror", "fitting_room", "wall_gondola"}
+            if self.stats.get("flagship_layout", {}).get("counter_placed"):
+                drop.add("counter")
+            plan = {**plan, "furniture": [f for f in plan.get("furniture", []) if f["category"] not in drop]}
+        if ROOFTOP:                                              # the deterministic layout goes first, before the plan's standard cafe seating takes the floor
+            self._fill_rooftop(plan)                             # (rooftop r1: 5 of 25 layout pieces placed when it ran after the plan and fill_empty)
+            drop = {"cafe_table", "cafe_chair", "banquette_row", "bar_stool", "window_bar", "break_table"}
+            if self.stats.get("rooftop", {}).get("counter_placed"):
+                drop.add("counter")
+            plan = {**plan, "furniture": [f for f in plan.get("furniture", []) if f["category"] not in drop]}
         # the zone that makes the room what it is: added when the plan left it out (a break room planned without its pantry, 2026-10-16)
         need = self.REQUIRED_ZONE.get(self.doc.get("type", ""))
         if need and not any(f["category"] == need[0] for f in plan.get("furniture", [])):

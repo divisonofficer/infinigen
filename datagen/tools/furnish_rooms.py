@@ -348,6 +348,8 @@ def obstacles(everything):
         if rd._factory(o.name) in HANGING or "Window" in rd._factory(o.name) or o.type == "LIGHT" or o.hide_render or not o.visible_get():
             continue                                            # hidden asset templates sit at the origin; they block nothing
         f = footprint(o)
+        if f[4] > 1.9:                                          # anything hung above head height blocks nothing on the floor: the flagship hall's
+            continue                                            # ducts / trays / beams were not in HANGING, so 35 of 35 pieces were refused
         (flat if f[5] - f[4] < 0.05 else obst).append(f)
     doors = []                                                  # door swing / passage kept clear of everything
     # measured from the casing (the opening), not the leaf: an open leaf -- or a leaf mesh whose box spans its baked swing -- made the

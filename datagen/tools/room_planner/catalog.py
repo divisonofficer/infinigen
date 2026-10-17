@@ -95,6 +95,24 @@ FURNITURE = {
     "whiteboard":     {"src": "proc:WhiteboardFactory", "size": [1.5, 0.05, 1.0], "rooms": ["meeting-room", "office", "open-office", "physio-room"]},
     # flagship boutique (reference set boutique_large_flagship_01): rooms [] keeps them out of the planner vocabulary; realize._fill_boutique
     # places them when ROOM_FLAGSHIP=1
+    # underground bookstore (docs/bookstore_underground_design_proposal.md): realize._fill_bookstore places them when ROOM_BOOKSTORE=1
+    "book_island":     {"src": "proc:BookIslandTableFactory", "size": [1.0, 2.4, 0.9], "rooms": []},
+    "book_wall_shelf": {"src": "proc:BookWallShelfFactory", "size": [0.35, 2.4, 2.4], "rooms": []},
+    "section_sign":    {"src": "proc:SectionSignFactory", "size": [0.26, 0.37, 1.3], "rooms": []},
+    "stepped_plinth": {"src": "proc:SteppedPlinthFactory", "size": [1.2, 1.8, 0.44], "rooms": []},
+    # rooftop fine-dining restaurant (docs/rooftop_fine_dining_design_proposal.md): realize._fill_rooftop places them when ROOM_ROOFTOP=1
+    "rt_banquette":   {"src": "proc:BanquetteFactory", "size": [3.0, 0.6, 1.0], "rooms": []},
+    "rt_booth":       {"src": "proc:VelvetBoothFactory", "size": [0.8, 2.2, 1.05], "rooms": []},
+    "rt_table_low":   {"src": "proc:MarbleTableLowFactory", "size": [0.7, 1.2, 0.75], "rooms": []},
+    "rt_table_high":  {"src": "proc:MarbleTableHighFactory", "size": [0.7, 0.7, 1.05], "rooms": []},
+    "rt_table_round": {"src": "proc:MarbleTableRoundFactory", "size": [0.7, 0.7, 1.05], "rooms": []},
+    "rt_stool_white": {"src": "proc:BarStoolWhiteFactory", "size": [0.42, 0.42, 1.0], "rooms": []},
+    "rt_stool_gold":  {"src": "proc:BarStoolGoldFactory", "size": [0.42, 0.42, 1.0], "rooms": []},
+    "rt_ottoman":     {"src": "proc:CubeOttomanFactory", "size": [0.5, 0.5, 0.45], "rooms": []},
+    "rt_mirror_column": {"src": "proc:MirrorColumnFactory", "size": [0.7, 0.7, 3.2], "rooms": []},
+    "rt_floor_ac":    {"src": "proc:FloorAcFactory", "size": [0.35, 0.5, 1.9], "rooms": []},
+    "rt_heater":      {"src": "proc:PatioHeaterFactory", "size": [0.64, 0.64, 2.1], "rooms": []},
+    "rt_setting":     {"src": "proc:FineDiningSettingFactory", "size": [0.34, 0.4, 0.17], "rooms": []},
     "stone_table":    {"src": "proc:StoneSlabTableFactory", "size": [2.2, 1.1, 0.78], "rooms": []},
     "wall_rail":      {"src": "proc:WallRailFlatFactory", "size": [3.0, 0.16, 0.1], "rooms": []},
     "lattice_screen": {"src": "proc:SteelLatticeScreenFactory", "size": [1.9, 0.45, 2.6], "rooms": []},

@@ -17,12 +17,13 @@ import bpy
 from room_planner import proc_boutique_flagship as fl
 
 
-def flagship_services(L, S, zc, at, name, rng, stats, spot_every=1.6, spot_w=12.0):
+def flagship_services(L, S, zc, at, name, rng, stats, spot_every=1.6, spot_w=12.0, fill_w=450.0):
     white = fl._flat("ir_fl_white", (0.88, 0.87, 0.84), 0.55)
     conc = fl._flat("ir_fl_concrete", (0.6, 0.59, 0.56), 0.9)
     slot = fl._flat("ir_fl_slot", (0.1, 0.1, 0.1), 0.7)
     wire = fl._flat("ir_fl_wire", (0.5, 0.5, 0.52), 0.4, 1.0)
-    k = min(1.0, zc / 4.5)                                           # vertical offsets scale with the ceiling height
+    k = min(1.0, zc / 4.5)
+    spot_w = spot_w * (max(zc, 3.0) / 3.0) ** 2                  # a 5 m ceiling needs ~3x the power of a 3 m one (flagship r3: 'far too dark')                                           # vertical offsets scale with the ceiling height
     z_duct, z_tray, z_track = zc - 0.32 * k, zc - 0.7 * k, zc - 0.95 * k
     # run helper: a box along u at cross position v (centre z), length L - 2 * m
     def run(v, z, sy, sz, m=0.2):
@@ -84,4 +85,15 @@ def flagship_services(L, S, zc, at, name, rng, stats, spot_every=1.6, spot_w=12.
             (wx, wy) = at(0.8 + q * 2.0, v)
             hw.append(("cyl", (wx, wy, z_track), (wx, wy, zc), 0.003, 4))
     fl.mesh_object(name("TrackRail"), [(white, rails + heads), (wire, hw)], bevel=False)
+    # large soft AREA lights hidden between the trusses for ambient fill (neutral ~3800 K); the white spot heads stay the visible accents
+    n_fill = max(6, min(10, int(L * S / 45.0)))
+    nu = max(2, round(math.sqrt(n_fill * L / S))); nv = max(2, math.ceil(n_fill / nu))
+    for iu in range(nu):
+        for iv in range(nv):
+            (x, y) = at((iu + 0.5) * L / nu, (iv + 0.5) * S / nv)
+            ld = bpy.data.lights.new(f"ir_fill_{iu}_{iv}", "AREA"); ld.shape = "RECTANGLE"; ld.size = 3.0; ld.size_y = 3.0
+            ld.energy = fill_w * (max(zc, 3.0) / 5.0) ** 2; ld.color = (1.0, 0.93, 0.85)
+            lo = bpy.data.objects.new(f"PointLampFactory(fill).spawn_asset(fl_{iu}_{iv})", ld); bpy.context.scene.collection.objects.link(lo)
+            lo.location = (x, y, zc - 0.3); lo.rotation_euler = (math.pi, 0, 0)
+            stats["fill_lights"] = stats.get("fill_lights", 0) + 1
     stats["flagship"] = {"beams": len(beams), "ducts": len(vd), "trays": 4, "slots": len(slots)}

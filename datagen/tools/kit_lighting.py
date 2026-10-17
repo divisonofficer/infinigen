@@ -236,6 +236,8 @@ def main() -> int:
         if top - fz < 3.6:
             continue
         x0, x1 = min(p.x for p in pts), max(p.x for p in pts); y0, y1 = min(p.y for p in pts), max(p.y for p in pts)
+        if (x1 - x0) * (y1 - y0) > 120:                          # a hall keeps its own ceiling: the flagship boutique's exposed services were
+            continue                                             # hidden under one 340 m2 suspended slab (first run, 2026-10-17)
         zc = fz + 2.8
         pa._parts_object(f"DropCeilingFactory({n_drop}).spawn_asset({n_drop})", [(tile, [((x0 + x1) / 2, (y0 + y1) / 2, zc + 0.015, x1 - x0, y1 - y0, 0.03)])])
         moved = []
@@ -352,6 +354,21 @@ def main() -> int:
         base = {"office": 0.5, "open-office": 0.5, "meeting-room": 0.5, "clinic-reception": 0.45, "exam-room": 0.45, "dental-room": 0.45,
                 "physio-room": 0.45, "pharmacy": 0.5, "boutique": 0.55, "convenience": 0.85, "grocery": 0.85}.get(venue, 1.0)
         stats["weathered"] = weather_pass.weather_materials(float(os.environ.get("IR_WEATHER_STRENGTH", base)))
+    if os.environ.get("IR_WEATHER_VARIATION", "1") != "0":       # per-object offset/tint/edge wear after weather_pass: identical objects stopped being one
+        try:                                                     # stamped copy (cafeP A/B arm 5, the only arm that moved things; user 'texture flat')
+            import weather_variation
+            stats["weather_variation"] = weather_variation.vary_materials(1.0, 0.35)
+        except Exception as e:                                   # noqa: BLE001  -- never fail a scene over a finishing pass
+            stats["weather_variation"] = f"failed: {e!r}"[:120]
+    if os.environ.get("IR_PAINT_WEAR", "1") != "0":              # bare steel at edges/chips of painted metal: binary metallic mask
+        try:
+            import paint_wear
+            stats["paint_wear"] = paint_wear.apply()
+        except Exception as e:                                   # noqa: BLE001
+            stats["paint_wear"] = f"failed: {e!r}"[:120]
+    if os.environ.get("IR_GLAZE", "1") != "0":                   # glazed tiles at roughness ~1.0 in the GT channel -> capped at 0.28
+        import glaze_fix
+        stats["glaze_fixed"] = glaze_fix.fix(float(os.environ.get("IR_GLAZE_CAP", "0.28")))
     import displacement_fix                                      # brick/masonry relief: ~10x the physical depth reads at 512 px (cafeP_industrial A/B:
     stats["displacement_fixed"] = displacement_fix.fix(float(os.environ.get("IR_BUMP_SCALE", "10")))   # 1x flat, 4x faint, 12x clear, 30x noisy)
     bpy.ops.wm.save_as_mainfile(filepath=a.out, compress=True)

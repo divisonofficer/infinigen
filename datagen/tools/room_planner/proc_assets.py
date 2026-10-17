@@ -304,10 +304,21 @@ class BoxPileFactory:
 
 
 # ---- cafe ---------------------------------------------------------------------------------------------------------------------------
+# painted / powder-coated metal is a dielectric under a paint layer: metallic 0 (review 2026-10-17: ceiling T-bar, door frames, cabinets,
+# lockers, rack beams, chair bases carried metallic=1 in the ground-truth channel). Bare metals (chrome, steel, aluminium, brass) stay 1.
+PAINTED_METAL = ("ir_arch_black_metal", "ir_arch_duct", "ir_black_metal", "ir_desk_frame", "ir_filer", "ir_office_door_frame", "ir_linear_body",
+                 "ir_pedestal", "ir_pencup", "ir_phone_body", "ir_microwave_body", "ir_espresso_side", "ir_hanger", "ir_cart", "ir_rack", "ir_locker")
+
+
 def _flat(name, rgb, rough, metallic=0.0, transmission=0.0, wood=False):
     m = bpy.data.materials.get(name)
     if m is not None:
         return m
+    if metallic > 0.0 and name.startswith(PAINTED_METAL) and os.environ.get("IR_PAINTED_METAL", "1") != "0":
+        metallic = 0.0; rough = max(rough, 0.35)
+    elif os.environ.get("IR_PAINTED_METAL", "1") != "0":
+        metallic = 1.0 if metallic >= 0.5 else 0.0              # metallic is a binary material property (Burley 2012); a constant 0.3-0.6 is neither
+                                                                # paint nor metal. Intermediate values live only in wear masks (paint_wear.py).
     m = bpy.data.materials.new(name); m.use_nodes = True
     b = m.node_tree.nodes["Principled BSDF"]
     b.inputs["Base Color"].default_value = (*rgb, 1); b.inputs["Roughness"].default_value = rough
@@ -1668,6 +1679,12 @@ class WhiteboardFactory:
 
     def spawn_asset(self, i):
         pw = _pick_print("whiteboard", i)                          # hand-written marker content: a blank board read as 'nobody works here'
+        if pw is not None:                                         # by venue: 'DOCK SHIFT PLAN' hung in offices and pantries, 'SENSOR LOOP' in a clinic
+            fv = set(globals().get("FLOOR_VENUES") or ()) | {VENUE}   # director's office (review 2026-10-17)
+            ok = ((1, 2, 3, 5) if "warehouse" in fv else (1, 6) if fv & {"clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"}
+                  else (1, 4, 6) if fv & {"office", "open-office", "meeting-room"} else (1, 6))
+            pool_ = [x for x in sorted(PRINT_ROOT.glob("whiteboard_*.png")) if int(x.stem.split("_")[1]) in ok]
+            pw = pool_[zlib.crc32(f"whiteboard:{i}".encode()) % len(pool_)] if pool_ else pw
         white = _printed(pw, (0.93, 0.93, 0.92), 0.08) if pw is not None else _flat("ir_whiteboard", (0.93, 0.93, 0.92), 0.08)
         alu = _flat("ir_alu", (0.7, 0.7, 0.72), 0.3, 1.0)
         W, H = self.W, 1.0
@@ -2423,11 +2440,11 @@ class ClothingRackFactory:
                 floor.location = (0, 0, 0.002)
                 _drape(shirts, pin_fn=lambda z, zmax: z > zmax - 0.09, colliders=[floor])
                 fallen = []
-                for q in range(r.choice((1, 2))):
+                for q in range(1 if r.random() < 0.4 else 0):    # one fallen garment under ~40 % of the racks: 18 racks x 1-2 read as scattered flat pads
                     fs = _cloth("shirt", "ShirtFactory", r.randrange(10 ** 6))
                     if fs is None:
                         break
-                    fs.rotation_euler = (0, 0, r.uniform(0, 6.28)); fs.location = (r.uniform(0.18, 0.4), r.uniform(-L * 0.3, L * 0.3), 0.18 + 0.12 * q)
+                    fs.rotation_euler = (r.uniform(-0.6, 0.6), r.uniform(-0.6, 0.6), r.uniform(0, 6.28)); fs.location = (r.uniform(0.18, 0.4), r.uniform(-L * 0.3, L * 0.3), 0.3 + 0.12 * q)   # dropped tilted, it lands crumpled
                     fallen.append(fs)
                 if fallen:
                     fl2 = bpy.data.objects.new("ir_drape_floor2", bpy.data.meshes.new("ir_drape_floor2"))

@@ -14,6 +14,7 @@ The new materials are flagged `ir_arch`: weather_pass applies only a light (30 %
     from architecture_textures import apply; apply(room_venues, style_venue)
 """
 import json
+import os
 import re
 import zlib
 from pathlib import Path
@@ -25,9 +26,25 @@ WALL = ("concrete_0016", "concrete_0017", "concrete_0019", "concrete_0032", "con
 # panel seams and tie holes (a clinic hallway wall in D3 r24 test), 0028 white speckles, 0023 horizontal brushing
 FLOOR_POOLS = {"carpet": ("fabrics_0076", "fabric_0022"), "polished": ("concrete_0019", "concrete_0032", "concrete_0018"),
                "clinic": ("tiles_0086", "tiles_0042", "concrete_0016"), "shop": ("tiles_0121", "tiles_0086", "concrete_0032"),
-               "work": ("concrete_0018", "concrete_0010", "concrete_0023")}
+               "work": ("concrete_0018", "concrete_0010", "concrete_0023"),
+               # polished dark-red granite of the underground bookstore (ROOM_BOOKSTORE=1): orange marble 0002 (0016: small tiles, blown highlights; tiles_0099: fan pattern), tinted maroon, low roughness
+               "granite_red": ("marble_0002",)}
+GRANITE_TINT, GRANITE_ROUGH, GRANITE_CONTRAST = (0.27, 0.065, 0.05), 0.12, 0.8
+# polished grey stone floor of the rooftop restaurant (ROOM_ROOFTOP=1): the orange marble sets tinted neutral grey (the café wood pool used to win)
+STONE_GREY_POOL = ("marble_0002", "marble_0016")
+STONE_GREY_TINT, STONE_GREY_ROUGH, STONE_GREY_CONTRAST = (0.34, 0.35, 0.37), 0.2, 0.7
 CLINIC = {"clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"}
 SHOP = {"convenience", "grocery", "boutique"}
+# flagship boutique walls (ROOM_FLAGSHIP=1): light greige microcement / limewash (concrete_0016 / 0017: soft mottling; 0023 brushes too strongly and its streak direction depends on the wall object frame), luminance contrast 0.4;
+# every plain wall slot gets it, not only `paint` groups (the kit's 'concrete' wall used to stay the dark Infinigen concrete)
+WALL_FLAGSHIP = ("concrete_0016", "concrete_0017")
+GREIGE_TINT, GREIGE_ROUGH, GREIGE_CONTRAST = (0.58, 0.52, 0.44), 0.7, 0.4
+
+
+def _plain_wall_slot(m):
+    if m is None or not m.use_nodes:
+        return False
+    return not any(k in m.name.lower() for k in ("wood", "plank", "brick", "tile", "glass", "window", "ir_arch"))
 WORKROOMS = {"warehouse", "garage", "utility"}
 SKIP_ROOMS = {"restroom", "bathroom"}
 _cat = None
@@ -112,26 +129,39 @@ def apply(room_venues=None, style_venue=None):
         if rtype in SKIP_ROOMS:
             continue
         venue = room_venues.get(room) or room_venues.get(room.replace("/", "-")) or style_venue
+        flag_wall = os.environ.get("ROOM_FLAGSHIP") == "1" and venue in SHOP and part == "wall"
         for slot in o.material_slots:
             g = _paint_group(slot.material)
-            if g is None:
+            if g is None and not (flag_wall and _plain_wall_slot(slot.material)):
                 continue
-            col = tuple(g.inputs["color"].default_value[:3]) if "color" in g.inputs else (0.8, 0.8, 0.78)
-            rough0 = g.inputs["roughness"].default_value if "roughness" in g.inputs else 0.5
-            if part == "wall":
+            col = tuple(g.inputs["color"].default_value[:3]) if g is not None and "color" in g.inputs else (0.8, 0.8, 0.78)
+            rough0 = g.inputs["roughness"].default_value if g is not None and "roughness" in g.inputs else 0.5
+            if part == "wall" and flag_wall:
+                t = tex(WALL_FLAGSHIP[_h(room, "wall") % len(WALL_FLAGSHIP)])
+                if t is None:
+                    continue
+                slot.material = make_material(f"ir_arch_{t['id']}_wall_greige", t, tint=GREIGE_TINT, rough0=GREIGE_ROUGH, contrast=GREIGE_CONTRAST)
+            elif part == "wall":
                 t = tex(WALL[_h(room, "wall") % len(WALL)])
                 if t is None:
                     continue
                 name = f"ir_arch_{t['id']}_wall_{'%02x%02x%02x' % tuple(int(c * 255) for c in col)}"
                 slot.material = make_material(name, t, tint=col, rough0=rough0)
             else:
-                pool = floor_pool(rtype, venue)
+                granite = os.environ.get("ROOM_BOOKSTORE") == "1" and venue in SHOP
+                stone = os.environ.get("ROOM_ROOFTOP") == "1" and venue == "cafe"
+                pool = STONE_GREY_POOL if stone else FLOOR_POOLS["granite_red"] if granite else floor_pool(rtype, venue)
                 if pool is None:
                     pool = FLOOR_POOLS["carpet"] if _h(room, "floor") % 10 < 7 else FLOOR_POOLS["polished"]
                 t = tex(pool[_h(room, "floor") % len(pool)])
                 if t is None:
                     continue
-                slot.material = make_material(f"ir_arch_{t['id']}_floor", t, tint=None, rough0=rough0)
+                if stone:
+                    slot.material = make_material(f"ir_arch_{t['id']}_floor_greystone", t, tint=STONE_GREY_TINT, rough0=STONE_GREY_ROUGH, contrast=STONE_GREY_CONTRAST)
+                elif granite:
+                    slot.material = make_material(f"ir_arch_{t['id']}_floor_redgranite", t, tint=GRANITE_TINT, rough0=GRANITE_ROUGH, contrast=GRANITE_CONTRAST)
+                else:
+                    slot.material = make_material(f"ir_arch_{t['id']}_floor", t, tint=None, rough0=rough0)
             done[part] += 1
     print(f"ARCHTEX walls {done['wall']} floors {done['floor']}", flush=True)
     return done

@@ -67,17 +67,17 @@ def mesh_object(name, groups, bevel=True):
     return o
 
 
-def _flat(name, rgb, rough, metallic=0.0, kind=None):
+def _flat(name, rgb, rough, metallic=0.0, kind=None, wood=False):
     """proc_assets._flat; `kind` is passed only where _flat takes it (material_spec wired), else the legacy name rules apply."""
     pa = _pa()
     pa.SCANS.setdefault("stone", (pa._TC + "concrete_0003", pa._TC + "concrete_0004"))
     pa.SCAN_TILE.setdefault("stone", 0.6)
     if kind:
         try:
-            return pa._flat(name, rgb, rough, metallic, 0.0, False, kind=kind)
+            return pa._flat(name, rgb, rough, metallic, 0.0, wood, kind=kind)
         except TypeError:
             pass
-    return pa._flat(name, rgb, rough, metallic)
+    return pa._flat(name, rgb, rough, metallic, 0.0, wood)
 
 
 class StoneSlabTableFactory:
@@ -149,3 +149,18 @@ class SteelLatticeScreenFactory:
                                         0.05 + (b + 0.5) * pz + r.uniform(-0.006, 0.006), 0.012, px * r.uniform(0.66, 0.86),
                                         pz * r.uniform(0.66, 0.9), r.uniform(-0.18, 0.18)))
         return mesh_object(f"SteelLatticeScreenFactory({self.seed}).spawn_asset({i})", [(rust, bars + feet)] + [(f, sw) for f, sw in zip(fabs, swatches)], bevel=False)
+
+
+class SteppedPlinthFactory:
+    """Pale stone stepped plinth (front +X, origin at the bottom centre): three stacked rough-cut slabs 1.8 x 1.2 / 1.4 x 0.9 / 1.0 x 0.6 m,
+    0.16 / 0.30 / 0.44 m high, each set back toward the rear (reference img 07: grey stone steps carrying folded goods)."""
+    def __init__(self, seed):
+        self.seed = seed
+
+    def spawn_asset(self, i):
+        r = random.Random(self.seed * 5 + i)
+        stone = _flat("ir_plinth_stone", (0.6, 0.61, 0.6), 0.6, kind="stone")
+        parts = []
+        for k, (d, w, h) in enumerate(((1.2, 1.8, 0.16), (0.9, 1.4, 0.30), (0.6, 1.0, 0.44))):
+            parts.append(("jbox", -0.05 * k + r.uniform(-0.01, 0.01), r.uniform(-0.01, 0.01), h / 2, d, w, h, 0.008, 0.2, r.randrange(1 << 30)))
+        return mesh_object(f"SteppedPlinthFactory({self.seed}).spawn_asset({i})", [(stone, parts)])
