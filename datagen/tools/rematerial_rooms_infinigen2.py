@@ -371,6 +371,9 @@ for o in targets:
     room_type = PAT.match(o.name).group("room").split("_")[0]
     fns = (WET_FNS_SHOP if room_type == "restroom" and isinstance(_st_spec, dict) and _st_spec.get("venue") in ("cafe", "convenience", "grocery", "boutique")
            else WET_FNS_WORK if room_type == "restroom" else       # 'restroom' only exists on commercial floors (homes use 'bathroom')
+           OFFICE_FNS if room_type in ("office", "break-room") and isinstance(_st_spec, dict) and _st_spec.get("venue") == "warehouse" else
+           # a warehouse kit's raw concrete stays in the hall: on the site office and staff room it read as 'water-stained render, an
+           # unfinished shell' (floor J r18-r20, 3 of 3 each)
            STYLE_FNS if STYLE_FNS and room_type not in WET_ROOMS else
            VENUE_FNS[a.venue] if a.venue in VENUE_FNS and room_type not in WET_ROOMS else WET_FNS if room_type in WET_ROOMS
            else WORK_FNS if room_type in WORK_ROOMS else OFFICE_FNS if room_type in OFFICE_ROOMS else FNS)

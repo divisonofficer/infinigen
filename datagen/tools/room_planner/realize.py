@@ -180,6 +180,8 @@ class RoomRealizer:
             src = "proc:CheckoutCounterFactory"
         if cat == "break_chair" and _pa.VENUE == "break-room" and self.doc.get("area_m2", 99) >= 12:   # a dining-height staff table takes
             src = "proc:CafeChairFactory"                        # chairs, not counter stools (floor I r9: 'bar stools at a low table', 3/3)
+        if cat == "break_table" and _pa.VENUE == "break-room" and 12 <= self.doc.get("area_m2", 99) < 16:   # a small staff room's table is a
+            src = "proc:CafeTableFactory"                        # café round: the 1.2 m table fell back to a wall with one chair (floor G r31)
         if cat == "break_table" and _pa.VENUE == "break-room" and self.doc.get("area_m2", 99) < 12:   # 15.7 m2 staff room needs a table (floor H r7)
             src = "proc:WindowBarFactory"                        # a small pantry gets a wall ledge (pantry r13: stools with no table)
         if cat == "floor_plant" and self.doc.get("type") in catalog.WORK_ROOMS:   # workplaces: the procedural olive tree too -- the grown
@@ -195,13 +197,14 @@ class RoomRealizer:
             return fr.AboPick(key, self.rng).spawn(self.stats["furniture_added"]), fr.ABO_FRONT
         if kind == "proc":
             fac = _cls(src)(self.rng.randrange(1 << 24))
-            if cat == "break_table" and _pa.VENUE == "break-room" and self.doc.get("area_m2", 99) >= 12:
+            if cat == "break_table" and _pa.VENUE == "break-room" and self.doc.get("area_m2", 99) >= 12 and hasattr(fac, "L"):
                 fac.H = 0.75; fac.L = min(fac.L, 1.2)            # a 1.2 m table fits the room's middle (floor H r18: it fell back to a wall
                 # ledge for two, 'the middle of the staff room empty', 3 of 3)
                 # a dining-height staff table for the chairs (floor H r16: 'café chairs
                                                                  # tucked under a bar-height ledge', 2 of 3)
             if cat == "break_chair" and hasattr(fac, "style"):
-                fac.style = "light_wood"                         # flat black bistro backs at the staff table read as 'two computer
+                fac.style = "bentwood"                           # light_wood read as 'garden or child furniture' (floor H r31, 3 of 3);
+                # flat black bistro backs at the staff table read as 'two computer
                 # monitors on the table' (floor H r24-r25, 3 of 3 each)
             if cat == "waiting_bench" and getattr(_pa, "FLOOR_VENUES", ()):
                 fac.n = 3                                        # floors: 3-seat rows -- 4-5 seat ones found no wall between the doors of a
@@ -451,8 +454,7 @@ class RoomRealizer:
                 "restroom": (["grab_bar", "toilet_roll", "waste_bin", "hand_dryer", "wall_sanitizer", "roll_shelf"] +
                              (["baby_change", "clinic_poster"] if self.doc.get("area_m2", 0) >= 10 else []))   # a big WC reads empty (D3/J)
                             if clinic_floor else ["grab_bar", "toilet_roll", "waste_bin", "hand_dryer", "roll_shelf"] +   # the mop kit lives in the
-                            (["coat_hooks"] if self.doc.get("area_m2", 0) >= 18 else []) +   # jackets by a staff washroom's lockers (floor J
-                            # r18: 'lockers and bench empty, nothing used', use 5-6, 3 of 3)
+                            # (no coat-hook rail: its jackets read as 'blue and red clinic pads', floor J r20, 3 of 3)
                             # stockroom: by the WC it read as 'a janitor closet' (floor H r26, 3 of 3)
                             (["baby_change", "clinic_poster"] if self.doc.get("area_m2", 0) >= 10 else []),   # a café/shop/office (the basin unit
                             # -- and a big one is not 'an empty tiled room' (floor H r18)
@@ -1350,6 +1352,8 @@ class RoomRealizer:
             fc = [it for it in items if it["category"] == "filing_cabinet"]
             items = [it for it in items if it["category"] != "filing_cabinet"] + ([{**fc[0], "count": 1}] if fc and not n_fc else [])
         items = [({**it, "avoid_windows": True} if it["category"] in ("filing_cabinet", "office_bookcase") else it) for it in items]
+        items = [({**it, "count": max(3, it.get("count", 1))} if it["category"] == "break_chair" and it.get("relation") == "around" else it)
+                 for it in items]   # a staff table seats three or more: the revision's 'chair1 around' gave it one (floor G r30: comp 6)
         # tall storage off the glazing (floor J r19: 'a filing cabinet standing in front of the window', layout 6, 3 of 3)
         self.pending_ids = {it["id"] for it in items}
         self.plan_items = getattr(self, "plan_items", []) + list(items)   # seats check whether their table was a planned item
@@ -2018,8 +2022,8 @@ class RoomRealizer:
                 cafe_mix = [m for m in self.CAFE_CLUTTER if m[0] not in _pa.STYLE.get("clutter_exclude", [])] + \
                     [tuple(x) for x in _pa.STYLE.get("table_extra", [])]   # floral: vases; bakery: no wine glasses
                 clinic = self.doc.get("type") in ("clinic-reception", "exam-room", "dental-room", "physio-room")
-                mix = food if fac == "BreakTableFactory" else cafe_mix if fac in ("CafeTableFactory", "WindowBarFactory") and \
-                    self.doc.get("type") not in ("office", "open-office", "meeting-room") \
+                mix = food if fac == "BreakTableFactory" or (fac == "CafeTableFactory" and self.doc.get("type") == "break-room") else cafe_mix if fac in ("CafeTableFactory", "WindowBarFactory") and \
+                    self.doc.get("type") not in ("office", "open-office", "meeting-room", "break-room") \
                     else self.BENCH_CLUTTER if fac == "WorkbenchFactory" \
                     else self.CLINIC_CLUTTER if clinic else self.CLUTTER   # pantry tables: food (r4); cafe: cups, plates; clinic: gloves, forms
                 cat = self.rng.choices([m[0] for m in mix], [m[1] for m in mix])[0]
@@ -2332,7 +2336,7 @@ class RoomRealizer:
             # wall instead (critics asked for 'lockers, coat hooks or a notice board')
             if not any(f["category"] == "locker" for f in fs_):
                 run_ = next((f["id"] for f in fs_ if f["category"] == "pantry_run"), None)
-                plan = {**plan, "furniture": [{"id": "staff_lockers", "category": "locker", "relation": "against_wall", "avoid_windows": self.doc.get("area_m2", 0) >= 16,
+                plan = {**plan, "furniture": [{"id": "staff_lockers", "category": "locker", "relation": "against_wall", "avoid_windows": self.doc.get("area_m2", 0) >= 15,
                                                **({"away_from": run_} if run_ else {})}] + fs_}   # after the table set: placed first, their 0.8 m
                 # clearance plus the run's strip left the table no floor (floors G r20, I r16: 'no table, no chairs', 3 of 3)
                 # (avoid_windows put them opposite the run:

@@ -145,12 +145,21 @@ def service_room_lights(stats):
             continue
         Minv = o.matrix_world.inverted()
         bm = bmesh.new()
-        for slot, (hz, half, dz) in enumerate(((0.04, 0.31, 0.02), (0.012, 0.28, 0.046))):   # white frame, then the glowing diffuser below it
-            r = bmesh.ops.create_cube(bm, size=1.0)
+        drop = 0.0                                       # flush again: hung 0.4 m they read as 'pendants on long rods that clash' (J r20,
+        # 3 of 3) and still never entered G's frames; was: hung on rods: flush at the ceiling it never entered a corner probe's frame --
+        # 'no ceiling lights in any back room' (floor G r30, 3 of 3)
+        for slot, (hz, half, dz) in enumerate(((0.04, 0.31, 0.02 + drop), (0.012, 0.28, 0.046 + drop))):   # white frame, then the glowing
+            r = bmesh.ops.create_cube(bm, size=1.0)                                                         # diffuser below it
             for v in r["verts"]:
                 v.co = Minv @ Vector((cx + v.co.x * 2 * half, cy + v.co.y * 2 * half, top - dz + v.co.z * hz))
             for fc in {fc for v in r["verts"] for fc in v.link_faces}:
                 fc.material_index = slot
+        for kx in (1, -1):
+            r = bmesh.ops.create_cube(bm, size=1.0)
+            for v in r["verts"]:
+                v.co = Minv @ Vector((cx + kx * 0.22 + v.co.x * 0.012, cy + v.co.y * 0.012, top - drop / 2 + v.co.z * drop))
+            for fc in {fc for v in r["verts"] for fc in v.link_faces}:
+                fc.material_index = 0
         me = bpy.data.meshes.new(f"ir_led_panel_{n}"); bm.to_mesh(me); bm.free()
         me.materials.append(trim); me.materials.append(panel)
         o.data = me
@@ -295,7 +304,16 @@ def main() -> int:
             led = pa._flat("ir_led_panel", (0.95, 0.95, 0.93), 0.3)
             bb = led.node_tree.nodes["Principled BSDF"]
             bb.inputs["Emission Color"].default_value = (1.0, 0.98, 0.95, 1); bb.inputs["Emission Strength"].default_value = 4.0
-            pa._parts_object(f"CeilingLightFactory(svc).spawn_asset(p{n_svc})", [(led, [((x0 + x1) / 2, (y0 + y1) / 2, ceil - 0.02, 0.6, 0.6, 0.03)])])
+            hous = pa._flat("ir_batten_housing", (0.55, 0.56, 0.58), 0.4, 0.6)
+            cx_, cy_, Lb = (x0 + x1) / 2, (y0 + y1) / 2, min(1.2, 0.6 * max(x1 - x0, y1 - y0))
+            along_x = (x1 - x0) >= (y1 - y0)
+            sx, sy = (Lb, 0.16) if along_x else (0.16, Lb)
+            zb = ceil - 0.08                                      # hung 0.4 m: a flush panel at ceiling centre never entered a corner probe's
+            # frame -- 'no ceiling lights in any back room' (floor G r30, 3 of 3)
+            rods = [(cx_ + (sx / 2 - 0.1) * k if along_x else cx_, cy_ if along_x else cy_ + (sy / 2 - 0.1) * k, (zb + ceil) / 2, 0.01, 0.01, ceil - zb)
+                    for k in (1, -1)]
+            pa._parts_object(f"CeilingLightFactory(svc).spawn_asset(p{n_svc})", [(hous, [(cx_, cy_, zb + 0.04, sx + 0.02, sy + 0.02, 0.06)] + rods),
+                                                                                 (led, [(cx_, cy_, zb, sx, sy, 0.02)])])
         if sum(e for q, e in lit if x0 <= q.x <= x1 and y0 <= q.y <= y1 and q.z > fz) >= 150.0:
             n_svc += 0 if fixture else 1
             continue                             # one 92 W lamp over a stall row left a restroom near black (floor H r5)

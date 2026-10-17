@@ -100,6 +100,9 @@ def main() -> int:
                 plan["furniture"] += [{"id": "lockers", "category": "locker", "relation": "against_wall", "away_from": "wc", "count": 2},
                                       {"id": "bench", "category": "changing_bench", "relation": "in_front_of", "target": "lockers", "gap_m": 0.6}]
                 plan["lived_in"] += [{"category": "towel_stack", "on": "bench"}]
+            if room_venues and not clinic and str(room.get("id", "")).endswith("/1") and room.get("area_m2", 0) >= 10:
+                plan["furniture"] += [{"id": "urinals", "category": "urinal", "relation": "against_wall", "away_from": "wc"}]   # the second
+                # restroom is the gents': two urinals fill its bare far wall and the pair stop being copies (floor H r31, 3 of 3)
             if room_venues and any(v in ("cafe",) for v in room_venues.values()):   # a café WC's potted plant on the floor (floor G r29:
                 plan["lived_in"] += [{"category": "small_plant", "on": "floor"}]      # 'only the roll and soap show use', use 6, 2 of 3)
             out["rooms"][room["id"]] = {"plan": plan, "room": room}

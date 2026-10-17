@@ -1793,6 +1793,25 @@ class PalletRackFactory:
         return _prims(f"PalletRackFactory({i}).spawn_asset({i})", [(blue, posts + braces), (orange, beams), (wood, pal), (card, box)] + ([(wrap, wr)] if wr else []))
 
 
+class UrinalFactory:
+    """Two wall-hung urinals with a privacy divider between them (front +X, back on the wall): the second restroom of a café floor
+    becomes the gents' -- two identical single WCs with half the room bare read as 'oversized, unfinished copies' (floor H r31, 3 of 3)."""
+    def __init__(self, seed):
+        self.r = random.Random(seed)
+
+    def spawn_asset(self, i):
+        D = 0.42; xb = -D / 2
+        cer = _flat("ir_ceramic_white", (0.93, 0.93, 0.92), 0.12); chrome = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0)
+        div = _flat("ir_urinal_divider", (0.62, 0.64, 0.66), 0.35)
+        bowls, pipes = [], []
+        for y in (-0.38, 0.38):
+            bowls += [("rbox", (xb + 0.17, y, 0.78), (0.32, 0.38, 0.62), (0, 0, 0)),
+                      ("box", (xb + 0.33, y, 0.62), (0.03, 0.26, 0.3), (0, 0, 0))]
+            pipes += [("cyl", (xb + 0.05, y, 1.25), (0.016, 0.016, 0.34), (0, 0, 0)), ("box", (xb + 0.06, y, 1.43), (0.06, 0.08, 0.06), (0, 0, 0))]
+        panel = [("box", (xb + 0.21, 0.0, 0.95), (0.4, 0.025, 0.8), (0, 0, 0))]
+        return _prims(f"UrinalFactory({i}).spawn_asset({i})", [(cer, bowls), (chrome, pipes), (div, panel)])
+
+
 class RollerShutterFactory:
     """A loading-dock roller shutter on a hall wall (front +X, back on the wall): grey steel slats in side guides under a coil box, a
     yellow-black hazard strip on the floor and two yellow bollards (floor J r18: 'no dock or roller door -- a big stockroom', 3 of 3)."""
