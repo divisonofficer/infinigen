@@ -59,12 +59,24 @@ def _boxes(name, parts, mat):
 
 class CardboardBoxFactory:
     def __init__(self, seed):
-        r = random.Random(seed)
+        r = random.Random(seed); self.r = r
         self.size = (r.uniform(0.25, 0.6), r.uniform(0.2, 0.45), r.uniform(0.15, 0.4))
 
     def spawn_asset(self, i):
-        x, y, z = self.size
-        o = _boxes(f"CardboardBoxFactory({i}).spawn_asset({i})", [(0, 0, z / 2, x, y, z)], cardboard())
+        """A carton (front +X) with its packing tape over the lid and down the front, and a shipping label with a barcode: plain kraft
+        cubes were 'toy blocks, no tape, no label' in every warehouse round (floor J r27-r29, 3 of 3; user 2026-10-17)."""
+        x, y, z = self.size; r = self.r
+        groups = [(cardboard(), [(0, 0, z / 2, x, y, z)])]
+        if r.random() < 0.85:
+            tape = _flat("ir_pack_tape", (0.66, 0.52, 0.3), 0.3)
+            groups.append((tape, [(0, 0, z + 0.0015, x + 0.004, 0.05, 0.004), (x / 2 + 0.0015, 0, z * 0.85, 0.004, 0.05, z * 0.3)]))
+        if r.random() < 0.6:
+            ly = r.uniform(-0.25, 0.25) * y
+            lw, lh = min(0.13, y * 0.5), min(0.09, z * 0.45)
+            groups.append((_flat("ir_ship_label", (0.95, 0.95, 0.92), 0.6), [(x / 2 + 0.0015, ly, z * 0.42, 0.004, lw, lh)]))
+            groups.append((_flat("ir_barcode", (0.03, 0.03, 0.03), 0.5), [(x / 2 + 0.0035, ly, z * 0.42 - lh * 0.2, 0.004, lw * 0.7, lh * 0.28),
+                                                                         (x / 2 + 0.0035, ly - lw * 0.2, z * 0.42 + lh * 0.3, 0.004, lw * 0.4, lh * 0.12)]))
+        o = _parts_object(f"CardboardBoxFactory({i}).spawn_asset({i})", groups)
         o.modifiers.new("bevel", "BEVEL").width = 0.006
         return o
 
