@@ -467,7 +467,8 @@ class RoomRealizer:
                             # WC: no sanitiser box or baby-change sign -- 'a clinic wall unit in a café toilet' (floor G r14, 3 of 3)
                 "hallway": ["clinic_poster", "wall_sanitizer", "wall_clock", "clinic_poster", "wall_sanitizer", "clinic_poster", "brochure_rack"],
                 "closet": ["coat_hooks", "coat_hooks", "clinic_poster"],   # two rails of jackets (floor F3 r19: 'one bag, no clothes', use 4-5)
-                "office": ["wall_clock", "clinic_poster"],   # a clinic manager's bare walls (floor D3 r19: 'two walls blank', 3 of 3)
+                "office": ["wall_clock", "clinic_poster"],   # a clinic manager's bare walls (floor D3 r19: 'two walls blank', 3 of 3);
+                # any floor office: 'a show office, nothing on the walls' (floor J r21, 3 of 3)
                 "break-room": ["coat_hooks", "clinic_poster", "wall_clock"] if getattr(self, "staff_hooks", False) else [],
                 "utility": ["glove_holder", "towel_dispenser", "clinic_poster"] if clinic_floor else ["cleaning_kit"]}.get("utility" if str(self.doc.get("id", "")).startswith("utility")
                                                                        else self.doc.get("type"), [])   # (no wet-floor sign in a steri room, E3 r15)   # a stockroom's bare corner (floor G r17: comp 6)
@@ -1387,8 +1388,7 @@ class RoomRealizer:
         from room_planner import proc_assets
         if proc_assets.VENUE in ("clinic-reception", "exam-room", "dental-room", "physio-room") or self.doc.get("type") in ("restroom", "hallway", "closet") or \
                 getattr(self, "staff_hooks", False) or \
-                (self.doc.get("type") == "office" and any(v in ("clinic-reception", "exam-room", "dental-room", "physio-room")
-                                                          for v in getattr(proc_assets, "FLOOR_VENUES", ()))) or \
+                (self.doc.get("type") == "office" and getattr(proc_assets, "FLOOR_VENUES", ())) or \
                 str(self.doc.get("id", "")).startswith("utility"):   # a floor's stockroom, whatever venue it took
             self._clinic_walls()
         if proc_assets.VENUE in ("grocery", "convenience", "pharmacy"):
@@ -2341,9 +2341,9 @@ class RoomRealizer:
             # wall instead (critics asked for 'lockers, coat hooks or a notice board')
             if not any(f["category"] == "locker" for f in fs_):
                 run_ = next((f["id"] for f in fs_ if f["category"] == "pantry_run"), None)
-                lk = {"id": "staff_lockers", "category": "locker", "relation": "against_wall",
-                      "avoid_windows": self.doc.get("area_m2", 0) >= 15, **({"away_from": run_} if run_ else {})}
-                small_ = 12 <= self.doc.get("area_m2", 0) < 16   # a small room: the round table set first, lockers after it (G r30-r32:
+                small_ = 12 <= self.doc.get("area_m2", 0) < 16
+                lk = {"id": "staff_lockers", "category": "locker", "relation": "against_wall",   # off the glazing (G r33: 'lockers over the
+                      "avoid_windows": self.doc.get("area_m2", 0) >= 15 or small_, **({"away_from": run_} if run_ else {})}   # window')   # a small room: the round table set first, lockers after it (G r30-r32:
                 plan = {**plan, "furniture": fs_ + [lk] if small_ else [lk] + fs_}   # lockers first left the table only a wall and one chair)
                 # otherwise lockers first: after the table set, placed first, their 0.8 m
                 # clearance plus the run's strip left the table no floor (floors G r20, I r16: 'no table, no chairs', 3 of 3)

@@ -103,14 +103,8 @@ def main() -> int:
                                   {"id": "basin", "category": "wash_basin", "relation": "against_wall", "near_to": "wc", "count": n_basin}]}
             # (an open WC with its basin on the far wall read as 'a toilet alone in an empty room' -- floor A2 r4; fixtures go together)
             clinic = any(v in ("clinic-reception", "exam-room", "dental-room", "physio-room") for v in room_venues.values())
-            if room.get("area_m2", 0) >= 18 and room_venues and not clinic:
-                # a big staff washroom on a work floor: lockers and a bench on the free walls (floor J r13: one WC in 24.9 m2, 'an unfinished
-                # shell', completeness 5, 3 of 3; stalls read as loose panels on every floor)
-                plan["furniture"][0] = {**plan["furniture"][0], "relation": "corner"}   # the WC in a corner, off the changing side ('an open
-                # toilet beside the lockers', floor J r16, 2 of 3)
-                plan["furniture"] += [{"id": "lockers", "category": "locker", "relation": "against_wall", "away_from": "wc", "count": 2},
-                                      {"id": "bench", "category": "changing_bench", "relation": "in_front_of", "target": "lockers", "gap_m": 0.6}]
-                plan["lived_in"] += [{"category": "towel_stack", "on": "bench"}]
+            # (no lockers + bench in a big work-floor washroom any more: beside an open WC they read as 'a changing room with a toilet
+            # dropped in', floor J r18-r21, 3 of 3 each -- the urinal pair below fills the room instead)
             cafe_fl = any(v == "cafe" for v in room_venues.values())
             if room_venues and not clinic and room.get("area_m2", 0) >= 10 and (str(room.get("id", "")).endswith("/1") or
                                                                                 (not cafe_fl and room.get("area_m2", 0) >= 14)):
