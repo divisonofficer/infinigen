@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import importlib
 import json
+import os
 import itertools
 import math
 import time
@@ -123,6 +124,7 @@ def _frange(a, b, step):
 # printed packaging for shelf goods (user 2026-10-17: 'every product in that shop is a textureless single-colour block'): 24 front /
 # unrolled label designs of invented brands, generated for this (data/venue_refs/product_labels, synthetic=true); they replace the
 # random text-art image of Infinigen's FoodBox / FoodBag / Bottle / Can / Jar label material, on its own UV wrap
+REAL_FURNITURE = {"desk_chair": "officechair", "conference_chair": "officechair", "meeting_table": "conftable"}   # category -> furnish_rooms ABO pool
 LABELS = Path("/jarvis/project/robomituba/data/venue_refs/product_labels")
 LABEL_POOL = {"FoodBoxFactory": ("box_snack", "box_cereal", "box_ramen", "box_tea"), "FoodBagFactory": ("bag_chips",),
               "BottleFactory": ("label_drink",), "CanFactory": ("label_can",), "JarFactory": ("label_milk",)}
@@ -187,6 +189,10 @@ class RoomRealizer:
             return spare.pop()
         src = catalog.FURNITURE[cat]["src"]
         from room_planner import proc_assets as _pa
+        real = REAL_FURNITURE.get(cat) if os.environ.get("ROOM_REAL_FURNITURE") == "1" and \
+            self.doc.get("type") in ("office", "open-office", "meeting-room") else None
+        if real is not None:                                     # opt-in A/B (user 2026-10-17: the procedural furniture reads as toy blocks):
+            return fr.AboPick(real, self.rng).spawn(self.stats["furniture_added"]), fr.ABO_FRONT   # a scanned ABO model of that kind
         if cat == "cafe_chair" and _pa.STYLE.get("chair_style") in ("bentwood", "light_wood", "metal_bistro", "mixed"):
             src = "proc:CafeChairFactory"                        # the reference's chair style (cafe r3: ABO gave upholstered chairs)
         if cat == "bar_stool" and (_pa.STYLE.get("chair_style") in ("bentwood", "light_wood", "metal_bistro", "mixed") or _pa.VENUE == "break-room"):
