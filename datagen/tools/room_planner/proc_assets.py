@@ -933,11 +933,19 @@ class ToiletStallFactory:
         panel = _flat(f"ir_stall_{int(self.c[2] * 100)}", self.c, 0.4); ceramic = _flat("ir_ceramic_white", (0.92, 0.92, 0.9), 0.08)
         chrome = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0)
         sides = [("box", (0, sy * W / 2, H / 2 + 0.12), (D, 0.025, H - 0.24), (0, 0, 0)) for sy in (1, -1)]
-        door = [("box", (D / 2 - 0.02 + 0.22, W / 2 - 0.3, H / 2 + 0.12), (0.025, 0.6, H - 0.24), (0, 0, 1.1))]   # half open
+        # a cubicle front: a fixed pilaster, a door hinged to it and opened ~35 deg, a chrome headrail over front and sides -- two side
+        # panels and a loose door read as 'free-standing screens, no door, no headrail' (floor J r24, 3 of 3)
+        pw, dw, a_ = 0.25, W - 0.25 - 0.02, 0.6
+        pil = [("box", (D / 2, W / 2 - pw / 2, H / 2 + 0.06), (0.03, pw, H - 0.12), (0, 0, 0))]
+        hx, hy = D / 2, W / 2 - pw
+        door = [("box", (hx + math.sin(a_) * dw / 2, hy - math.cos(a_) * dw / 2, H / 2 + 0.12), (0.025, dw, H - 0.24), (0, 0, a_))]
+        rail = [("box", (D / 2, 0, H + 0.02), (0.04, W + 0.04, 0.04), (0, 0, 0))] + \
+               [("box", (0, sy * W / 2, H + 0.02), (D, 0.04, 0.04), (0, 0, 0)) for sy in (1, -1)]
+        lock = [("box", (D / 2 + 0.02, W / 2 - pw + 0.04, 1.05), (0.02, 0.05, 0.05), (0, 0, 0))]
         legs = [("cyl", (x, sy * W / 2, 0.06), (0.015, 0.015, 0.12), (0, 0, 0)) for x in (-D / 2 + 0.05, D / 2 - 0.05) for sy in (1, -1)]
         bowl = [("rbox", (-D / 2 + 0.3, 0, 0.4), (0.5, 0.38, 0.32), (0, 0, 0)), ("box", (-D / 2 + 0.07, 0, 0.75), (0.12, 0.4, 0.4), (0, 0, 0)),
                 ("box", (-D / 2 + 0.06, 0, 0.12), (0.1, 0.2, 0.24), (0, 0, 0))]   # bowl, cistern, wall bracket
-        return _prims(f"ToiletStallFactory({i}).spawn_asset({i})", [(panel, sides + door), (chrome, legs + [("cyl", (-D / 2 + 0.6, W / 2 - 0.04, 0.7),
+        return _prims(f"ToiletStallFactory({i}).spawn_asset({i})", [(panel, sides + door + pil), (chrome, legs + rail + lock + [("cyl", (-D / 2 + 0.6, W / 2 - 0.04, 0.7),
                                                                     (0.06, 0.06, 0.1), (math.pi / 2, 0, 0))]), (ceramic, bowl)])
 
 

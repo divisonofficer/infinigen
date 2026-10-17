@@ -2447,9 +2447,10 @@ class RoomRealizer:
             fs = plan.get("furniture", [])                      # 'beside' the first floated mid-room (floor B r5, 3 of 3), and a
             g = [f for f in fs if f["category"] == "conference_chair"]   # whiteboard in every office cloned the rooms
             desk = next((f["id"] for f in fs if f["category"] in ("office_desk", "clinic_desk")), None)
-            if g and desk:
+            if desk:                                             # always one guest at least: 'no visitor chair facing the desk' in
                 fs = [f for f in fs if f["category"] != "conference_chair"] + \
-                     [{**g[0], "relation": "in_front_of", "target": desk, "count": min(2, sum(f.get("count", 1) for f in g))}]
+                     [{**(g[0] if g else {"id": "guest_x"}), "category": "conference_chair", "relation": "in_front_of", "target": desk,
+                       "count": min(2, sum(f.get("count", 1) for f in g)) if g else 1}]   # every floor's offices (J r24, C r14, A2 r13, 3 of 3)
             # one task chair, at the desk: chairs aimed at a dropped cabinet stood mid-floor (floor E3 r8: '4 lab stools, none at the desk')
             dc = [f for f in fs if f["category"] == "desk_chair"]
             fs = [f for f in fs if f["category"] != "desk_chair"]
