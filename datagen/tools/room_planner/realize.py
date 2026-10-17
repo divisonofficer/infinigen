@@ -479,6 +479,8 @@ class RoomRealizer:
                 "break-room": ["coat_hooks", "clinic_poster", "wall_clock"] if getattr(self, "staff_hooks", False) else [],
                 "utility": ["glove_holder", "towel_dispenser", "clinic_poster"] if clinic_floor else ["cleaning_kit"]}.get("utility" if str(self.doc.get("id", "")).startswith("utility")
                                                                        else self.doc.get("type"), [])   # (no wet-floor sign in a steri room, E3 r15)   # a stockroom's bare corner (floor G r17: comp 6)
+        if any(rd._factory(v[0].name) == "UrinalFactory" for v in self.ids.values()):   # beside the urinals the folded baby-change
+            want = [k for k in want if k != "baby_change"]      # unit read as 'a radiator against the urinal' (floor H r41, 3 of 3)
         wc = next((v[0].matrix_world.translation for v in self.ids.values() if rd._factory(v[0].name) == "ToiletFactory"), None)
         basin = next((v[0].matrix_world.translation for v in self.ids.values() if rd._factory(v[0].name) == "WashBasinFactory"), None)
         spans = {wd["id"]: [(b[0], b[1]) for b in wd.get("blocked", []) if b[2] in ("window", "door")] for wd in self.doc.get("walls", [])}
@@ -937,7 +939,8 @@ class RoomRealizer:
                     box = (min(q.x for q in pts_), max(q.x for q in pts_), min(q.y for q in pts_), max(q.y for q in pts_))
                     return not any(fr._overlap(box, b, 0.0) for b in self.obstacles)
                 # 0.8 m first, then 0.45 m, then any wall: a strict-only filter dropped the lockers of a 14 m2 staff room (floor G r23)
-                spots = [sp for sp in spots if clear_front(sp, 0.8)] or [sp for sp in spots if clear_front(sp, 0.45)] or \
+                small_ = self.doc.get("type") == "break-room" and self.doc.get("area_m2", 0) < 16
+                spots = [sp for sp in spots if clear_front(sp, 0.8)] or [sp for sp in spots if not small_ and clear_front(sp, 0.45)] or \
                     ([] if self.doc.get("type") == "break-room" and self.doc.get("area_m2", 0) < 16 else spots)   # a small staff room
                 # rather loses its lockers (its coat hooks stay) than sets them against the table (floor G r34-r35, layout 6, 3 of 3 each)
             pose = it.get("pose", "aligned")
@@ -1494,7 +1497,8 @@ class RoomRealizer:
         x0_, x1_, y0_, y1_ = self.room.box
         target = dens * (x1_ - x0_) * (y1_ - y0_) / 10.0 if dens else None   # the kit's seat density (non-home 20: 'too sparse')
         if target and self.doc.get("area_m2", 0) > 60:           # a floor's café hall: the user's 'seating, circulation, queue or counter' --
-            target *= 0.75 if self.doc.get("area_m2", 0) > 120 else 0.5   # a 164 m2 hall at 0.5 kept every seat in one block, 'half the
+            target *= 0.65 if self.doc.get("area_m2", 0) > 120 else 0.5   # 0.75: 'over-packed, no lane to the
+            # counter' (floor H r41, layout 6-7, 3 of 3)   # a 164 m2 hall at 0.5 kept every seat in one block, 'half the
             # hall empty' (floor H r30-r33, 3 of 3 each); the fill takes the largest empty region first                                        # the full kit density left one-chair aisles (floors G/H r7-r10, layout 5-6, 6 of 6);
                                                                  # 0.7 still 'a tight grid, chairs touching' (floor G r11, layout 5, 3 of 3)
         def seats_now():                                         # on this room's floor: the box of an L-shaped hall takes in the
@@ -2448,7 +2452,8 @@ class RoomRealizer:
             desk = next((f["id"] for f in fs if f["category"] in ("office_desk", "clinic_desk")), None)
             if desk:                                             # always one guest at least: 'no visitor chair facing the desk' in
                 fs = [f for f in fs if f["category"] != "conference_chair"] + \
-                     [{**(g[0] if g else {"id": "guest_x"}), "category": "conference_chair", "relation": "in_front_of", "target": desk,
+                     [{**(g[0] if g else {"id": "guest_x"}), "category": "conference_chair", "relation": "in_front_of", "target": desk, "gap_m": 0.3,   # at the default
+                       # gap the guest stood ~1 m off the desk, mid-room (floor J r25: 'the chair floats', 3 of 3)
                        "count": min(2, sum(f.get("count", 1) for f in g)) if g else 1}]   # every floor's offices (J r24, C r14, A2 r13, 3 of 3)
             # one task chair, at the desk: chairs aimed at a dropped cabinet stood mid-floor (floor E3 r8: '4 lab stools, none at the desk')
             dc = [f for f in fs if f["category"] == "desk_chair"]

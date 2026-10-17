@@ -7,6 +7,7 @@ bottom boards) and box piles (a few boxes stacked on a pallet footprint). Materi
 from __future__ import annotations
 
 import math
+import os
 import random
 
 import bpy
@@ -283,7 +284,62 @@ def _flat(name, rgb, rough, metallic=0.0, transmission=0.0, wood=False):
         b.inputs["Transmission Weight"].default_value = transmission
     if wood:
         _grain(m, rgb)
+    elif not transmission and os.environ.get("IR_SURFACE_DETAIL") == "1":
+        _detail(m, rgb, rough, metallic, name)
     return m
+
+
+def _detail(m, rgb, rough, metallic, name):
+    """Surface detail on a flat colour (user 2026-10-17: 'generated objects look too smooth'), shader-only, object space:
+    a slow +-6% colour and +-15% roughness drift, and a fine bump whose pattern follows the material class -- hairline streaks on
+    metal, a weave on fabric, fibre on card/paper, orange-peel on paint/plastic, a faint waviness on glossy ceramic.
+    No AO or edge darkening in the colour: it would leak lighting into the albedo ground truth."""
+    nt = m.node_tree; N, L = nt.nodes, nt.links
+    b = N["Principled BSDF"]
+    n_ = name.lower()
+    kind = ("metal" if metallic > 0.5 else "fabric" if any(k in n_ for k in ("fabric", "cushion", "upholst", "seat", "towel", "apron", "felt"))
+            else "fibre" if any(k in n_ for k in ("card", "kraft", "paper", "box", "carton")) else "gloss" if rough < 0.15 else "paint")
+    tc = N.new("ShaderNodeTexCoord")
+    slow = N.new("ShaderNodeTexNoise"); slow.inputs["Scale"].default_value = 3.0; slow.inputs["Detail"].default_value = 3.0
+    L.new(tc.outputs["Object"], slow.inputs["Vector"])
+    col = N.new("ShaderNodeMapRange"); col.data_type = "FLOAT"
+    col.inputs["To Min"].default_value, col.inputs["To Max"].default_value = 0.88, 1.1
+    mot = N.new("ShaderNodeTexNoise"); mot.inputs["Scale"].default_value = 25.0; mot.inputs["Detail"].default_value = 8.0   # mottling
+    L.new(tc.outputs["Object"], mot.inputs["Vector"])
+    both = N.new("ShaderNodeMath"); both.operation = "MULTIPLY_ADD"; both.inputs[1].default_value = 0.5
+    L.new(mot.outputs["Fac"], both.inputs[0]); L.new(slow.outputs["Fac"], both.inputs[2])   # slow + mottling/2, ~0.25..1.25
+    col.inputs["From Min"].default_value, col.inputs["From Max"].default_value = 0.35, 1.15
+    L.new(both.outputs["Value"], col.inputs["Value"])
+    mul = N.new("ShaderNodeMix"); mul.data_type = "RGBA"; mul.blend_type = "MULTIPLY"; mul.inputs["Factor"].default_value = 1.0
+    mul.inputs[6].default_value = (*rgb, 1)
+    cc = N.new("ShaderNodeCombineColor"); [L.new(col.outputs["Result"], cc.inputs[i]) for i in range(3)]
+    L.new(cc.outputs["Color"], mul.inputs[7]); L.new(mul.outputs[2], b.inputs["Base Color"])
+    rr = N.new("ShaderNodeMapRange"); rr.inputs["To Min"].default_value, rr.inputs["To Max"].default_value = rough * 0.75, min(1.0, rough * 1.25)
+    rr.inputs["From Min"].default_value, rr.inputs["From Max"].default_value = 0.35, 1.15
+    L.new(both.outputs["Value"], rr.inputs["Value"]); L.new(rr.outputs["Result"], b.inputs["Roughness"])
+    mp = N.new("ShaderNodeMapping"); L.new(tc.outputs["Object"], mp.inputs["Vector"])
+    if kind == "fabric":
+        tex = N.new("ShaderNodeTexWave"); tex.wave_type = "BANDS"; tex.bands_direction = "DIAGONAL"; tex.inputs["Scale"].default_value = 120.0
+        strength = 0.4
+    else:
+        tex = N.new("ShaderNodeTexNoise"); tex.inputs["Detail"].default_value = 6.0
+        tex.inputs["Scale"].default_value, strength = {"metal": (80.0, 0.15), "fibre": (120.0, 0.3), "gloss": (15.0, 0.05),
+                                                       "paint": (80.0, 0.2)}[kind]   # ~1 cm features: at 400 the
+        # bump sat below a pixel and the A/B showed no change (G r36 close-ups, mean |d| 0.5 grey levels, 2026-10-17)
+        if kind == "metal":                                      # hairline brushing: stretched along one axis
+            mp.inputs["Scale"].default_value = (60.0, 1.0, 1.0)
+    L.new(mp.outputs["Vector"], tex.inputs["Vector"])
+    bump = N.new("ShaderNodeBump"); bump.inputs["Strength"].default_value = strength; bump.inputs["Distance"].default_value = 0.002
+    L.new(tex.outputs["Fac"], bump.inputs["Height"]); L.new(bump.outputs["Normal"], b.inputs["Normal"])
+
+
+# a block stroke font for shop signs: (x, z, w, h) in a unit cell centred on 0; w or h 0 = one stroke thick
+_SEG = {"L": (-0.5, 0, 0, 1), "R": (0.5, 0, 0, 1), "Lt": (-0.5, 0.25, 0, 0.5), "Lb": (-0.5, -0.25, 0, 0.5), "Rt": (0.5, 0.25, 0, 0.5),
+        "Rb": (0.5, -0.25, 0, 0.5), "T": (0, 0.5, 1, 0), "M": (0, 0, 1, 0), "B": (0, -0.5, 1, 0), "C": (0, 0, 0, 1)}
+_STROKES = {ch: [_SEG[k] for k in segs.split()] for ch, segs in {
+    "A": "L R T M", "C": "L T B", "D": "L Rb Rt T B", "E": "L T M B", "F": "L T M", "H": "L R M", "I": "C", "L": "L B", "O": "L R T B",
+    "P": "L Rt T M", "S": "Lt Rb T M B", "T": "T C", "U": "L R B"}.items()}
+HEADER_WORDS = ("FOOD", "COLD", "TEA", "SOUP", "DELI", "SALE", "CUPS", "SODA", "HOT", "SALAD")   # only letters the font has
 
 
 WOODS = ("butcher_block", "light_wood", "dark_wood")
@@ -908,8 +964,9 @@ class ClinicWallItemFactory:
             # a closed pedal bin showed 'nothing in the bins, no sign of use' in every restroom (floors H/I/J r24-r40, 3 of 3 each)
             steel = _flat("ir_bin_steel", (0.62, 0.63, 0.64), 0.3, 1.0); blk = _flat("ir_black_plastic", (0.04, 0.04, 0.045), 0.5)
             paper = _flat("ir_paper", (0.93, 0.93, 0.9), 0.7)
-            wads = [("sph", (0.16 + dx, dy, 0.42 + dz), (0.05, 0.045, 0.035), (0, 0, 0)) for dx, dy, dz in
-                    ((0, 0, 0.02), (0.05, 0.04, 0.0), (-0.04, -0.05, 0.01), (0.03, -0.03, 0.045), (-0.05, 0.03, 0.03))]
+            wads = [("sph", (0.16 + dx, dy, 0.42 + dz), (0.075, 0.065, 0.05), (0, 0, 0)) for dx, dy, dz in   # heaped over the rim:
+                    ((0, 0, 0.03), (0.06, 0.05, 0.0), (-0.05, -0.06, 0.01), (0.04, -0.04, 0.07), (-0.06, 0.04, 0.05),   # smaller wads were a
+                     (0.0, 0.07, 0.04), (-0.02, -0.01, 0.1), (0.07, -0.06, 0.03))]   # few pixels at 512 px, use 5-6 (floor H r41, 3 of 3)
             return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(paper, wads), (steel, [("cyl", (0.16, 0, 0.21), (0.14, 0.14, 0.42), (0, 0, 0))]),
                                                                           (blk, [("box", (0.32, 0, 0.02), (0.06, 0.1, 0.02), (0, 0, 0)),
                                                                                  ("cyl", (0.16, 0, 0.01), (0.145, 0.145, 0.02), (0, 0, 0))])])
@@ -1220,14 +1277,14 @@ class GondolaFactory:
                 strips.append((x_mid + sx * depth / 2, 0, z - 0.01, 0.01, L - 0.06, 0.035))
         # the header carries an aisle word in white block letters on both faces (floor I r9: 'large blank coloured boards on the shelf
         # tops read as cubicle partitions', 3 of 3)
-        rr = random.Random(int(L * 1000) + i); n = rr.randint(4, 7); lw = D * 0.7 / n
-        glyphs = []                                              # block letters from thin strokes: solid glyph blocks read as 'blank
-        for k in range(n):                                       # white squares, placeholder signs' (floor I r21-r26, 3 of 3 each)
-            cx_, gw, gh, t_ = -D * 0.35 + (k + 0.5) * lw, lw * 0.6, 0.12, 0.014
-            strokes = [(-gw / 2 + t_ / 2, 0, t_, gh)] + rr.sample([(gw / 2 - t_ / 2, 0, t_, gh), (0, gh / 2 - t_ / 2, gw, t_), (0, 0, gw, t_),
-                                                                   (0, -gh / 2 + t_ / 2, gw, t_)], rr.randint(2, 3))
-            for sy in (1, -1):
-                glyphs += [(cx_ + dx, L / 2 + 0.01 + sy * 0.012, H + 0.14 + dz, sw, 0.004, sh) for dx, dz, sw, sh in strokes]
+        rr = random.Random(int(L * 1000) + i); word = rr.choice(HEADER_WORDS); n = len(word); lw = D * 0.7 / max(n, 4)
+        glyphs = []                                              # real words in a stroke font: random strokes read as 'mirrored
+        gw, gh, t_ = lw * 0.6, 0.12, 0.014                       # nonsense text' (floor I r27, 3 of 3); solid blocks as 'blank
+        for k, ch in enumerate(word):                            # placeholder signs' (I r21-r26)
+            xt = -lw * n / 2 + (k + 0.5) * lw
+            for sy in (1, -1):                                   # each face reads left to right from its own side: x_world = -sy * x_text
+                glyphs += [(-sy * (xt + ux * gw), L / 2 + 0.01 + sy * 0.012, H + 0.14 + uz * gh, max(t_, uw * gw), 0.004, max(t_, uh * gh))
+                           for ux, uz, uw, uh in _STROKES[ch]]
         ink = _flat("ir_header_ink", (0.95, 0.95, 0.93), 0.5)
         o = _parts_object(f"{type(self).__name__}({i}).spawn_asset({i})",
                           [(body, parts), (strip, strips), (head, [(0, L / 2 + 0.01, H + 0.14, D * 0.9, 0.02, 0.26)]), (ink, glyphs)])
