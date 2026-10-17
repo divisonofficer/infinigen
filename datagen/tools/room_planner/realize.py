@@ -983,6 +983,11 @@ class RoomRealizer:
             # no floor between desk and wall: the chair at the desk's other side, never no chair (floor F3 r15: a manager's office with
             # 'a desk and no chair', function 5-6, 3 of 3)
             return self.furniture({**it, "relation": "in_front_of"})
+        if not placed and it["category"] == "conference_chair" and it.get("relation") == "in_front_of" and it.get("target") in self.ids \
+                and rd._factory(self.ids[it["target"]][0].name) in ("OfficeDeskFactory", "ClinicDeskFactory"):
+            # a narrow office has no depth for a guest in front of a desk kept 1.05 m off the wall: at its end instead (floors D3 r21 /
+            # F3 r20: 'no visitor chair', manager completeness 5, 3 of 3 each)
+            return self.furniture({**it, "relation": "beside", "count": 1})
         return placed > 0
 
     def _shrink_place(self, o, front, it, zone) -> bool:
@@ -1054,8 +1059,9 @@ class RoomRealizer:
         loc0, rz0 = o.location.copy(), o.rotation_euler.z
         fwd = m0.to_3x3() @ Vector((*front, 0)); fwd.z = 0; fwd.normalize()
         hb = fr.footprint(host) if host is not None else None
-        w_ = (0.0, 0.35, 0.65) if self.doc.get("type") in ("open-office", "office", "meeting-room", "exam-room", "clinic-reception", "cafe") \
+        w_ = (0.0, 0.1, 0.9) if self.doc.get("type") in ("open-office", "office", "meeting-room", "exam-room", "clinic-reception", "cafe") \
             else (0.35, 0.30, 0.35)   # work rooms: no big turns -- 'task chairs drift into the aisles at random angles' (A2 r11, C r9, 3/3)
+        # and few mid ones: at 35% mid (25-70 deg, pulled 0.1-0.4 m) they still 'stood in the aisles facing sideways' (A2 r12: layout 5, 3/3)
         cls = self.rng.choices(("big", "mid", "small"), w_)[0]
         order = {"big": ("big", "big", "big", "mid", "mid", "small"), "mid": ("mid", "mid", "mid", "small", "small", "small"),
                  "small": ("small",) * 6}[cls]                  # the drawn class first, then smaller turns before neat
@@ -1343,6 +1349,8 @@ class RoomRealizer:
             n_fc = sum(1 for o_, _ in self.ids.values() if rd._factory(o_.name) == "FilingCabinetFactory")   # wall, 3 of 3)
             fc = [it for it in items if it["category"] == "filing_cabinet"]
             items = [it for it in items if it["category"] != "filing_cabinet"] + ([{**fc[0], "count": 1}] if fc and not n_fc else [])
+        items = [({**it, "avoid_windows": True} if it["category"] in ("filing_cabinet", "office_bookcase") else it) for it in items]
+        # tall storage off the glazing (floor J r19: 'a filing cabinet standing in front of the window', layout 6, 3 of 3)
         self.pending_ids = {it["id"] for it in items}
         self.plan_items = getattr(self, "plan_items", []) + list(items)   # seats check whether their table was a planned item
         failed = []
@@ -1953,7 +1961,8 @@ class RoomRealizer:
 
     CLUTTER = [("mug", 3), ("paper_stack", 3.5), ("pen_cup", 2), ("notebook", 2.5), ("takeaway_cup", 1.5), ("clipboard", 1),   # no snack
                # bowls: 'cereal/serving bowls on every private desk' (floor C r7)
-               ("book_stack", 1), ("open_book", 0.7), ("phone", 1), ("bottle", 0.7), ("small_plant", 0.4)]
+               ("book_stack", 1), ("open_book", 0.7), ("phone", 1), ("small_plant", 0.4)]   # no bottle: the factory's
+    # bottle reads as wine on a clinic manager's desk (floor D3 r21, 3 of 3)
     CAFE_CLUTTER = [("mug", 3), ("plate", 2.5), ("takeaway_cup", 2), ("phone", 1.5), ("notebook", 1), ("wine_glass", 0.5),
                     ("snack", 0.7), ("open_book", 0.5)]
     CLUTTER_HOSTS = {"CafeTableFactory": (1, 4), "WindowBarFactory": (3, 7), "ReceptionDeskFactory": (6, 10),
@@ -1977,7 +1986,7 @@ class RoomRealizer:
             # sterilisation run's worktop props (floor E3 r15: 'bare counters', steri use 3, 3 of 3); physio: its cabinet run and
             # couches never got props (r31: 'empty counter, bare couch', signs of use 4 in 2 of 2)
             return
-        food = [("mug", 3), ("takeaway_cup", 2), ("bottle", 1), ("phone", 0.5)]   # no snack tub ('a crate of folders', H r24); no paper stacks: binders read as
+        food = [("mug", 3), ("takeaway_cup", 2), ("phone", 0.5)]   # no bottle: 'wine on the staff table' (D3 r21, E3 r17)   # no snack tub ('a crate of folders', H r24); no paper stacks: binders read as
         # 'an office desk, not a lunch table' (floor H r15, 3 of 3)
         # no fruit bowl, snack tubs or can packs: the Infinigen fruit container read as 'a bucket on the staff table' and the tubs/packs as
         # 'retail stock' (floors D3 r11, G r13, H r13, I r9-r12, 3 of 3 each)

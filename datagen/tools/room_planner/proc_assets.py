@@ -70,7 +70,8 @@ class BagFactory:
     use the critics kept asking for (floors D3/E3/F3 r10-r12: 'no bags, nothing left around', use 4-6 in every room)."""
     def __init__(self, seed):
         r = random.Random(seed); self.r = r; self.kind = "backpack"   # no tote: a beige tote read as 'a sack-like blob' (floor D3 r14, 2/3)
-        self.c = r.choice(((0.08, 0.1, 0.16), (0.35, 0.08, 0.06), (0.12, 0.25, 0.18), (0.05, 0.05, 0.05)))
+        self.c = r.choice(((0.08, 0.1, 0.16), (0.28, 0.28, 0.3), (0.12, 0.25, 0.18), (0.05, 0.05, 0.05)))   # no red: by a desk it read
+        # as 'a fire extinguisher lying on the floor' (floor J r19, 3 of 3)
 
     def spawn_asset(self, i):
         fab = _flat(f"ir_bag_{int(self.c[0] * 100)}_{int(self.c[2] * 100)}", self.c, 0.8)
