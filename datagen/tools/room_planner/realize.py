@@ -507,7 +507,8 @@ class RoomRealizer:
                             if clinic_floor else ["grab_bar", "toilet_roll", "waste_bin", "hand_dryer", "roll_shelf"] +   # the mop kit lives in the
                             # (no coat-hook rail: its jackets read as 'blue and red clinic pads', floor J r20, 3 of 3)
                             # stockroom: by the WC it read as 'a janitor closet' (floor H r26, 3 of 3)
-                            (["baby_change", "clinic_poster"] if self.doc.get("area_m2", 0) >= 10 else []),   # a café/shop/office (the basin unit
+                            (["clinic_poster"] if self.doc.get("area_m2", 0) >= 10 else []),   # a café/shop/office (the basin unit -- no
+                            # baby-change: folded flat it is 'a blank white wall slab that reads as nothing', floor H r45, 3 of 3)
                             # -- and a big one is not 'an empty tiled room' (floor H r18)
                             # carries its own towel dispenser: a second one overlapped the mirror, floor H r17)
                             # WC: no sanitiser box or baby-change sign -- 'a clinic wall unit in a café toilet' (floor G r14, 3 of 3)
@@ -515,7 +516,8 @@ class RoomRealizer:
                 "closet": ["coat_hooks", "coat_hooks", "clinic_poster"],   # two rails of jackets (floor F3 r19: 'one bag, no clothes', use 4-5)
                 "office": ["wall_clock", "clinic_poster"],   # a clinic manager's bare walls (floor D3 r19: 'two walls blank', 3 of 3);
                 # any floor office: 'a show office, nothing on the walls' (floor J r21, 3 of 3)
-                "break-room": ["coat_hooks", "clinic_poster", "wall_clock"] if getattr(self, "staff_hooks", False) else [],
+                "break-room": ["clinic_poster", "wall_clock"] if getattr(self, "staff_hooks", False) else [],   # no hook rail: its jackets
+                # read as 'blue and red clinic pads' in a café staff room (floor H r45, 3 of 3; J r20 before)
                 "utility": ["glove_holder", "towel_dispenser", "clinic_poster"] if clinic_floor else ["cleaning_kit"]}.get("utility" if str(self.doc.get("id", "")).startswith("utility")
                                                                        else self.doc.get("type"), [])   # (no wet-floor sign in a steri room, E3 r15)   # a stockroom's bare corner (floor G r17: comp 6)
         if any(rd._factory(v[0].name) == "UrinalFactory" for v in self.ids.values()):   # beside the urinals the folded baby-change
@@ -1191,6 +1193,8 @@ class RoomRealizer:
     def _item(self, cls, F, s, pose):
         """One small item on support s of F (lying if asked); returns it or None."""
         o = self.spawn(cls)
+        if o is not None:
+            _shelf_labels(o, self.rng)                           # printed packaging on any shelf, not only the shop's facings
         if o is None:
             return None
         if self.act.try_place(o, F, s, self.rng, "any", yaw_sigma=math.radians(25) * (1 - self.t) + 0.05, lie=pose == "lying"):
@@ -1229,7 +1233,9 @@ class RoomRealizer:
     # warehouse stock is cartons (warehouse r4: 'cosmetic jars and candles on steel racks' -- the ABO BOX pool is decor boxes)
     FILL_MIX = {"cardboard_box": [("proc:CardboardBoxFactory", 6), ("proc:PlasticBinFactory", 2), ("inf:FoodBoxFactory", 0.5)],
                 "storage_bin": [("proc:PlasticBinFactory", 5), ("proc:CardboardBoxFactory", 2)],
-                "cafe_stock": [("proc:CafeStockFactory", 5), ("proc:DryGoodsFactory", 1)],
+                "cafe_stock": [("proc:CafeStockFactory", 3), ("inf:FoodBoxFactory", 2), ("inf:JarFactory", 1.5), ("inf:BottleFactory", 1.5),
+                               ("inf:FoodBagFactory", 1)],   # labelled goods beside the bean bags: CafeStock / DryGoods alone read as 'toy
+                               # blocks, unlabelled jars, pill-shaped sacks' (floor H r45 stockroom surface realism 4, 3 of 3)
                 # 40% cups/mugs, 20% coffee bags + equipment, 15% jars/bottles, 15% food, 10% plants (user 2026-10-16)
                 "backbar_stock": [("inf:CupFactory", 3), ("proc:CupStackFactory", 1), ("inf:FoodBoxFactory", 1.5), ("proc:GrinderFactory", 0.5),
                                   ("inf:JarFactory", 1), ("inf:BottleFactory", 0.5), ("inf:BowlFactory", 1.5), ("abo:PLANTER", 1)],

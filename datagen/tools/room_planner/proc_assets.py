@@ -996,9 +996,12 @@ class ClinicWallItemFactory:
                                                                                  ("box", (0.166, 0, 0.15), (0.002, 0.12, 0.08), (0, 0, 0))])])
         if k == "wall_clock":                                    # reception r22: 'no clock, no signage' (3 of 3)
             rim = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
-            hands = [("box", (0.032, 0, 0.18 + 0.05), (0.004, 0.012, 0.1), (0, 0, 0)), ("box", (0.032, 0.04, 0.18), (0.004, 0.08, 0.01), (0, 0, 0))]
-            return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(rim, [("cyl", (0.02, 0, 0.18), (0.18, 0.18, 0.04), (0, math.pi / 2, 0))] + hands),
-                                                                          (white, [("cyl", (0.03, 0, 0.18), (0.165, 0.165, 0.01), (0, math.pi / 2, 0))])])
+            # the face sat inside the 4 cm rim (x 0.03 < 0.04) and rendered as 'a black disc with no clock face' (floor H r45, 3 of 3)
+            hands = [("box", (0.047, 0, 0.18 + 0.05), (0.004, 0.012, 0.1), (0, 0, 0)), ("box", (0.047, 0.04, 0.18), (0.004, 0.08, 0.01), (0, 0, 0))]
+            ticks = [("box", (0.045, math.sin(a_) * 0.145, 0.18 + math.cos(a_) * 0.145), (0.003, 0.012, 0.022), (a_, 0, 0))
+                     for a_ in [j * math.pi / 6 for j in range(12)]]
+            return _prims(f"ClinicWallItemFactory({i}).spawn_asset({i})", [(rim, [("cyl", (0.02, 0, 0.18), (0.18, 0.18, 0.04), (0, math.pi / 2, 0))] + hands + ticks),
+                                                                          (white, [("cyl", (0.042, 0, 0.18), (0.165, 0.165, 0.004), (0, math.pi / 2, 0))])])
         if k == "brochure_rack":                                 # clear pockets with coloured leaflets (reception: 'no brochure rack')
             acr = _flat("ir_acrylic", (0.9, 0.92, 0.93), 0.1, transmission=0.8)
             cols = [_flat(f"ir_leaflet_{j}", c, 0.6) for j, c in enumerate(((0.15, 0.45, 0.7), (0.85, 0.85, 0.82), (0.2, 0.55, 0.35), (0.85, 0.5, 0.15)))]
