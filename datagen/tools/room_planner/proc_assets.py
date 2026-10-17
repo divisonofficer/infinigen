@@ -304,7 +304,8 @@ _TC = "/bean/ir_pbr_assets/texturecan_environment_merged_v1/texturecan/textureca
 _TS = "/bean/ir_pbr_assets/texturecan_staging_v1/assets/texturecan_"   # the full staging set (497): plastics, paper, more metals
 SCANS = {"wood": (_TC + "wood_0002", _TC + "wood_0054"),       # continuous grain: the library's planks/parquet/dark ebony read as
          "metal": (_TC + "metal_0024", _TC + "metal_0038", _TC + "metal_0058", _TC + "metal_0062",   # floorboards or turned light oak
-                   _TS + "metal_0009", _TS + "metal_0014", _TS + "metal_0042"),                        # black (A/B pbr1-pbr2)
+                   _TS + "metal_0042"),   # black (A/B pbr1-pbr2); staging metal_0009/0014 are mottled: fridge fronts read
+                                          # as 'crumpled foil or stone' (floor J r28)
          "fabric": (_TC + "fabric_0022", _TC + "fabrics_0076", _TC + "fabrics_0085"),   # brushed/plain metal, plain weaves
          "card": (_TS + "paper_0008",),                         # kraft board: 228 plain cartons in floors I/J (census 10-17)
          "plastic": (_TS + "plastic_0003", _TS + "plastic_0005", _TS + "plastic_0007", _TS + "plastic_0021")}

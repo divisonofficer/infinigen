@@ -15,6 +15,9 @@ from pathlib import Path
 from . import catalog
 
 MODEL = os.environ.get("ROOM_PLANNER_MODEL", "claude-sonnet-5-5")
+# feedback rounds on Haiku (user 2026-10-17: token spend): revise was 891 of 1,317 calls and 2/3 of the tokens since 10-16 -- its
+# report changes every run so it never hits the cache, while the first plan does
+REVISE_MODEL = os.environ.get("ROOM_PLANNER_REVISE_MODEL", "claude-haiku-4-5-20251001")
 PROMPT_VERSION = "room-plan-v16"                                # v9: office system (pods, meeting set, pantry) (v8: retail)
 NO_FORCED_TOOL = {"claude-sonnet-5-5", "claude-opus-5-5"}      # measured 2026-10-15 (haiku-5-5, sonnet-5 accept it)
 CACHE = Path(os.environ.get("ROOM_PLANNER_CACHE", "/jarvis/project/robomituba/out/room_planner_cache"))
@@ -269,14 +272,15 @@ Submit the complete revised plan with submit_room_plan."""
 
 def revise_room(room: dict, plan: dict, report: dict, seed: int = 0, images=None) -> dict:
     """One feedback round: the realizer's report goes back as the result of the plan's own tool call; the reply is a full plan."""
-    req = request(room, seed, images)
+    req = {**request(room, seed, images), "model": REVISE_MODEL}
+    req["tool_choice"] = {"type": "auto"} if REVISE_MODEL in NO_FORCED_TOOL else {"type": "tool", "name": "submit_room_plan"}
     tid = "toolu_room_plan_v1"
     req["messages"] = req["messages"] + [
         {"role": "assistant", "content": [{"type": "tool_use", "id": tid, "name": "submit_room_plan", "input": plan}]},
         {"role": "user", "content": [{"type": "tool_result", "tool_use_id": tid,
                                       "content": REVISE_NOTE + "\n" + json.dumps(report, indent=1)}]},
     ]
-    blob = json.dumps({"v": PROMPT_VERSION, "m": MODEL, "seed": seed, "room": room, "plan": plan, "report": report}, sort_keys=True)
+    blob = json.dumps({"v": PROMPT_VERSION, "m": REVISE_MODEL, "seed": seed, "room": room, "plan": plan, "report": report}, sort_keys=True)
     return _submit(req, "rev-" + hashlib.sha256(blob.encode()).hexdigest()[:24], room, seed)
 
 
