@@ -415,7 +415,8 @@ class RoomRealizer:
                     for k in range(per):
                         off = (k - (per - 1) / 2) * max(pitch, min(0.8, 2 * half_l / per))
                         for sg in (1, -1):
-                            p = c + ax * off + side * sg * (half_s + d / 2 + 0.07)
+                            p = c + ax * off + side * sg * (half_s + d / 2 + 0.12)   # 0.07 left 2 cm after the placer's 5 cm
+                            # margin and a chair's real box: every fill table 'placed, no chair fitted' (floor H r35-r39)
                             pts.append((p.x, p.y, _yaw(-side * sg)))
                 per_copy.append(pts)
             out = [pt for grp in itertools.zip_longest(*per_copy) for pt in grp if pt is not None]
