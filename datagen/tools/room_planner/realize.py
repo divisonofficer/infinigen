@@ -120,6 +120,30 @@ def _frange(a, b, step):
         out.append(a); a += step
     return out
 
+# printed packaging for shelf goods (user 2026-10-17: 'every product in that shop is a textureless single-colour block'): 24 front /
+# unrolled label designs of invented brands, generated for this (data/venue_refs/product_labels, synthetic=true); they replace the
+# random text-art image of Infinigen's FoodBox / FoodBag / Bottle / Can / Jar label material, on its own UV wrap
+LABELS = Path("/jarvis/project/robomituba/data/venue_refs/product_labels")
+LABEL_POOL = {"FoodBoxFactory": ("box_snack", "box_cereal", "box_ramen", "box_tea"), "FoodBagFactory": ("bag_chips",),
+              "BottleFactory": ("label_drink",), "CanFactory": ("label_can",), "JarFactory": ("label_milk",)}
+
+
+def _shelf_labels(o, rng):
+    kind = rd._factory(o.name)
+    if kind not in LABEL_POOL or not LABELS.is_dir():
+        return
+    files = sorted(LABELS.glob(rng.choice(LABEL_POOL[kind]) + "_*.png"))
+    if not files:
+        return
+    img = bpy.data.images.load(str(rng.choice(files)), check_existing=True)
+    for slot in o.material_slots:
+        m = slot.material
+        if m is not None and m.name.startswith("shader_text") and m.use_nodes:
+            for nd in m.node_tree.nodes:
+                if nd.type == "TEX_IMAGE":
+                    nd.image = img
+
+
 class RoomRealizer:
     def __init__(self, room_doc, room, rng, stats, spawn, act, obstacles, rugzones, t, revise=None):
         self.doc, self.room, self.rng, self.stats, self.spawn, self.act, self.t = room_doc, room, rng, stats, spawn, act, t
@@ -1237,6 +1261,7 @@ class RoomRealizer:
                         o = proto.copy(); o.data = proto.data; bpy.context.scene.collection.objects.link(o)
                     else:
                         o = fac.spawn_asset(n)
+                        _shelf_labels(o, self.rng)
                     bpy.context.view_layer.update()
                     w, d = o.dimensions[1], o.dimensions[0]
                     x = (s["x1"] - d / 2 - 0.02) if side == 1 else (s["x0"] + d / 2 + 0.02)
