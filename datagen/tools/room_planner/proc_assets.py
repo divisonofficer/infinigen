@@ -1076,7 +1076,7 @@ class ToiletStallFactory:
         sides = [("box", (0, sy * W / 2, H / 2 + 0.12), (D, 0.025, H - 0.24), (0, 0, 0)) for sy in (1, -1)]
         # a cubicle front: a fixed pilaster, a door hinged to it and opened ~35 deg, a chrome headrail over front and sides -- two side
         # panels and a loose door read as 'free-standing screens, no door, no headrail' (floor J r24, 3 of 3)
-        pw, dw, a_ = 0.25, W - 0.25 - 0.02, 0.6
+        pw, dw, a_ = 0.25, W - 0.25 - 0.02, 0.22   # ajar: at 0.6 rad the leaf 'swung into the only aisle' (floor H r43, 3 of 3)
         pil = [("box", (D / 2, W / 2 - pw / 2, H / 2 + 0.06), (0.03, pw, H - 0.12), (0, 0, 0))]
         hx, hy = D / 2, W / 2 - pw
         door = [("box", (hx + math.sin(a_) * dw / 2, hy - math.cos(a_) * dw / 2, H / 2 + 0.12), (0.025, dw, H - 0.24), (0, 0, a_))]

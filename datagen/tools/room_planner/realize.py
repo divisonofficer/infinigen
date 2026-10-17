@@ -30,7 +30,7 @@ INF = {"OfficeChairFactory": "seating.chairs.office_chair", "ChairFactory": "sea
        "BookStackFactory": "table_decorations.book", "CupFactory": "tableware.cup", "FruitContainerFactory": "tableware.fruit_container",
        "ShirtFactory": "clothes.shirt", "BasketBaseFactory": "organizer.basket", "PantsFactory": "clothes.pants", "TowelFactory": "clothes.towel",
        "BookFactory": "table_decorations.book", "LargeShelfFactory": "shelves.large_shelf", "BottleFactory": "tableware.bottle",
-       "CanFactory": "tableware.can", "FoodBoxFactory": "tableware.food_box", "JarFactory": "tableware.jar",
+       "CanFactory": "tableware.can", "FoodBoxFactory": "tableware.food_box", "FoodBagFactory": "tableware.food_bag", "JarFactory": "tableware.jar",
        "MonitorFactory": "appliances.tv", "ToiletFactory": "bathroom.toilet", "StandingSinkFactory": "bathroom.bathroom_sink", "TableDiningFactory": "tables.dining_table", "PlateFactory": "tableware.plate",
        "WineglassFactory": "tableware.wineglass", "BeverageFridgeFactory": "appliances.beverage_fridge", "CupFactory": "tableware.cup",
        "BowlFactory": "tableware.bowl", "MicrowaveFactory": "appliances.microwave"}
@@ -204,6 +204,8 @@ class RoomRealizer:
                 # ledge for two, 'the middle of the staff room empty', 3 of 3)
                 # a dining-height staff table for the chairs (floor H r16: 'café chairs
                                                                  # tucked under a bar-height ledge', 2 of 3)
+            if cat == "meeting_table" and self.doc.get("type") == "office":
+                fac.L, fac.W = 1.2, 0.8                          # a private office's small meeting table, not a boardroom one
             if cat == "break_chair" and hasattr(fac, "style"):
                 fac.style = "bentwood"                           # light_wood read as 'garden or child furniture' (floor H r31, 3 of 3);
                 # flat black bistro backs at the staff table read as 'two computer
@@ -1196,8 +1198,10 @@ class RoomRealizer:
                 "backbar_stock": [("inf:CupFactory", 3), ("proc:CupStackFactory", 1), ("inf:FoodBoxFactory", 1.5), ("proc:GrinderFactory", 0.5),
                                   ("inf:JarFactory", 1), ("inf:BottleFactory", 0.5), ("inf:BowlFactory", 1.5), ("abo:PLANTER", 1)],
                 # varied packaging (shop r1: 'the same few primitives in a row'): procedural boxes / bottles in many colours and sizes
-                "groceries": [("proc:ProductBoxFactory", 5), ("inf:FoodBoxFactory", 1.5), ("inf:CanFactory", 1), ("proc:DrinkCansFactory", 1),
-                              ("proc:SnackFactory", 1), ("inf:BottleFactory", 1), ("inf:JarFactory", 1)]}
+                # Infinigen's packaged goods, printed labels with text, art and barcodes: our flat ProductBox / Snack / DrinkCans blocks read
+                # as 'untextured toy blocks, a Roblox store' (user 2026-10-17; floor I r27-r28 critics, 3 of 3)
+                "groceries": [("inf:FoodBoxFactory", 4), ("inf:FoodBagFactory", 2), ("inf:BottleFactory", 2), ("inf:CanFactory", 1),
+                              ("inf:JarFactory", 1)]}
     RACK_MAX_Z = 3.5                                             # rack top shelves are stocked too (the surface placer stops at 1.85 m)
 
     MERCH_HOSTS = ("GondolaFactory", "WallGondolaFactory")
@@ -2480,7 +2484,8 @@ class RoomRealizer:
                     # not a clinic office', floor D3 r22, 3 of 3)
                     # a manager's office keeps one desk, and its other half a small round meeting table with two chairs ('half the room
                     # empty, everything at one end', floor F3 r16-r17, 3 of 3)
-                    fs += [{"id": "office_mt", "category": "cafe_table", "relation": "center", "away_from": desk, "forced": True},
+                    fs += [{"id": "office_mt", "category": "meeting_table", "relation": "center", "away_from": desk, "forced": True},   # an
+                           # office-family 1.2 m table: the café pedestal table 'butted against the desk' read as 'café furniture' (floor B r11, 3 of 3)
                            {"id": "office_mt_c", "category": "conference_chair", "relation": "around", "target": "office_mt", "count": 2,
                             "forced": True}]   # office chairs: café chairs read as 'a dining set' (floor E3 r17, 3 of 3)
             if self.rng.random() < 0.5:

@@ -107,9 +107,11 @@ def main() -> int:
             # dropped in', floor J r18-r21, 3 of 3 each -- the urinal pair below fills the room instead)
             cafe_fl = any(v == "cafe" for v in room_venues.values())
             if room_venues and not clinic and room.get("area_m2", 0) >= 10 and (str(room.get("id", "")).endswith("/1") or
-                                                                                (not cafe_fl and room.get("area_m2", 0) >= 18)):
+                                                                                (not cafe_fl and room.get("area_m2", 0) >= 12)):   # 12, not 18: a
+                # work floor's 12-18 m2 staff WC with one open toilet read as 'a converted room' (floor B r11, use 3-4, 3 of 3)
                 # also a work floor's one big staff restroom: 'one WC in a room for three cubicles' (floor B r10, 3 of 3)
-                plan["furniture"][0] = {**plan["furniture"][0], "category": "toilet"}
+                plan["furniture"][0] = {**plan["furniture"][0], "category": "toilet", "relation": "corner"}   # a cubicle in a corner: off
+                # one wall it stood 'free in the room' (floor H r43 WC1 layout 5, 3 of 3)
                 plan["furniture"][1] = {**plan["furniture"][1], "near_to": None, "away_from": "wc"}   # the basin faces the cubicle: near
                 # it, it took the 0.45 m gap beside the stall and read as 'a basin inside the stall' (floor J r25, 3 of 3)   # with urinals the WC is a cubicle: open beside
                 # them it read as 'a toilet standing in the open next to the urinals' (floor J r23, 3 of 3)
