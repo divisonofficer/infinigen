@@ -2443,6 +2443,10 @@ class RoomRealizer:
                     # a big office is a shared one: a second workstation (floor J r12: one desk in 27 m2, 'half empty', 3 of 3)
                     fs += [{"id": "desk_2", "category": "office_desk", "relation": "against_wall", "gap_m": 1.05, "away_from": desk},
                            {"id": "desk_chair_2", "category": "desk_chair", "relation": "behind", "target": "desk_2", "count": 1}]
+                    if self.doc.get("area_m2", 0) >= 24:        # and a round meeting table in the middle: two desks on the far wall
+                        fs += [{"id": "office_mt", "category": "cafe_table", "relation": "center", "away_from": desk, "forced": True},   # of a
+                               {"id": "office_mt_c", "category": "conference_chair", "relation": "around", "target": "office_mt", "count": 2,
+                                "forced": True}]   # 27 m2 site office left 14 m2 bare, 'a show office' (floor J r21-r22, 3 of 3 each)
                 elif self.doc.get("area_m2", 0) >= 18 and not clinic_fl:   # (a clinic's: no café pedestal table -- 'a café corner,
                     # not a clinic office', floor D3 r22, 3 of 3)
                     # a manager's office keeps one desk, and its other half a small round meeting table with two chairs ('half the room

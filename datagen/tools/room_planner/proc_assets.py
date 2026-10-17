@@ -1803,17 +1803,17 @@ class UrinalFactory:
         D = 0.42; xb = -D / 2
         cer = _flat("ir_ceramic_white", (0.93, 0.93, 0.92), 0.12); chrome = _flat("ir_chrome", (0.8, 0.8, 0.82), 0.15, 1.0)
         div = _flat("ir_urinal_divider", (0.62, 0.64, 0.66), 0.35)
-        bowls, pipes = [], []
+        hole = _flat("ir_urinal_bowl", (0.55, 0.57, 0.58), 0.2)
+        bowls, pipes, holes = [], [], []
         for y in (-0.38, 0.38):
-            bowls += [("rbox", (xb + 0.17, y, 0.78), (0.32, 0.38, 0.62), (0, 0, 0)),
-                      ("box", (xb + 0.33, y, 0.62), (0.03, 0.26, 0.3), (0, 0, 0))]
-            pipes += [("cyl", (xb + 0.05, y, 1.25), (0.016, 0.016, 0.34), (0, 0, 0)), ("box", (xb + 0.06, y, 1.43), (0.06, 0.08, 0.06), (0, 0, 0))]
-        panel = [("box", (xb + 0.21, 0.0, 0.95), (0.4, 0.025, 0.8), (0, 0, 0))]
-        back = [("box", (xb + 0.01, 0.0, 0.8), (0.02, 1.6, 1.6), (0, 0, 0))]   # a steel splash panel from the floor: the placer
-        # sets an asset's lowest point on the floor, so without it the wall-hung bowls sank to the floor -- 'white bins piled under the
-        # baby changer' (floor H r32, 2 of 3)
-        steel = _flat("ir_urinal_splash", (0.66, 0.67, 0.69), 0.3, 0.8)
-        return _prims(f"UrinalFactory({i}).spawn_asset({i})", [(cer, bowls), (chrome, pipes), (div, panel), (steel, back)])
+            bowls += [("rbox", (xb + 0.17, y, 0.85), (0.32, 0.38, 0.66), (0, 0, 0))]
+            holes += [("rbox", (xb + 0.31, y, 0.8), (0.05, 0.26, 0.42), (0, 0, 0))]   # the dark bowl opening: plain white boxes on a
+            # steel sheet read as 'two dispensers on a floating panel' (floor J r22, 2 of 3)
+            pipes += [("cyl", (xb + 0.05, y, 1.35), (0.016, 0.016, 0.34), (0, 0, 0)), ("box", (xb + 0.06, y, 1.53), (0.06, 0.08, 0.06), (0, 0, 0)),
+                      ("cyl", (xb + 0.08, y, 0.26), (0.022, 0.022, 0.52), (0, 0, 0))]   # waste pipe to the floor: the placer sets the
+            # lowest point on the floor, and without it the wall-hung bowls sank (floor H r32)
+        panel = [("box", (xb + 0.21, 0.0, 1.0), (0.4, 0.025, 0.8), (0, 0, 0))]
+        return _prims(f"UrinalFactory({i}).spawn_asset({i})", [(cer, bowls), (chrome, pipes), (div, panel), (hole, holes)])
 
 
 class RollerShutterFactory:
