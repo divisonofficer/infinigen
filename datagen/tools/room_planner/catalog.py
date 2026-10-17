@@ -49,6 +49,7 @@ FURNITURE = {
     "counter":        {"src": "proc:CafeCounterFactory", "size": [2.4, 0.65, 1.0], "rooms": ["cafe", "grocery", "convenience", "boutique"]},
     "backbar_shelf":  {"src": "proc:BackBarShelfFactory", "size": [2.0, 0.28, 2.2], "rooms": ["cafe", "pharmacy"]},
     "cafe_table":     {"src": "proc:CafeTableFactory", "size": [0.7, 0.7, 0.75], "rooms": ["cafe"]},
+    "balloon_sign":   {"src": "inf:BalloonFactory", "size": [0.15, 1.6, 0.4], "rooms": ["_internal"]},   # foil letter balloons (inf)
     "menu_board":     {"src": "proc:MenuBoardFactory",       "size": [1.0, 0.4, 1.6], "rooms": ["cafe"]},
     "window_bar":     {"src": "proc:WindowBarFactory", "size": [2.4, 0.4, 1.05], "rooms": ["cafe"]},
     "coffee_bar":     {"src": "zone:coffee_bar", "size": [2.6, 1.9, 2.2], "rooms": ["cafe"]},

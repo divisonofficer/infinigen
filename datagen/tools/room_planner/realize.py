@@ -30,7 +30,7 @@ INF = {"OfficeChairFactory": "seating.chairs.office_chair", "ChairFactory": "sea
        "BookStackFactory": "table_decorations.book", "CupFactory": "tableware.cup", "FruitContainerFactory": "tableware.fruit_container",
        "ShirtFactory": "clothes.shirt", "BasketBaseFactory": "organizer.basket", "PantsFactory": "clothes.pants", "TowelFactory": "clothes.towel",
        "BookFactory": "table_decorations.book", "LargeShelfFactory": "shelves.large_shelf", "BottleFactory": "tableware.bottle",
-       "CanFactory": "tableware.can", "FoodBoxFactory": "tableware.food_box", "FoodBagFactory": "tableware.food_bag", "JarFactory": "tableware.jar",
+       "CanFactory": "tableware.can", "FoodBoxFactory": "tableware.food_box", "FoodBagFactory": "tableware.food_bag", "BalloonFactory": "wall_decorations.balloon", "JarFactory": "tableware.jar",
        "MonitorFactory": "appliances.tv", "ToiletFactory": "bathroom.toilet", "StandingSinkFactory": "bathroom.bathroom_sink", "TableDiningFactory": "tables.dining_table", "PlateFactory": "tableware.plate",
        "WineglassFactory": "tableware.wineglass", "BeverageFridgeFactory": "appliances.beverage_fridge", "CupFactory": "tableware.cup",
        "BowlFactory": "tableware.bowl", "MicrowaveFactory": "appliances.microwave"}
@@ -229,7 +229,10 @@ class RoomRealizer:
                 c.name = f"{rd._factory(protos[0].name)}(plan).spawn_asset({self.stats['furniture_added']})"
                 return c, fr.INF_FRONT
             key = "ChairFactory"
-        return self.spawn(_cls("inf:" + key)), fr.INF_FRONT
+        o = self.spawn(_cls("inf:" + key))
+        if cat == "balloon_sign" and o is not None and o.dimensions[1] > 1.6:   # its letters span 3-6 m: at most 1.6 m on the wall
+            o.scale = o.scale * (1.6 / o.dimensions[1]); bpy.context.view_layer.update()
+        return o, fr.INF_FRONT
 
     # ---- candidate spots per relation ---------------------------------------------------------------------------------------------
     def _along_wall(self, wid, w, d, starts=None, off=0.0):
@@ -428,6 +431,13 @@ class RoomRealizer:
         return []
 
     # ---- placing --------------------------------------------------------------------------------------------------------------------
+    def _balloon(self):
+        """Foil letter balloons on a free wall: decoration only, so a cloth-sim failure never fails the room."""
+        try:
+            self._wall_mount("balloon_sign", 2.0)
+        except Exception as e:
+            _log(f"balloon sign skipped: {e}")
+
     def _wall_mount(self, cat, z_bottom, avoid=None) -> bool:
         """A wall-mounted piece (display, whiteboard): stood against the longest free wall run (another wall than `avoid`), then lifted."""
         o, front = self._make(cat)
@@ -864,6 +874,8 @@ class RoomRealizer:
         except Exception as e:                                    # cosmetic: never fail the bar over it
             _log(f"counter return skipped: {e}")
         self._wall_mount("menu_board", 1.5)                     # a menu on the wall (cafe r2: no café had one)
+        self._balloon()                                                          # foil letter balloons over the hall (user 2026-10-17: Infinigen's sign
+                                                                 # balloon generator 'might look nice')
         if "flowers" in (proc_assets_kit().STYLE.get("decor") or []):   # a big bouquet at the counter's centre (floral style eval)
             o = self.spawn(_cls("proc:FlowerArrangementFactory"))
             if o is not None:
@@ -1908,6 +1920,7 @@ class RoomRealizer:
     def _fill_gondolas(self, plan):
         """Grocery sales floor: the largest empty region >= 3 m2 gets a double gondola parallel to the long wall, stocked with facings,
         until none is left (user 2026-10-16: an empty centre reads as a stockroom)."""
+        self._balloon()                                                          # promo letter balloons on a free wall (user 2026-10-17)
         for sid, (o, _) in list(self.ids.items()):               # a dispensing wall behind the counter is stocked too (shop r2: 'floating
             if rd._factory(o.name) == "BackBarShelfFactory" and ":" not in sid:   # wooden boards with nothing on them')
                 self.fill({"on": sid, "category": "groceries"}, _cls(catalog.LIVED_IN["groceries"]["src"]))
