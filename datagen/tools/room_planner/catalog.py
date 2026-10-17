@@ -60,6 +60,7 @@ FURNITURE = {
     "reception_desk": {"src": "proc:ReceptionDeskFactory", "size": [2.4, 0.75, 1.12], "rooms": ["clinic-reception", "pharmacy"]},
     "prep_table":     {"src": "proc:PrepTableFactory", "size": [0.7, 1.8, 1.3], "rooms": ["_internal"]},
     "pallet_rack":    {"src": "proc:PalletRackFactory", "size": [1.1, 2.7, 4.4], "rooms": ["_internal"]},
+    "dock_door":      {"src": "proc:RollerShutterFactory", "size": [0.5, 4.1, 4.75], "rooms": ["_internal"]},
     "clinic_low_table": {"src": "proc:ClinicLowTableFactory", "size": [1.1, 0.55, 0.42], "rooms": ["_internal"]},
     "exercise_mat":   {"src": "proc:ExerciseMatFactory", "size": [1.8, 0.6, 0.02], "rooms": ["_internal"]},
     "waiting_bench":  {"src": "proc:WaitingBenchFactory", "size": [2.2, 0.6, 0.85], "rooms": ["clinic-reception", "pharmacy"]},   # not exam rooms:
@@ -121,6 +122,7 @@ LIVED_IN = {
     "autoclave":       {"src": "proc:AutoclaveFactory", "on": ["medical_cabinet"], "rooms": ["utility"]},
     "bag":             {"src": "proc:BagFactory", "on": ["floor", "changing_bench"], "rooms": ["office", "open-office", "meeting-room", "break-room",
                         "clinic-reception", "exam-room", "dental-room", "physio-room", "closet", "warehouse", "kitchen", "cafe", "pharmacy"]},
+    "cafe_stock":      {"src": "proc:CafeStockFactory", "on": ["stock_shelf", "storage_rack", "floor"], "rooms": ["utility", "warehouse"]},
     "dry_goods":       {"src": "proc:DryGoodsFactory", "on": ["stock_shelf", "storage_rack", "supply_shelf", "floor"], "rooms": ["warehouse", "utility"]},
     "cardboard_box":   {"src": "proc:CardboardBoxFactory", "on": ["storage_rack", "wide_shelf", "pallet", "workbench", "floor", "supply_shelf", "stock_shelf"],
                         "rooms": ["warehouse", "garage", "utility", "grocery"]},

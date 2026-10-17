@@ -124,6 +124,42 @@ class DryGoodsFactory:
         return _prims(f"DryGoodsFactory({i}).spawn_asset({i})", [(glass, parts_b), (wrap, [("box", (0, 0, 0.02), (0.26, 0.36, 0.04), (0, 0, 0))])])
 
 
+class CafeStockFactory:
+    """A café's own back stock: a stack of milk crates with bottles, a carton of sleeved takeaway-cup tubes, or a sack of coffee beans
+    with a valve and a printed band (floor G r28: 'generic coloured boxes, nothing says café stockroom', completeness 6, 3 of 3)."""
+    def __init__(self, seed):
+        r = random.Random(seed); self.r = r; self.kind = r.choice(("crates", "cups", "beans", "beans"))
+
+    def spawn_asset(self, i):
+        r, k = self.r, self.kind
+        if k == "crates":
+            pl = _flat(f"ir_crate_{r.randrange(3)}", r.choice(((0.6, 0.08, 0.06), (0.08, 0.22, 0.5), (0.12, 0.38, 0.18))), 0.5)
+            milk = _flat("ir_milk", (0.93, 0.93, 0.9), 0.3); cap = _flat("ir_milk_cap", (0.1, 0.35, 0.75), 0.4)
+            n = r.randint(1, 3); c, b, cp = [], [], []
+            for j in range(n):
+                z = j * 0.29
+                c += [("box", (0, 0, z + 0.01), (0.36, 0.36, 0.02), (0, 0, 0))] + \
+                     [("box", (sx * 0.17, 0, z + 0.14), (0.02, 0.36, 0.28), (0, 0, 0)) for sx in (1, -1)] + \
+                     [("box", (0, sy * 0.17, z + 0.14), (0.36, 0.02, 0.28), (0, 0, 0)) for sy in (1, -1)]
+            zt = (n - 1) * 0.29
+            for bx in (-0.08, 0.08):
+                for by in (-0.08, 0.08):
+                    b.append(("cyl", (bx, by, zt + 0.15), (0.05, 0.05, 0.26), (0, 0, 0)))
+                    cp.append(("cyl", (bx, by, zt + 0.29), (0.022, 0.022, 0.025), (0, 0, 0)))
+            return _prims(f"CafeStockFactory({i}).spawn_asset({i})", [(pl, c), (milk, b), (cap, cp)])
+        if k == "cups":
+            card = _flat("ir_carton", (0.62, 0.46, 0.28), 0.85); cup = _flat("ir_cup_paper", (0.95, 0.94, 0.9), 0.5)
+            sl = _flat("ir_cup_sleeve", (0.85, 0.87, 0.9), 0.15, transmission=0.4)
+            tubes = [("cyl", (0.05, -0.15 + j * 0.1, 0.28), (0.045, 0.045, 0.3), (0, 0, 0)) for j in range(4)]
+            return _prims(f"CafeStockFactory({i}).spawn_asset({i})", [(card, [("box", (0, 0, 0.11), (0.3, 0.44, 0.22), (0, 0, 0))]),
+                                                                      (cup, tubes), (sl, [("box", (0.05, 0, 0.42), (0.1, 0.42, 0.01), (0, 0, 0))])])
+        kraft = _flat("ir_bean_bag", (0.45, 0.3, 0.18), 0.75); blk = _flat("ir_ink", (0.05, 0.05, 0.06), 0.6)
+        band = _flat(f"ir_bean_band_{r.randrange(3)}", r.choice(((0.85, 0.75, 0.55), (0.7, 0.15, 0.1), (0.15, 0.3, 0.2))), 0.6)
+        return _prims(f"CafeStockFactory({i}).spawn_asset({i})", [(kraft, [("rbox", (0, 0, 0.16), (0.16, 0.26, 0.32), (0, 0, 0))]),
+                                                                  (band, [("box", (0.081, 0, 0.15), (0.004, 0.2, 0.12), (0, 0, 0))]),
+                                                                  (blk, [("cyl", (0.082, 0, 0.25), (0.018, 0.018, 0.004), (0, math.pi / 2, 0))])])
+
+
 class PalletFactory:
     def __init__(self, seed):
         self.seed = seed
@@ -1754,6 +1790,27 @@ class PalletRackFactory:
                     if r.random() < 0.5:
                         wr.append(("box", (0, y, z0 + 0.14 + h / 2), (0.97, 1.12, h + 0.01), (0, 0, 0)))
         return _prims(f"PalletRackFactory({i}).spawn_asset({i})", [(blue, posts + braces), (orange, beams), (wood, pal), (card, box)] + ([(wrap, wr)] if wr else []))
+
+
+class RollerShutterFactory:
+    """A loading-dock roller shutter on a hall wall (front +X, back on the wall): grey steel slats in side guides under a coil box, a
+    yellow-black hazard strip on the floor and two yellow bollards (floor J r18: 'no dock or roller door -- a big stockroom', 3 of 3)."""
+    def __init__(self, seed):
+        self.r = random.Random(seed)
+
+    def spawn_asset(self, i):
+        D, W, H = 0.5, 3.6, 4.0
+        steel = _flat("ir_shutter_steel", (0.5, 0.52, 0.54), 0.4, 0.8); dark = _flat("ir_shutter_guide", (0.18, 0.19, 0.2), 0.45, 0.7)
+        yel = _flat("ir_hazard_yellow", (0.85, 0.62, 0.02), 0.5); blk = _flat("ir_ink", (0.05, 0.05, 0.06), 0.6)
+        xb = -D / 2
+        slats = [("box", (xb + 0.03, 0, H / 2), (0.03, W, H), (0, 0, 0))] + \
+                [("box", (xb + 0.05, 0, 0.1 + k * 0.13), (0.015, W, 0.035), (0, 0, 0)) for k in range(int((H - 0.2) / 0.13))]
+        guides = [("box", (xb + 0.06, s * (W / 2 + 0.06), (H + 0.3) / 2), (0.12, 0.12, H + 0.3), (0, 0, 0)) for s in (1, -1)] + \
+                 [("box", (xb + 0.18, 0, H + 0.3), (0.36, W + 0.3, 0.45), (0, 0, 0))]
+        haz = [("box", (xb + 0.35, 0, 0.003), (0.3, W, 0.006), (0, 0, 0))]
+        stripes = [("box", (xb + 0.35, -W / 2 + 0.15 + k * 0.3, 0.0065), (0.3, 0.12, 0.002), (0, 0, 0.6)) for k in range(int(W / 0.3))]
+        bollards = [("cyl", (xb + 0.4, s * (W / 2 + 0.25), 0.55), (0.08, 0.08, 1.1), (0, 0, 0)) for s in (1, -1)]
+        return _prims(f"RollerShutterFactory({i}).spawn_asset({i})", [(steel, slats), (dark, guides), (yel, haz + bollards), (blk, stripes)])
 
 
 class ExamTableFactory:

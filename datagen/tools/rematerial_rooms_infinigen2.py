@@ -58,6 +58,9 @@ def _plain_tile(rgb, per_m, rough=0.3):
 
 
 WET_FNS_WORK = {"wall": _plain_tile((0.86, 0.87, 0.86), 6.7), "floor": _plain_tile((0.42, 0.44, 0.45), 4.0, rough=0.4)}
+# a café / shop customer WC: deep green wall tile and a dark floor -- the clinic white read as 'a clinical test box, fixtures vanish into
+# the walls' (floor G r28: coherence 6, 3 of 3)
+WET_FNS_SHOP = {"wall": _plain_tile((0.2, 0.36, 0.3), 6.7, rough=0.2), "floor": _plain_tile((0.16, 0.16, 0.17), 4.0, rough=0.4)}
 
 # Workplaces stand on concrete (a carpet-patterned warehouse read wrong, user 2026-10-16); half get a scratch/splat overlay.
 WORK_ROOMS = {"warehouse", "garage", "utility"}
@@ -337,6 +340,7 @@ def darken(mat, k):
 
 
 STYLE_FNS = {}
+_st_spec = json.load(open(a.style)) if a.style and a.style.endswith(".json") else None
 KIT = None
 if a.style:
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -365,7 +369,8 @@ for o in targets:
     (r,) = rng.spawn(1)
     before = [s.material.name for s in o.material_slots if s.material]
     room_type = PAT.match(o.name).group("room").split("_")[0]
-    fns = (WET_FNS_WORK if room_type == "restroom" else       # 'restroom' only exists on commercial floors (homes use 'bathroom')
+    fns = (WET_FNS_SHOP if room_type == "restroom" and isinstance(_st_spec, dict) and _st_spec.get("venue") in ("cafe", "convenience", "grocery", "boutique")
+           else WET_FNS_WORK if room_type == "restroom" else       # 'restroom' only exists on commercial floors (homes use 'bathroom')
            STYLE_FNS if STYLE_FNS and room_type not in WET_ROOMS else
            VENUE_FNS[a.venue] if a.venue in VENUE_FNS and room_type not in WET_ROOMS else WET_FNS if room_type in WET_ROOMS
            else WORK_FNS if room_type in WORK_ROOMS else OFFICE_FNS if room_type in OFFICE_ROOMS else FNS)
