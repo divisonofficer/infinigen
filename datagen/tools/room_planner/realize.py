@@ -435,8 +435,10 @@ class RoomRealizer:
             a_, t_, n_, L_ = self.walls[k]
             sk = (Vector((x, y, 0)) - a_).dot(t_)
             return not any(b0 - w / 2 - 0.1 < sk < b1 + w / 2 + 0.1 for b0, b1, _ in spans.get(k, []))
+        high = [b for b in self.obstacles if len(b) < 6 or b[5] > z_bottom + 0.15]   # it hangs above the chairs: tested on the floor,
+        # the meeting chairs round the walls blocked every spot and the room had no display or board (floor A2 r13, 3 of 3)
         for k in walls:
-            if any(fr._place(o, x, y, yaw, self.room, self.obstacles, front) for x, y, yaw in self._along_wall(k, w, d)
+            if any(fr._place(o, x, y, yaw, self.room, high, front) for x, y, yaw in self._along_wall(k, w, d)
                    if clear_of_windows(k, x, y)):
                 o.location.z += z_bottom
                 bpy.context.view_layer.update()
@@ -1500,7 +1502,9 @@ class RoomRealizer:
         for k in range(16):
             if target is not None and seats_now() >= target:
                 break
-            regs = [r for r in self.report(plan, [])["empty_floor"] if r["area_m2"] >= (2.0 if target else 3.0)]
+            regs = [r for r in self.report(plan, [])["empty_floor"] if r["area_m2"] >= (2.0 if target else 3.0)
+                    and min(r["x_range"][1] - r["x_range"][0], r["y_range"][1] - r["y_range"][0]) >= 2.2]   # room for chairs round it:
+            # a 17.6 m2 band by the windows took a table ten times and never a chair (floor H r36)
             if not regs:
                 break
             r = regs[0]
@@ -1529,7 +1533,7 @@ class RoomRealizer:
                 _log(f"fill_empty: table at ({cx:.1f},{cy:.1f}) placed, no chair fitted")
                 del self.ids[tid]; self.stats["furniture_added"] -= 1; getattr(self, "copies", {}).pop(tid, None)
                 f_ = fr.footprint(o); bpy.data.objects.remove(o, do_unlink=True)
-                self.obstacles.append((f_[0], f_[1], f_[2], f_[3], 0, 0))   # keep the spot (its old box stays too): move on
+                self.obstacles.append((f_[0] - 0.8, f_[1] + 0.8, f_[2] - 0.8, f_[3] + 0.8, 0, 0))   # block its surroundings: move on
                 continue
             if self.rng.random() < 0.5:
                 self.lived_in({"category": "mug", "on": tid})
