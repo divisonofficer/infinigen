@@ -1066,7 +1066,8 @@ class RoomRealizer:
             cls = pose[8:] if pose != "natural" else self.rng.choices(("small", "mid", "big"), (0.35, 0.30, 0.35))[0]
             ang = {"small": (5, 25), "mid": (25, 70), "big": (70, 180)}[cls]
             ang = self.rng.uniform(*ang)
-            d = self.rng.uniform(0.3, 0.6) if cls == "big" else self.rng.uniform(0.1, 0.4) if self.rng.random() < 0.6 else 0.0
+            d = self.rng.uniform(0.3, 0.6) if cls == "big" else self.rng.uniform(0.05, 0.25 if cls == "mid" else 0.15) if self.rng.random() < 0.6 else 0.0
+            # (0.1-0.4 m: a guest chair stood 1.4 m off the desk front, 'two task chairs alone mid-floor' -- floor J r25-r27, 3 of 3)
             return x - math.cos(yaw) * d, y - math.sin(yaw) * d, yaw + sgn * math.radians(ang)
         return x, y, yaw
 
@@ -1082,7 +1083,8 @@ class RoomRealizer:
         loc0, rz0 = o.location.copy(), o.rotation_euler.z
         fwd = m0.to_3x3() @ Vector((*front, 0)); fwd.z = 0; fwd.normalize()
         hb = fr.footprint(host) if host is not None else None
-        w_ = (0.0, 0.1, 0.9) if self.doc.get("type") in ("open-office", "office", "meeting-room", "exam-room", "clinic-reception", "cafe") \
+        w_ = (0.0, 0.1, 0.9) if self.doc.get("type") in ("open-office", "office", "meeting-room", "exam-room", "clinic-reception", "cafe",
+                                                         "break-room") \
             else (0.35, 0.30, 0.35)   # work rooms: no big turns -- 'task chairs drift into the aisles at random angles' (A2 r11, C r9, 3/3)
         # and few mid ones: at 35% mid (25-70 deg, pulled 0.1-0.4 m) they still 'stood in the aisles facing sideways' (A2 r12: layout 5, 3/3)
         cls = self.rng.choices(("big", "mid", "small"), w_)[0]

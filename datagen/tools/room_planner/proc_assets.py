@@ -1358,17 +1358,20 @@ class GondolaFactory:
                 strips.append((x_mid + sx * depth / 2, 0, z - 0.01, 0.01, L - 0.06, 0.035))
         # the header carries an aisle word in white block letters on both faces (floor I r9: 'large blank coloured boards on the shelf
         # tops read as cubicle partitions', 3 of 3)
-        rr = random.Random(int(L * 1000) + i); word = rr.choice(HEADER_WORDS); n = len(word); lw = D * 0.7 / max(n, 4)
-        glyphs = []                                              # real words in a stroke font: random strokes read as 'mirrored
+        word = HEADER_WORDS[(i * 7 + int(L * 10)) % len(HEADER_WORDS)]; n = len(word); lw = D * 0.55 / max(n, 4)   # spread over the
+        # list, not random: 'DELI five times, COLD four times' (floor I r28, 3 of 3)
+        zh = H + 0.55                                            # hung above the gondola on two rods, smaller: at H + 0.14 the boards sat
+        glyphs = []                                              # at eye level and 'filled the frame' (floor I r28, 3 of 3)                                              # real words in a stroke font: random strokes read as 'mirrored
         gw, gh, t_ = lw * 0.6, 0.12, 0.014                       # nonsense text' (floor I r27, 3 of 3); solid blocks as 'blank
         for k, ch in enumerate(word):                            # placeholder signs' (I r21-r26)
             xt = -lw * n / 2 + (k + 0.5) * lw
             for sy in (1, -1):                                   # each face reads left to right from its own side: x_world = -sy * x_text
-                glyphs += [(-sy * (xt + ux * gw), L / 2 + 0.01 + sy * 0.012, H + 0.14 + uz * gh, max(t_, uw * gw), 0.004, max(t_, uh * gh))
+                glyphs += [(-sy * (xt + ux * gw), L / 2 + 0.01 + sy * 0.012, zh + uz * gh * 0.8, max(t_, uw * gw), 0.004, max(t_, uh * gh * 0.8))
                            for ux, uz, uw, uh in _STROKES[ch]]
         ink = _flat("ir_header_ink", (0.95, 0.95, 0.93), 0.5)
         o = _parts_object(f"{type(self).__name__}({i}).spawn_asset({i})",
-                          [(body, parts), (strip, strips), (head, [(0, L / 2 + 0.01, H + 0.14, D * 0.9, 0.02, 0.26)]), (ink, glyphs)])
+                          [(body, parts), (strip, strips), (head, [(0, L / 2 + 0.01, zh, D * 0.7, 0.02, 0.2)]), (ink, glyphs),
+                           (body, [(sx * D * 0.25, L / 2 + 0.01, (H + zh - 0.1) / 2, 0.012, 0.012, zh - 0.1 - H) for sx in (1, -1)])])
         return o
 
 
