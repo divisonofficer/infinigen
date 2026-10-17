@@ -178,9 +178,9 @@ class RoomRealizer:
             src = "proc:TaskChairFactory"                        # not plastic shell side chairs ('a café, not a meeting room', floor A2 r8)
         if cat == "counter" and _pa.VENUE in ("convenience", "grocery"):   # a shop till, not the café bar (floor I r11, 3 of 3)
             src = "proc:CheckoutCounterFactory"
-        if cat == "break_chair" and _pa.VENUE == "break-room" and self.doc.get("area_m2", 99) >= 12:   # a dining-height staff table takes
+        if cat == "break_chair" and self.doc.get("type") == "break-room" and self.doc.get("area_m2", 99) >= 12:   # a dining-height staff table takes
             src = "proc:CafeChairFactory"                        # chairs, not counter stools (floor I r9: 'bar stools at a low table', 3/3)
-        if cat == "break_table" and _pa.VENUE == "break-room" and 12 <= self.doc.get("area_m2", 99) < 16:   # a small staff room's table is a
+        if cat == "break_table" and self.doc.get("type") == "break-room" and 12 <= self.doc.get("area_m2", 99) < 16:   # a small staff room's table is a
             src = "proc:CafeTableFactory"                        # café round: the 1.2 m table fell back to a wall with one chair (floor G r31)
         if cat == "break_table" and _pa.VENUE == "break-room" and self.doc.get("area_m2", 99) < 12:   # 15.7 m2 staff room needs a table (floor H r7)
             src = "proc:WindowBarFactory"                        # a small pantry gets a wall ledge (pantry r13: stools with no table)
@@ -2329,6 +2329,9 @@ class RoomRealizer:
         if self.doc.get("type") == "clinic-reception":         # no staff filing on the patient side: a cabinet between the benches read as
             plan = {**plan, "furniture": [f for f in plan.get("furniture", []) if f["category"] != "filing_cabinet"]}   # 'staff furniture
             # in a patient area' (floors E3 r14, D3 r16, F3 r15, 3 of 3 each)
+        if self.doc.get("type") in ("convenience", "grocery"):  # free-standing gondolas from the fill only: parallel runs, 1.2 m aisles --
+            plan = {**plan, "furniture": [f for f in plan.get("furniture", []) if f["category"] != "gondola"]}   # the planned ones stood
+            # 'at mixed angles like cubby bookcases, no clean aisles' (floor I r25, 3 of 3)
         if self.doc.get("type") == "exam-room":                # a patient chair beside the GP's desk (floor D3 r9-r11: 'no patient chair
             fs_ = plan.get("furniture", [])                     # beside the desk', 3 of 3)
             dk = next((f["id"] for f in fs_ if f["category"] == "clinic_desk"), None)
