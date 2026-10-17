@@ -1218,8 +1218,13 @@ class GondolaFactory:
         # the header carries an aisle word in white block letters on both faces (floor I r9: 'large blank coloured boards on the shelf
         # tops read as cubicle partitions', 3 of 3)
         rr = random.Random(int(L * 1000) + i); n = rr.randint(4, 7); lw = D * 0.7 / n
-        glyphs = [(-D * 0.35 + (k + 0.5) * lw, L / 2 + 0.01 + sy * 0.012, H + 0.14 + rr.uniform(-0.005, 0.005), lw * 0.7, 0.004, 0.12)
-                  for k in range(n) for sy in (1, -1)]
+        glyphs = []                                              # block letters from thin strokes: solid glyph blocks read as 'blank
+        for k in range(n):                                       # white squares, placeholder signs' (floor I r21-r26, 3 of 3 each)
+            cx_, gw, gh, t_ = -D * 0.35 + (k + 0.5) * lw, lw * 0.6, 0.12, 0.014
+            strokes = [(-gw / 2 + t_ / 2, 0, t_, gh)] + rr.sample([(gw / 2 - t_ / 2, 0, t_, gh), (0, gh / 2 - t_ / 2, gw, t_), (0, 0, gw, t_),
+                                                                   (0, -gh / 2 + t_ / 2, gw, t_)], rr.randint(2, 3))
+            for sy in (1, -1):
+                glyphs += [(cx_ + dx, L / 2 + 0.01 + sy * 0.012, H + 0.14 + dz, sw, 0.004, sh) for dx, dz, sw, sh in strokes]
         ink = _flat("ir_header_ink", (0.95, 0.95, 0.93), 0.5)
         o = _parts_object(f"{type(self).__name__}({i}).spawn_asset({i})",
                           [(body, parts), (strip, strips), (head, [(0, L / 2 + 0.01, H + 0.14, D * 0.9, 0.02, 0.26)]), (ink, glyphs)])

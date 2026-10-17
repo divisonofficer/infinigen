@@ -2145,8 +2145,8 @@ class RoomRealizer:
                 fs.append({"id": "cart_x", "category": "utility_cart", "relation": "against_wall"})
             plan = {**plan, "lived_in": [({**x, "category": "dry_goods"} if x.get("category") == "storage_bin" else x)   # no primary-colour
                                          for x in plan.get("lived_in", [])]}   # bins: 'toy blocks' (floor H r18)
-            plan = {**plan, "lived_in": plan.get("lived_in", []) + [{"category": "cardboard_box", "on": "floor"}] * 3 +
-                    [{"category": "dry_goods", "on": "floor"}] * 3 +   # sacks and cases on the floor too (floor G r16: completeness 4)
+            plan = {**plan, "lived_in": [x for x in plan.get("lived_in", []) if x.get("on") != "floor"] +   # no floor stock: loose
+                    # cartons 'in the middle of the aisle, cutting the path from the door' (floor I r26, 3 of 3) -- the shelves are full now
                     [{"category": "dry_goods", "on": f["id"], "fill": True} for f in fs if f["category"] == "stock_shelf"]}   # case stacks in the
             from room_planner import proc_assets as _pa_w
             if "cafe" in getattr(_pa_w, "FLOOR_VENUES", ()):     # a café's own stock first: crates, cup tubes, bean bags (floor G r28,
