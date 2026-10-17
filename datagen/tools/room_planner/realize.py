@@ -462,7 +462,12 @@ class RoomRealizer:
 
     # ---- placing --------------------------------------------------------------------------------------------------------------------
     def _balloon(self):
-        """Foil letter balloons on a free wall: decoration only, so a cloth-sim failure never fails the room."""
+        """Foil letter balloons on a free wall: decoration only, so a cloth-sim failure never fails the room.
+
+        OFF unless ROOM_BALLOON=1: Infinigen's balloon is a 166k-polygon flat-shaded cloth-sim mesh with random-letter text ('EZPRHTLZIKA')
+        that renders as broken triangles (user, 2026-10-17, café H r46)."""
+        if os.environ.get("ROOM_BALLOON") != "1":
+            return
         try:
             self._wall_mount("balloon_sign", 2.0)
         except Exception as e:
