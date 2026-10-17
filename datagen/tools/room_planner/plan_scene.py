@@ -55,8 +55,19 @@ def main() -> int:
         if room_venues and room["type"] in ("utility", "closet") and room["id"] not in room_venues:
             # floors: service rooms no venue covers get a fixed fit-out (floor E: the sterilisation room rendered empty)
             clinic = any(v in ("clinic-reception", "exam-room", "dental-room", "physio-room") for v in room_venues.values())
-            furn = ([{"id": "run", "category": "medical_cabinet", "relation": "against_wall"},          # a clinical supply room: a sink run
-                     {"id": "racks", "category": "supply_shelf", "relation": "against_wall", "away_from": "run", "count": 4}]   # + white supply
+            def free_(w_):                                   # the longest unbroken stretch of a wall
+                cuts = sorted((b[0], b[1]) for b in w_.get("blocked", []))
+                best, s0 = 0.0, 0.0
+                for b0, b1 in cuts + [(w_["length"], w_["length"])]:
+                    best = max(best, b0 - s0); s0 = max(s0, b1)
+                return best
+            wl = sorted(room.get("walls", []), key=free_, reverse=True)
+            w_rack, w_run = (wl[0]["id"] if wl else None), (wl[1]["id"] if len(wl) > 1 else None)
+            n_rack = max(1, min(4, int((free_(wl[0]) - 0.3) / 1.27))) if wl else 2
+            furn = ([{"id": "run", "category": "medical_cabinet", "relation": "against_wall", **({"wall": w_run} if w_run else {})},
+                     {"id": "racks", "category": "supply_shelf", "relation": "row", **({"wall": w_rack} if w_rack else {}), "count": n_rack}]
+                    # shelving as a row on the longest clear wall: the sink run took that wall first and the shelves found door-broken
+                    # walls, 1 of 4 placed (floor E3 r20: 'one rack', completeness 4-5, 3 of 3) -- a clinical supply room: a sink run + white supply
                     # shelving (a sterilisation room never read as one: autoclaves seen as 'a washer and dryer' / 'microwaves', E3 r12-r16)
                     if clinic and room["type"] == "utility" else
                     [{"id": "lockers", "category": "locker", "relation": "against_wall", "count": 2},
@@ -100,7 +111,10 @@ def main() -> int:
                 plan["furniture"] += [{"id": "lockers", "category": "locker", "relation": "against_wall", "away_from": "wc", "count": 2},
                                       {"id": "bench", "category": "changing_bench", "relation": "in_front_of", "target": "lockers", "gap_m": 0.6}]
                 plan["lived_in"] += [{"category": "towel_stack", "on": "bench"}]
-            if room_venues and not clinic and str(room.get("id", "")).endswith("/1") and room.get("area_m2", 0) >= 10:
+            cafe_fl = any(v == "cafe" for v in room_venues.values())
+            if room_venues and not clinic and room.get("area_m2", 0) >= 10 and (str(room.get("id", "")).endswith("/1") or
+                                                                                (not cafe_fl and room.get("area_m2", 0) >= 14)):
+                # also a work floor's one big staff restroom: 'one WC in a room for three cubicles' (floor B r10, 3 of 3)
                 plan["furniture"] += [{"id": "urinals", "category": "urinal", "relation": "against_wall", "away_from": "wc"}]   # the second
                 # restroom is the gents': two urinals fill its bare far wall and the pair stop being copies (floor H r31, 3 of 3)
             if room_venues and any(v in ("cafe",) for v in room_venues.values()):   # a café WC's potted plant on the floor (floor G r29:

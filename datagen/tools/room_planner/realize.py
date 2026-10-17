@@ -2336,8 +2336,11 @@ class RoomRealizer:
             # wall instead (critics asked for 'lockers, coat hooks or a notice board')
             if not any(f["category"] == "locker" for f in fs_):
                 run_ = next((f["id"] for f in fs_ if f["category"] == "pantry_run"), None)
-                plan = {**plan, "furniture": [{"id": "staff_lockers", "category": "locker", "relation": "against_wall", "avoid_windows": self.doc.get("area_m2", 0) >= 15,
-                                               **({"away_from": run_} if run_ else {})}] + fs_}   # after the table set: placed first, their 0.8 m
+                lk = {"id": "staff_lockers", "category": "locker", "relation": "against_wall",
+                      "avoid_windows": self.doc.get("area_m2", 0) >= 15, **({"away_from": run_} if run_ else {})}
+                small_ = 12 <= self.doc.get("area_m2", 0) < 16   # a small room: the round table set first, lockers after it (G r30-r32:
+                plan = {**plan, "furniture": fs_ + [lk] if small_ else [lk] + fs_}   # lockers first left the table only a wall and one chair)
+                # otherwise lockers first: after the table set, placed first, their 0.8 m
                 # clearance plus the run's strip left the table no floor (floors G r20, I r16: 'no table, no chairs', 3 of 3)
                 # (avoid_windows put them opposite the run:
                                                # with their clearance and the run's strip the staff table found no floor, G r20)   # before the table: it was set
