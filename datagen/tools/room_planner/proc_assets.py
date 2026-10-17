@@ -329,6 +329,8 @@ def _flat(name, rgb, rough, metallic=0.0, transmission=0.0, wood=False):
 # shader-only noise was invisible at 512 px under the denoiser (mean |d| 0.5 grey levels); scans + bevels read as real oak and
 # brushed steel. IR_SURFACE_DETAIL=0 restores the flat look.
 SURFACE_DETAIL = os.environ.get("IR_SURFACE_DETAIL", "1") != "0"
+DRAPE = os.environ.get("IR_DRAPE", "1") != "0"        # cloth sim for boutique garments
+PLANT_LIB = Path("/jarvis/project/robomituba/data/plant_library")
 _TC = "/bean/ir_pbr_assets/texturecan_environment_merged_v1/texturecan/texturecan_"
 _TS = "/bean/ir_pbr_assets/texturecan_staging_v1/assets/texturecan_"   # the full staging set (497): plastics, paper, more metals
 SCANS = {"wood": (_TC + "wood_0002", _TC + "wood_0054"),       # continuous grain: the library's planks/parquet/dark ebony read as
@@ -432,6 +434,9 @@ def _printed(path, rgb, rough):
 def _screen(i, kind="desk"):
     """The glass of a monitor / register / wall display: generated screen content when there is some, else the flat dark slab."""
     pick = {"desk": (1, 2, 3, 4, 8), "register": (7,), "wall": (3, 5, 6)}[kind]
+    own = {"boutique": "pos_boutique", "pharmacy": "pos_pharmacy", "convenience": "pos_grocery", "grocery": "pos_grocery"}.get(VENUE)
+    if kind == "register" and own and _pick_print(own, f"{kind}{i}") is not None:     # the shop's own goods: the café POS (coffee, tea, cookie)
+        return _printed(_pick_print(own, f"{kind}{i}"), (0.02, 0.03, 0.05), 0.15)    # on a boutique till read as 'a strange texture' (user marks)
     path = _pick_print("screen", f"{kind}{i}")
     if path is not None:
         want = [x for x in PRINT_ROOT.glob("screen_*.png") if int(x.stem.split("_")[1]) in pick]
@@ -768,18 +773,48 @@ class OliveTreeFactory:
     """A potted olive tree, 1.4-1.9 m: a terracotta or stone pot, a slim twisting trunk, clusters of grey-green leaf masses (floral / nordic
     refs: olive trees by the windows; Infinigen plants take minutes each)."""
     def __init__(self, seed):
-        r = random.Random(seed); self.r = r; self.h = r.uniform(1.4, 1.9)
+        r = random.Random(seed); self.r = r; self.h = r.uniform(1.4, 1.9); self.seed = seed
         self.pot = r.choice(((0.6, 0.35, 0.22), (0.55, 0.53, 0.5), (0.12, 0.12, 0.12)))
 
+    def _from_library(self, i):
+        """A potted plant Infinigen grew offline (plant_gen.py): 'Infinigen makes plants well' (user 2026-10-17); growing one in the
+        activity pass takes minutes and sometimes crashes Blender, so the pass appends a finished one. None when there is no library."""
+        files = sorted(PLANT_LIB.glob("plant_*.blend")) if SURFACE_DETAIL else []
+        if not files:
+            return None
+        f = files[(self.seed * 7 + i) % len(files)]
+        try:
+            with bpy.data.libraries.load(str(f), link=False) as (src, dst):
+                dst.objects = list(src.objects)
+            o = dst.objects[0]
+            bpy.context.scene.collection.objects.link(o)
+            co = [v.co for v in o.data.vertices]
+            top = max(c.z for c in co); wide = max(max(c.x for c in co) - min(c.x for c in co), max(c.y for c in co) - min(c.y for c in co))
+            sc = min((min(self.h, 1.6) - 0.4) / max(top, 1e-3), 0.9 / max(wide, 1e-3))   # a plant 1.0-1.2 m over a 0.4 m pot, under 0.9 m wide
+            o.scale = (sc, sc, sc); o.location = (0, 0, 0.36)
+            pot = _flat(f"ir_pot_{int(self.pot[0] * 100)}", self.pot, 0.8)
+            base = _prims(f"OliveTreeFactory({i}).spawn_asset({i})", [(pot, [("cyl", (0, 0, 0.2), (0.17, 0.22, 0.4), (0, 0, 0))])])
+            return _join_cloth(base, [o])
+        except Exception as e:                                   # noqa: BLE001
+            print(f"[proc_assets] plant library {f.name}: {e!r}"[:200])
+            return None
+
     def spawn_asset(self, i):
+        lib = self._from_library(i)
+        if lib is not None:
+            return lib
         r, h = self.r, self.h
         pot = _flat(f"ir_pot_{int(self.pot[0] * 100)}", self.pot, 0.8); bark = _flat("ir_bark", (0.18, 0.15, 0.12), 0.9)
         leaf = _flat("ir_olive_leaf", (0.22, 0.28, 0.18), 0.7)
         trunk, masses = [], []
         x = y = 0.0
-        for k in range(4):                                      # a slightly crooked trunk in four segments
-            z0 = 0.4 + k * (h - 0.9) / 4; dx, dy = r.uniform(-0.04, 0.04), r.uniform(-0.04, 0.04)
-            trunk.append(("cyl", (x + dx / 2, y + dy / 2, z0 + (h - 0.9) / 8), (0.025, 0.022, (h - 0.9) / 4 + 0.02), (dy * 2, -dx * 2, 0)))
+        from mathutils import Vector
+        n_seg = 6
+        for k in range(n_seg):                                  # a slightly crooked trunk: tilted segments that meet end to end
+            # (flat-tilted cylinders shifted sideways left 'a staircase trunk', user mark B r12 2026-10-17)
+            z0 = 0.4 + k * (h - 0.9) / n_seg; dz = (h - 0.9) / n_seg; dx, dy = r.uniform(-0.03, 0.03), r.uniform(-0.03, 0.03)
+            d = Vector((dx, dy, dz)); rot = Vector((0, 0, 1)).rotation_difference(d.normalized()).to_euler()
+            trunk.append(("cyl", (x + dx / 2, y + dy / 2, z0 + dz / 2), (0.026 - 0.0015 * k, 0.026 - 0.0015 * (k + 1), d.length + 0.012), tuple(rot)))
             x += dx; y += dy
         # branches out of the trunk top, each ending in a cloud of small leaves; 7-11 big ellipsoids read as 'low-poly lollipop
         # blobs' in three style evals (cafe G)
@@ -1465,6 +1500,10 @@ class GondolaFactory:
                 glyphs += [(-sy * (xt + ux * gw), L / 2 + 0.01 + sy * 0.012, zh + uz * gh * 0.8, max(t_, uw * gw), 0.004, max(t_, uh * gh * 0.8))
                            for ux, uz, uw, uh in _STROKES[ch]]
         ink = _flat("ir_header_ink", (0.95, 0.95, 0.93), 0.5)
+        hk = {"pharmacy": "header_pharmacy", "boutique": "header_boutique"}.get(VENUE, "header_grocery")
+        hp = _pick_print(hk, i * 7 + int(L * 10))                # a typeset aisle word on a coloured board; the stroke font read as 'odd lettering'
+        if hp is not None:
+            head, glyphs = _printed(hp, self.header, 0.5), []
         o = _parts_object(f"{type(self).__name__}({i}).spawn_asset({i})",
                           [(body, parts), (strip, strips), (head, [(0, L / 2 + 0.01, zh, D * 0.7, 0.02, 0.2)]), (ink, glyphs),
                            (body, [(sx * D * 0.25, L / 2 + 0.01, (H + zh - 0.1) / 2, 0.012, 0.012, zh - 0.1 - H) for sx in (1, -1)])])
@@ -1497,8 +1536,9 @@ class RegisterFactory:
     def spawn_asset(self, i):
         black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0); screen = _screen(i, "register")
         return _parts_object(f"RegisterFactory({i}).spawn_asset({i})",
-                             [(black, [(0, 0, 0.05, 0.36, 0.42, 0.1), (0.0, 0, 0.2, 0.04, 0.04, 0.2), (0.15, 0.25, 0.03, 0.08, 0.06, 0.06)]),
-                              (screen, [(-0.02, 0, 0.36, 0.03, 0.34, 0.24)])])
+                             [(black, [(0, 0, 0.05, 0.36, 0.42, 0.1), (0.0, 0, 0.2, 0.04, 0.04, 0.2), (0.15, 0.25, 0.03, 0.08, 0.06, 0.06),
+                                       (-0.02, 0, 0.36, 0.03, 0.36, 0.26)]),            # a black bezel: the print used to wrap the slab's edges
+                              (screen, [(-0.02 + 0.0155, 0, 0.36, 0.002, 0.33, 0.22)])])   # (user mark S15 r15: 'the POS image wraps the whole box')
 
 
 class GrinderFactory:
@@ -2258,6 +2298,55 @@ class ExerciseBikeFactory:
                                 ("box", (0.05, 0.12, 0.28), (0.18, 0.02, 0.03), (0, 0.6, 0)), ("box", (0.05, -0.12, 0.28), (0.18, 0.02, 0.03), (0, -0.6, 0))])])
 
 
+def _drape(objs, pin_fn=None, colliders=(), frames=36):
+    """Let cloth meshes settle under gravity with Blender's cloth solver and bake the result into the mesh (user 2026-10-17: 'can the
+    boutique's clothes hang and sag under gravity, fall on the floor'). `pin_fn(world_z, zmax)` pins vertices (the shoulders on a hanger);
+    `colliders` are temporary objects the cloth rests on (a floor plane at the object's z=0). Each garment is thinned to ~30 % first: the
+    Infinigen shirt has 17k faces and the solver needs a few thousand."""
+    from mathutils import Matrix
+    sc, vl = bpy.context.scene, bpy.context.view_layer
+    f0 = sc.frame_current
+    live = []
+    for o in objs:
+        if vl.objects.get(o.name) is None:
+            for c in list(o.users_collection):
+                c.objects.unlink(o)
+            sc.collection.objects.link(o)
+        o.data.transform(o.matrix_world); o.matrix_world = Matrix.Identity(4)
+        bpy.ops.object.select_all(action="DESELECT"); vl.objects.active = o; o.select_set(True)
+        md = o.modifiers.new("ir_thin", "DECIMATE"); md.ratio = 0.3
+        bpy.ops.object.modifier_apply(modifier="ir_thin")
+        if pin_fn is not None:
+            zs = [v.co.z for v in o.data.vertices]; zmax = max(zs)
+            vg = o.vertex_groups.new(name="ir_pin")
+            vg.add([v.index for v in o.data.vertices if pin_fn(v.co.z, zmax)], 1.0, "REPLACE")
+        cm = o.modifiers.new("ir_cloth", "CLOTH"); st = cm.settings
+        st.quality = 6; st.mass = 0.25; st.tension_stiffness = st.compression_stiffness = st.shear_stiffness = 12.0; st.bending_stiffness = 0.6
+        st.air_damping = 1.5
+        if pin_fn is not None:
+            st.vertex_group_mass = "ir_pin"
+        cm.collision_settings.use_collision = True; cm.collision_settings.distance_min = 0.004; cm.collision_settings.use_self_collision = False
+        cm.point_cache.frame_start = 1; cm.point_cache.frame_end = frames
+        live.append(o)
+    for c in colliders:
+        if vl.objects.get(c.name) is None:
+            sc.collection.objects.link(c)
+        c.modifiers.new("ir_collide", "COLLISION")
+    for f in range(1, frames + 1):
+        sc.frame_set(f)
+    for o in live:
+        bpy.ops.object.select_all(action="DESELECT"); vl.objects.active = o; o.select_set(True)
+        bpy.ops.object.modifier_apply(modifier="ir_cloth")
+        if "ir_pin" in o.vertex_groups:
+            o.vertex_groups.remove(o.vertex_groups["ir_pin"])
+        for p in o.data.polygons:
+            p.use_smooth = True
+    for c in colliders:
+        bpy.data.objects.remove(c, do_unlink=True)
+    sc.frame_set(f0)
+
+
+
 _CLOTH_OK = []
 
 
@@ -2328,6 +2417,24 @@ class ClothingRackFactory:
                 y = -L / 2 + 0.08 + (k + 0.5) * (L - 0.16) / n_c
                 sh.rotation_euler = (math.pi / 2, 0, yaw + r.uniform(-0.03, 0.03)); sh.location = (0.0, y, 1.43 - top)
                 shirts.append(sh)
+            if shirts and DRAPE:                                 # shoulders pinned to the hanger, the rest hangs; two fallen garments on the floor
+                floor = bpy.data.objects.new("ir_drape_floor", bpy.data.meshes.new("ir_drape_floor"))
+                bm_ = __import__("bmesh").new(); __import__("bmesh").ops.create_grid(bm_, x_segments=1, y_segments=1, size=2.5); bm_.to_mesh(floor.data); bm_.free()
+                floor.location = (0, 0, 0.002)
+                _drape(shirts, pin_fn=lambda z, zmax: z > zmax - 0.09, colliders=[floor])
+                fallen = []
+                for q in range(r.choice((1, 2))):
+                    fs = _cloth("shirt", "ShirtFactory", r.randrange(10 ** 6))
+                    if fs is None:
+                        break
+                    fs.rotation_euler = (0, 0, r.uniform(0, 6.28)); fs.location = (r.uniform(0.18, 0.4), r.uniform(-L * 0.3, L * 0.3), 0.18 + 0.12 * q)
+                    fallen.append(fs)
+                if fallen:
+                    fl2 = bpy.data.objects.new("ir_drape_floor2", bpy.data.meshes.new("ir_drape_floor2"))
+                    bm_ = __import__("bmesh").new(); __import__("bmesh").ops.create_grid(bm_, x_segments=1, y_segments=1, size=2.5); bm_.to_mesh(fl2.data); bm_.free()
+                    fl2.location = (0, 0, 0.002)
+                    _drape(fallen, pin_fn=None, colliders=[fl2], frames=30)
+                    shirts += fallen
         if shirts:
             hang = [("box", (0, -L / 2 + 0.08 + (k + 0.5) * (L - 0.16) / n_c, 1.45), (0.4, 0.008, 0.02), (0.15, 0, 0)) for k in range(n_c)]
             rail = _prims(f"ClothingRackFactory({i}).spawn_asset({i})",
@@ -2695,3 +2802,6 @@ class ClinicDeskFactory(OfficeDeskFactory):
     def __init__(self, seed):
         super().__init__(seed)
         self.L, self.D, self.dual = 1.2, 0.65, False
+
+
+from room_planner.proc_boutique_flagship import StoneSlabTableFactory, WallRailFlatFactory, SteelLatticeScreenFactory   # noqa: E402,F401  (flagship boutique props)

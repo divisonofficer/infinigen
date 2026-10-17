@@ -40,6 +40,7 @@ ARCHETYPES = {
     "bakery":     dict(pilaster=.3, beam=.2, column=.2, soffit=.8, duct=.1, pipe=.05, track=.5, ac=.5, sprinkler=.7),
     "office":     dict(pilaster=0, beam=0, column=.3, soffit=0, duct=0, pipe=0, track=0, ac=.3, sprinkler=.9, grid=1),
     "office_exposed": dict(pilaster=0, beam=.7, column=.4, soffit=0, duct=.6, pipe=.3, track=0, ac=1, sprinkler=.9, grid=0, linear=1),
+    "exposed_flagship": dict(pilaster=0, beam=0, column=.5, soffit=0, duct=0, pipe=0, track=0, ac=0, sprinkler=.6, flagship=1),   # big boutique: room_planner/flagship_ceiling.py
     "warehouse":  dict(pilaster=.3, beam=0, column=.5, soffit=0, duct=.4, pipe=.8, track=0, ac=0, sprinkler=1, warehouse=1),
     "default":    dict(pilaster=.6, beam=.6, column=.6, soffit=.6, duct=.35, pipe=.3, track=.7, ac=.45, sprinkler=.8),
 }
@@ -279,6 +280,9 @@ def build(room, rng, pal, stats, seed, track=True, archetype="default"):
         linear_pendants(L, S, zc, at, name, rng, stats)
     if has.get("warehouse"):
         warehouse_roof(L, S, zc, at, name, rng, stats)
+    if has.get("flagship"):
+        from room_planner import flagship_ceiling
+        flagship_ceiling.flagship_services(L, S, zc, at, name, rng, stats)
     cx, cy = at(L * rng.uniform(0.6, 0.8), S * 0.2)
     if has["ac"]:
         _box(name("AcCassette"), [(cx, cy, zc - 0.04, 0.84, 0.84, 0.06), (cx, cy, zc - 0.09, 0.62, 0.62, 0.04)],

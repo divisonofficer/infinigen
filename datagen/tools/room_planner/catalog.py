@@ -93,6 +93,11 @@ FURNITURE = {
     "pantry_unit":    {"src": "proc:PantryRunFactory", "size": [3.0, 0.6, 2.2], "rooms": ["_internal"]},
     "wall_display":   {"src": "proc:WallDisplayFactory", "size": [1.5, 0.05, 0.9], "rooms": ["_internal"]},
     "whiteboard":     {"src": "proc:WhiteboardFactory", "size": [1.5, 0.05, 1.0], "rooms": ["meeting-room", "office", "open-office", "physio-room"]},
+    # flagship boutique (reference set boutique_large_flagship_01): rooms [] keeps them out of the planner vocabulary; realize._fill_boutique
+    # places them when ROOM_FLAGSHIP=1
+    "stone_table":    {"src": "proc:StoneSlabTableFactory", "size": [2.2, 1.1, 0.78], "rooms": []},
+    "wall_rail":      {"src": "proc:WallRailFlatFactory", "size": [3.0, 0.16, 0.1], "rooms": []},
+    "lattice_screen": {"src": "proc:SteelLatticeScreenFactory", "size": [1.9, 0.45, 2.6], "rooms": []},
     "wall_gondola":   {"src": "proc:WallGondolaFactory", "size": [1.9, 0.45, 1.5], "rooms": ["grocery", "convenience", "pharmacy", "boutique"]},
     "chest_freezer":  {"src": "proc:ChestFreezerFactory", "size": [1.6, 0.8, 0.85], "rooms": ["grocery", "convenience"]},
     "cafe_chair":     {"src": "abo:cafechair",   "size": [0.45, 0.5, 0.85], "rooms": ["cafe", "office", "break-room"]},

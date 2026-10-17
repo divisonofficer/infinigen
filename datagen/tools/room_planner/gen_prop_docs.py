@@ -149,6 +149,55 @@ def menu(n, dark):
     return finish(im, r)
 
 
+HEADERS = {"grocery": ("FOOD", "DAIRY", "SNACKS", "DRINKS", "BAKERY", "FROZEN", "DELI", "SOUP"),
+           "pharmacy": ("VITAMINS", "COLD & FLU", "FIRST AID", "SKIN CARE", "BABY", "PAIN RELIEF"),
+           "boutique": ("NEW IN", "SALE", "SHOES", "BAGS", "SCARVES", "ACCESSORIES")}
+HEAD_BG = ((30, 120, 70), (190, 40, 40), (30, 80, 150), (225, 150, 30), (20, 110, 110), (90, 55, 130), (40, 40, 44))
+
+
+def header(word, bg, n):
+    """An aisle header sign: a flat coloured board with the word in a bold typeface (the hand-drawn stroke font read as 'odd lettering')."""
+    r = random.Random(7000 + n); w, h = 1400, 400
+    im = Image.new("RGB", (w, h), bg); d = ImageDraw.Draw(im)
+    d.rectangle((14, 14, w - 15, h - 15), outline=tuple(min(255, c + 70) for c in bg), width=6)
+    size = 250
+    while True:
+        f = font(BOLD[0], size)
+        if d.textlength(word, font=f) <= w - 200 or size <= 60:
+            break
+        size -= 8
+    tw = d.textlength(word, font=f)
+    d.text(((w - tw) / 2, (h - size) / 2 - size * 0.12), word, font=f, fill=(246, 246, 240))
+    return finish(im, r)
+
+
+def pos(venue, n):
+    """A register screen: product tiles on the left, the current order, total and a PAY button on the right, for the shop's own goods."""
+    items = {"boutique": (("T-shirt", 24.0), ("Jeans", 59.0), ("Scarf", 18.0), ("Socks", 7.5), ("Cap", 15.0), ("Belt", 22.0)),
+             "pharmacy": (("Vitamin C", 9.9), ("Pain relief", 6.4), ("Bandages", 3.2), ("Cough syrup", 8.7), ("Sunscreen", 12.5), ("Tooth paste", 4.2)),
+             "grocery": (("Milk", 1.8), ("Bread", 2.4), ("Chips", 2.1), ("Soda", 1.6), ("Apples", 3.2), ("Coffee", 5.9))}[venue]
+    r = random.Random(8000 + n + len(venue)); w, h = 1500, 800
+    im = Image.new("RGB", (w, h), (24, 28, 36)); d = ImageDraw.Draw(im)
+    f_b, f_m, f_s = font(BOLD[0], 54), font(FONTS[0], 40), font(FONTS[0], 30)
+    d.rectangle((0, 0, w, 90), fill=(36, 42, 54)); d.text((40, 18), {"boutique": "Atelier POS", "pharmacy": "Pharma POS", "grocery": "QuickShop POS"}[venue], font=f_b, fill=(230, 235, 240))
+    cols = ((60, 130, 200), (70, 160, 110), (200, 130, 50), (150, 90, 180), (190, 70, 80), (60, 150, 160))
+    r.shuffle(list(cols)); items = list(items); r.shuffle(items)
+    for k, (name, price) in enumerate(items):
+        x, y = 40 + (k % 2) * 440, 130 + (k // 2) * 205
+        d.rounded_rectangle((x, y, x + 410, y + 185), radius=22, fill=cols[k])
+        d.text((x + 24, y + 28), name, font=f_m, fill=(255, 255, 255)); d.text((x + 24, y + 112), f"{price:.2f}", font=f_b, fill=(255, 255, 255))
+    d.rectangle((960, 90, w, h), fill=(32, 38, 48)); d.text((990, 110), "Current order", font=f_m, fill=(210, 215, 222))
+    total = 0.0
+    for k, (name, price) in enumerate(items[:3]):
+        q = r.randint(1, 2); total += q * price; y = 190 + k * 80
+        d.text((990, y), f"{name}", font=f_s, fill=(230, 235, 240)); d.text((990, y + 36), f"x{q}", font=f_s, fill=(150, 160, 170))
+        pt = f"{q * price:.2f}"; d.text((w - 50 - d.textlength(pt, font=f_s), y), pt, font=f_s, fill=(230, 235, 240))
+    d.line((990, 470, w - 40, 470), fill=(90, 100, 112), width=2)
+    d.text((990, 490), "TOTAL", font=f_m, fill=(210, 215, 222)); tt = f"{total:.2f}"; d.text((w - 50 - d.textlength(tt, font=f_b), 480), tt, font=f_b, fill=(255, 255, 255))
+    d.rounded_rectangle((990, 620, w - 40, 760), radius=24, fill=(60, 170, 90)); d.text((1190, 650), "PAY", font=f_b, fill=(255, 255, 255))
+    return finish(im, r)
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     for n in range(1, 9):
@@ -161,4 +210,10 @@ if __name__ == "__main__":
         menu(n, True).save(OUT / f"menu_dark_{n:02d}.png")
     for n in range(1, 3):
         menu(n, False).save(OUT / f"menu_light_{n:02d}.png")
+    for v, words in HEADERS.items():
+        for n, wd in enumerate(words, 1):
+            header(wd, HEAD_BG[(n * 3 + len(v)) % len(HEAD_BG)], n + 10 * len(v)).save(OUT / f"header_{v}_{n:02d}.png")
+    for v in ("boutique", "pharmacy", "grocery"):
+        for n in range(1, 4):
+            pos(v, n).save(OUT / f"pos_{v}_{n:02d}.png")
     print("wrote", len(list(OUT.glob("doc_*.png"))), "doc,", len(list(OUT.glob("form_*.png"))), "form,", len(list(OUT.glob("nbpage_*.png"))), "nbpage")

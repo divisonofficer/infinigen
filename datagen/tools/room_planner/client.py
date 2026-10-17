@@ -19,6 +19,8 @@ MODEL = os.environ.get("ROOM_PLANNER_MODEL", "claude-sonnet-5-5")
 # report changes every run so it never hits the cache, while the first plan does
 REVISE_MODEL = os.environ.get("ROOM_PLANNER_REVISE_MODEL", "claude-haiku-4-5-20251001")
 PROMPT_VERSION = "room-plan-v16"                                # v9: office system (pods, meeting set, pantry) (v8: retail)
+ADVISOR = os.environ.get("ROOM_PLANNER_ADVISOR", "")   # e.g. claude-sonnet-5-5: Haiku revises, this model advises mid-generation (advisor tool, opt-in)
+ADVISOR_BETA = "advisor-tool-2026-03-01"
 NO_FORCED_TOOL = {"claude-sonnet-5-5", "claude-opus-5-5"}      # measured 2026-10-15 (haiku-5-5, sonnet-5 accept it)
 CACHE = Path(os.environ.get("ROOM_PLANNER_CACHE", "/jarvis/project/robomituba/out/room_planner_cache"))
 
@@ -274,13 +276,18 @@ def revise_room(room: dict, plan: dict, report: dict, seed: int = 0, images=None
     """One feedback round: the realizer's report goes back as the result of the plan's own tool call; the reply is a full plan."""
     req = {**request(room, seed, images), "model": REVISE_MODEL}
     req["tool_choice"] = {"type": "auto"} if REVISE_MODEL in NO_FORCED_TOOL else {"type": "tool", "name": "submit_room_plan"}
+    if ADVISOR:                                                # the advisor is a server tool: tool_choice must stay auto to let it be called
+        req["tools"] = req["tools"] + [{"type": "advisor_20260301", "name": "advisor", "model": ADVISOR, "max_uses": 1, "max_tokens": 2048,
+                                        "caching": {"type": "ephemeral", "ttl": "5m"}}]
+        req["tool_choice"] = {"type": "auto"}
     tid = "toolu_room_plan_v1"
     req["messages"] = req["messages"] + [
         {"role": "assistant", "content": [{"type": "tool_use", "id": tid, "name": "submit_room_plan", "input": plan}]},
         {"role": "user", "content": [{"type": "tool_result", "tool_use_id": tid,
-                                      "content": REVISE_NOTE + "\n" + json.dumps(report, indent=1)}]},
+                                      "content": REVISE_NOTE + ("\nBefore you submit, consult the advisor once about where the unplaced items and the empty floor "
+                                                                  "should go." if ADVISOR else "") + "\n" + json.dumps(report, indent=1)}]},
     ]
-    blob = json.dumps({"v": PROMPT_VERSION, "m": REVISE_MODEL, "seed": seed, "room": room, "plan": plan, "report": report}, sort_keys=True)
+    blob = json.dumps({"v": PROMPT_VERSION, "m": REVISE_MODEL, "adv": ADVISOR, "seed": seed, "room": room, "plan": plan, "report": report}, sort_keys=True)
     return _submit(req, "rev-" + hashlib.sha256(blob.encode()).hexdigest()[:24], room, seed)
 
 
@@ -309,17 +316,24 @@ def _submit(req: dict, key: str, room: dict, seed: int, tool: str = "submit_room
     # gzip only: this env's zstd/brotli decoder does not match httpx2's call (TypeError: process() takes no keyword arguments)
     client = anthropic.Anthropic(api_key=_api_key(), max_retries=4, default_headers={"Accept-Encoding": "gzip, deflate"})
     t0 = time.time()
-    msgs = [client.messages.create(**req)]
+    hdr = {"extra_headers": {"anthropic-beta": ADVISOR_BETA}} if any(t.get("type") == "advisor_20260301" for t in req.get("tools", [])) else {}
+    msgs = [client.messages.create(**req, **hdr)]
+    for _ in range(3):                                         # a pending advisor call ends the turn with pause_turn: resume it unchanged
+        if getattr(msgs[-1], "stop_reason", None) != "pause_turn":
+            break
+        req = {**req, "messages": req["messages"] + [{"role": "assistant", "content": [b.model_dump() for b in msgs[-1].content]}]}
+        msgs.append(client.messages.create(**req, **hdr))
     plan = next((b.input for b in msgs[-1].content if b.type == "tool_use" and b.name == tool), None)
     if plan is None:                                           # it answered in prose: ask once more for the call
         req2 = {**req, "messages": req["messages"] + [{"role": "assistant", "content": msgs[-1].content},
                                                       {"role": "user", "content": f"Please submit it by calling {tool}."}]}
-        msgs.append(client.messages.create(**req2))
+        msgs.append(client.messages.create(**req2, **hdr))
         plan = next(b.input for b in msgs[-1].content if b.type == "tool_use" and b.name == tool)
     tot = lambda f: sum(getattr(m.usage, f, 0) or 0 for m in msgs)   # noqa: E731  -- a nudge is a second billed call
     usage = {"key": key, "room": room.get("id"), "model": msgs[-1].model, "secs": round(time.time() - t0, 1), "calls": len(msgs),
              "input_tokens": tot("input_tokens"), "output_tokens": tot("output_tokens"),
-             "cache_read": tot("cache_read_input_tokens"), "cache_write": tot("cache_creation_input_tokens")}
+             "cache_read": tot("cache_read_input_tokens"), "cache_write": tot("cache_creation_input_tokens"),
+             "iterations": [(it.model_dump() if hasattr(it, "model_dump") else dict(it)) for m in msgs for it in (getattr(m.usage, "iterations", None) or [])]}
     CACHE.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(".tmp")
     tmp.write_text(json.dumps({"plan": plan, "usage": usage, "room": room, "seed": seed, "prompt_version": PROMPT_VERSION}, indent=1))

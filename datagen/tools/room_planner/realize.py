@@ -124,6 +124,9 @@ def _frange(a, b, step):
 # printed packaging for shelf goods (user 2026-10-17: 'every product in that shop is a textureless single-colour block'): 24 front /
 # unrolled label designs of invented brands, generated for this (data/venue_refs/product_labels, synthetic=true); they replace the
 # random text-art image of Infinigen's FoodBox / FoodBag / Bottle / Can / Jar label material, on its own UV wrap
+#: flagship boutique (reference set boutique_large_flagship_01): wall rails + stone tables + lattice screens in _fill_boutique; opt-in
+FLAGSHIP = os.environ.get("ROOM_FLAGSHIP") == "1"
+FLAGSHIP_CATS = ("stone_table", "clothing_rack", "lattice_screen", "stone_table")
 REAL_FURNITURE = {"desk_chair": "officechair", "conference_chair": "officechair", "meeting_table": "conftable"}   # category -> furnish_rooms ABO pool
 LABELS = Path("/jarvis/project/robomituba/data/venue_refs/product_labels")
 LABEL_POOL = {"FoodBoxFactory": ("box_snack", "box_cereal", "box_ramen", "box_tea"), "FoodBagFactory": ("bag_chips",),
@@ -935,7 +938,7 @@ class RoomRealizer:
         self.ids.setdefault(it["id"], self.ids[ctr["id"]])
         return True
 
-    WALL_MOUNTED = {"whiteboard": 0.9, "wall_display": 0.9, "menu_board": 1.5}
+    WALL_MOUNTED = {"whiteboard": 0.9, "wall_display": 0.9, "menu_board": 1.5, "wall_rail": 1.65}
     HUNG = ("privacy_curtain",)
 
     def furniture(self, it) -> bool | None:
@@ -1869,13 +1872,16 @@ class RoomRealizer:
         """Boutique floor: the largest empty region >= 3 m2 gets a display table or a clothing rack (alternating), until none is left."""
         ox, oy = self.doc["_origin"]
         added = 0
-        for k in range(10):
+        for _ in range(8 if FLAGSHIP else 0):                    # flat-bar wall rails along the free walls (a wall id can be 0: test for False)
+            if self._wall_mount("wall_rail", self.WALL_MOUNTED["wall_rail"]) is False:
+                break
+        for k in range(24 if FLAGSHIP else 10):
             regs = [r for r in self.report(plan, [])["empty_floor"] if r["area_m2"] >= 3.0]
             if not regs:
                 break
             r = regs[0]
             cx, cy = ox + sum(r["x_range"]) / 2, oy + sum(r["y_range"]) / 2
-            o, front = self._make("display_table" if k % 2 == 0 else "clothing_rack")
+            o, front = self._make(FLAGSHIP_CATS[k % 4] if FLAGSHIP else ("display_table" if k % 2 == 0 else "clothing_rack"))
             yaw = self.rng.choice((0.0, math.pi / 2))
             if o is None or not fr._place(o, cx, cy, yaw, self.room, self.obstacles, front):
                 if o is not None:
