@@ -65,7 +65,11 @@ def pool(key):
             officechair=_pool(("CHAIR",), w=(0.5, 0.72), d=(0.5, 0.75), h=(0.85, 1.3), name=lambda e: bool(re.search(
                 r"office|desk|task|swivel|mesh|ergonomic|conference|办公|오피스|사무|bureau|schreibtisch", e["name"] + " " + " ".join(e.get("keywords") or []), re.I))
                 and not re.search(r"reclin|massage|gaming|lounge|big and tall|executive|躺|리클라이너|sled|cantilever|visitor|guest|"
-                                  r"stack|reception|waiting|leather|stool|drafting|counter height|bar height|tub|lounge|accent|club|armchair", e["name"], re.I)),   # critic r2/r4
+                                  r"stack|reception|waiting|leather|stool|drafting|counter height|bar height|tub|lounge|accent|club|armchair|"
+                                  r"레이싱|게임|racing|sportivo|赛车|游戏|dining|餐椅|다이닝|comedor|patas de madera|Ravenna|凳|스툴|vanity|spa|"
+                                  r"皮革|가죽|이그제큐티브|行政|客座|接待|宾客|direzionale|벨벳|天鹅绒|velvet|Rivet|Stone & Beam|리벳|Movian|Dubna|Arendsee|schienale alto", e["name"], re.I)),   # critic r2/r4;
+            # the multilingual names hid racing chairs from the English 'gaming' test: floor A2 r17 filled the open office with red/black
+            # 'internet-cafe' chairs (user 2026-10-17); 'leather' stays out, so executive and guest chairs do not appear
             bookcase=_pool(("SHELF",), w=(0.6, 1.3), h=(1.4, 2.2), name=lambda e: not re.search(r"ladder|leaning|A-frame", e["name"], re.I)),   # critic r2/r3
             counter=_pool(("CABINET", "DRESSER", "HOME_FURNITURE_AND_DECOR"), w=(1.2, 2.4), h=(0.85, 1.15)),
             cafetable=_pool(("TABLE",), w=(0.5, 1.2), d=(0.5, 1.2), h=(0.68, 0.8)),

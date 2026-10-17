@@ -346,7 +346,14 @@ def main() -> int:
         stats["archtex"] = architecture_textures.apply(plans.get("room_venues") or {}, (plans.get("style_spec") or {}).get("venue"))
     if os.environ.get("IR_WEATHER", "1") != "0":                 # wear and grime on every material (user 2026-10-17: 'PBR parameters are flat
         import weather_pass                                      # constants', 'too smooth / too clean'); IR_WEATHER=0 keeps the flat look
-        stats["weathered"] = weather_pass.weather_materials(float(os.environ.get("IR_WEATHER_STRENGTH", "1.0")))
+        venue = (json.loads(Path(a.plans).read_text()).get("style_spec") or {}).get("venue") if a.plans else None
+        # clean venues wear less: 1.0 was judged right for the café hall and stockroom, 'far too heavy' on the white office floor A2 r17
+        # (user 2026-10-17); IR_WEATHER_STRENGTH still overrides
+        base = {"office": 0.5, "open-office": 0.5, "meeting-room": 0.5, "clinic-reception": 0.45, "exam-room": 0.45, "dental-room": 0.45,
+                "physio-room": 0.45, "pharmacy": 0.5, "boutique": 0.55, "convenience": 0.85, "grocery": 0.85}.get(venue, 1.0)
+        stats["weathered"] = weather_pass.weather_materials(float(os.environ.get("IR_WEATHER_STRENGTH", base)))
+    import displacement_fix                                      # brick/masonry relief: ~10x the physical depth reads at 512 px (cafeP_industrial A/B:
+    stats["displacement_fixed"] = displacement_fix.fix(float(os.environ.get("IR_BUMP_SCALE", "10")))   # 1x flat, 4x faint, 12x clear, 30x noisy)
     bpy.ops.wm.save_as_mainfile(filepath=a.out, compress=True)
     print("KITLIGHT " + json.dumps(stats), flush=True)
     return 0

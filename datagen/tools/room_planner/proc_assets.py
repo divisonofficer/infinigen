@@ -2258,6 +2258,50 @@ class ExerciseBikeFactory:
                                 ("box", (0.05, 0.12, 0.28), (0.18, 0.02, 0.03), (0, 0.6, 0)), ("box", (0.05, -0.12, 0.28), (0.18, 0.02, 0.03), (0, -0.6, 0))])])
 
 
+_CLOTH_OK = []
+
+
+def _cloth(mod, name, seed, **attrs):
+    """An Infinigen fabric mesh (clothes.shirt.ShirtFactory / towel.TowelFactory), or None when surface detail is off or the factory
+    will not build: the boutique's garments were boxes ('boxes stacked like clothes', user 2026-10-17). One shirt is ~18k faces, a folded
+    towel ~22k: a handful per rack or table, not dozens."""
+    if not SURFACE_DETAIL or _CLOTH_OK == [False]:
+        return None
+    try:
+        import importlib
+        cls = getattr(importlib.import_module("infinigen.assets.objects.clothes." + mod), name)
+        fac = cls(seed)
+        for k, v in attrs.items():
+            setattr(fac, k, v)
+        o = fac.spawn_asset(seed)
+        _CLOTH_OK[:] = [True]
+        return o
+    except Exception as e:                                       # noqa: BLE001  -- fall back to the box garments, never fail a scene
+        print(f"[proc_assets] cloth {name} unavailable: {e!r}"[:200])
+        _CLOTH_OK[:] = [False]
+        return None
+
+
+def _join_cloth(base, parts):
+    """Bake `base`'s modifiers (the 3 mm bevel must not round the cloth) and join the cloth meshes into it, keeping every material slot."""
+    vl = bpy.context.view_layer
+    for o in [base] + parts:
+        if vl.objects.get(o.name) is None:
+            for c in list(o.users_collection):
+                c.objects.unlink(o)
+            bpy.context.scene.collection.objects.link(o)
+    bpy.ops.object.select_all(action="DESELECT")
+    vl.objects.active = base
+    base.select_set(True)
+    for md in list(base.modifiers):
+        bpy.ops.object.modifier_apply(modifier=md.name)
+    for o in parts:
+        o.select_set(True)
+    bpy.ops.object.join()
+    return base
+
+
+
 class ClothingRackFactory:
     """Boutique clothing rail (front +X): a 1.2-1.6 m chrome rail at 1.5 m on two feet, 10-16 garments on hangers in a palette."""
     def __init__(self, seed):
@@ -2272,6 +2316,24 @@ class ClothingRackFactory:
         groups = [(chrome, [(0, 0, 1.5, 0.03, L, 0.03), (0, L / 2 - 0.02, 0.75, 0.03, 0.03, 1.5), (0, -L / 2 + 0.02, 0.75, 0.03, 0.03, 1.5),
                             (0, L / 2 - 0.02, 0.01, 0.45, 0.04, 0.02), (0, -L / 2 + 0.02, 0.01, 0.45, 0.04, 0.02)])]
         hanger = _flat("ir_hanger_wood", (0.55, 0.4, 0.25), 0.5)
+        n_c = min(self.n, 11)
+        shirts = []
+        if SURFACE_DETAIL and _CLOTH_OK != [False]:              # Infinigen shirts hung from the rail, turned ~35 deg so the fronts show
+            yaw = r.uniform(0.5, 0.75) * r.choice((1, -1))
+            for k in range(n_c):
+                sh = _cloth("shirt", "ShirtFactory", r.randrange(10 ** 6))
+                if sh is None:
+                    shirts = []; break
+                top = max(v.co.y for v in sh.data.vertices)
+                y = -L / 2 + 0.08 + (k + 0.5) * (L - 0.16) / n_c
+                sh.rotation_euler = (math.pi / 2, 0, yaw + r.uniform(-0.03, 0.03)); sh.location = (0.0, y, 1.43 - top)
+                shirts.append(sh)
+        if shirts:
+            hang = [("box", (0, -L / 2 + 0.08 + (k + 0.5) * (L - 0.16) / n_c, 1.45), (0.4, 0.008, 0.02), (0.15, 0, 0)) for k in range(n_c)]
+            rail = _prims(f"ClothingRackFactory({i}).spawn_asset({i})",
+                          [(m, [("box", (cx, cy, cz), (sx, sy, sz), (0, 0, 0)) for cx, cy, cz, sx, sy, sz in parts]) for m, parts in groups]
+                          + [(hanger, hang)])
+            return _join_cloth(rail, shirts)
         hang, by_col = [], {}
         for k in range(self.n):                                  # a garment: hanger, shoulders, a body, two sleeves (shop r1: 'flat slabs')
             y = -L / 2 + 0.08 + (k + 0.5) * (L - 0.16) / self.n
@@ -2307,15 +2369,35 @@ class DisplayTableFactory:
         L, r = self.L, self.r
         top = _flat(f"ir_disp_top_{int(self.top[0] * 100)}", self.top, 0.45); steel = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
         stacks = []
-        for k in range(r.randint(3, 5)):                         # folded garments: 2-6 layers, rounded fold edge, mixed shades
+        folded = []
+        if SURFACE_DETAIL and _CLOTH_OK != [False]:              # Infinigen folded cloth, 2-4 layers per pile, 3-4 piles
+            for k in range(r.randint(3, 4)):
+                x0, y0, z = r.uniform(-0.1, 0.1), -L / 2 + (k + 0.5) * L / 4.2, 0.76
+                for j in range(r.randint(2, 4)):
+                    t = _cloth("towel", "TowelFactory", r.randrange(10 ** 6), fold_type="fold")
+                    if t is None:
+                        break
+                    co = [v.co for v in t.data.vertices]
+                    mnx, mxx = min(c.x for c in co), max(c.x for c in co); mny, mxy = min(c.y for c in co), max(c.y for c in co)
+                    sc = 0.32 / max(mxx - mnx, mxy - mny)
+                    t.scale = (sc, sc, sc); t.rotation_euler = (0, 0, r.uniform(-0.12, 0.12))
+                    t.location = (x0 - (mnx + mxx) / 2 * sc, y0 - (mny + mxy) / 2 * sc, z)
+                    z += max(c.z for c in co) * sc
+                    folded.append(t)
+            if _CLOTH_OK == [False]:
+                for t in folded:
+                    bpy.data.objects.remove(t, do_unlink=True)
+                folded = []
+        for k in range(0 if folded else r.randint(3, 5)):        # folded garments: 2-6 layers, rounded fold edge, mixed shades
             x0, y0 = r.uniform(-0.15, 0.15), -L / 2 + (k + 0.5) * L / 5.2
             base = r.choice(_BRIGHT + ((0.85, 0.82, 0.75), (0.2, 0.25, 0.35)))
             for j in range(r.randint(2, 6)):
                 c = tuple(min(1.0, max(0.0, v * r.uniform(0.8, 1.15))) for v in base)
                 stacks.append((_flat(f"ir_folded_{int(c[0] * 100)}_{int(c[1] * 100)}_{int(c[2] * 100)}", c, 0.9),
                                [(x0 + r.uniform(-0.01, 0.01), y0 + r.uniform(-0.01, 0.01), 0.775 + j * 0.032, 0.3, 0.25, 0.028)]))
-        return _parts_object(f"DisplayTableFactory({i}).spawn_asset({i})",
-                             [(top, [(0, 0, 0.74, 0.8, L, 0.04)]), (steel, [(0, sy * (L / 2 - 0.05), 0.36, 0.7, 0.04, 0.72) for sy in (1, -1)])] + stacks)
+        tbl = _parts_object(f"DisplayTableFactory({i}).spawn_asset({i})",
+                            [(top, [(0, 0, 0.74, 0.8, L, 0.04)]), (steel, [(0, sy * (L / 2 - 0.05), 0.36, 0.7, 0.04, 0.72) for sy in (1, -1)])] + stacks)
+        return _join_cloth(tbl, folded) if folded else tbl
 
 
 class MirrorFactory:
@@ -2357,7 +2439,9 @@ class MenuBoardFactory:
 
     def spawn_asset(self, i):
         W, H, r = self.W, 0.8, self.r
-        board = _flat("ir_chalkboard" if self.dark else "ir_menu_light", (0.04, 0.05, 0.05) if self.dark else (0.9, 0.88, 0.82), 0.8)
+        pm = _pick_print("menu_dark" if self.dark else "menu_light", i)          # a printed menu: the flat slab with thin line boxes was
+        board = _printed(pm, (0.04, 0.05, 0.05), 0.8) if pm is not None else \
+            _flat("ir_chalkboard" if self.dark else "ir_menu_light", (0.04, 0.05, 0.05) if self.dark else (0.9, 0.88, 0.82), 0.8)   # 'flat' (user marks, S6-S9)
         frame = _flat("ir_menu_frame", (0.35, 0.24, 0.15) if self.dark else (0.05, 0.05, 0.05), 0.5)
         ink = _flat("ir_chalk" if self.dark else "ir_menu_ink", (0.85, 0.85, 0.8) if self.dark else (0.08, 0.08, 0.08), 0.9)
         lines = []
@@ -2367,6 +2451,8 @@ class MenuBoardFactory:
                 lines.append((0.012, col * W / 4 - 0.04, z, 0.002, W * r.uniform(0.18, 0.3), 0.022))
                 lines.append((0.012, col * W / 4 + W / 6, z, 0.002, 0.07, 0.022))
         lines.append((0.012, 0, H - 0.06, 0.002, W * 0.35, 0.04))          # heading
+        if pm is not None:
+            lines = []                                                       # the print carries its own text
         return _parts_object(f"MenuBoardFactory({i}).spawn_asset({i})",
                              [(frame, [(0, 0, H / 2, 0.025, W + 0.06, H + 0.06)]), (board, [(0.008, 0, H / 2, 0.01, W, H)]), (ink, lines)])
 

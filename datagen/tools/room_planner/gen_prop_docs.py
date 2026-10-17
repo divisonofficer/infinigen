@@ -44,7 +44,7 @@ def finish(im, r):
     im = im.filter(ImageFilter.GaussianBlur(0.6))
     px = im.load()
     for _ in range(2500):                                         # faint paper speckle
-        x, y = r.randrange(W), r.randrange(H); v = r.randrange(-10, 4); c = px[x, y]
+        x, y = r.randrange(im.width), r.randrange(im.height); v = r.randrange(-10, 4); c = px[x, y]
         px[x, y] = tuple(max(0, min(255, k + v)) for k in c)
     return im
 
@@ -117,6 +117,38 @@ def nbpage(n):
     return finish(im, r)
 
 
+MENU = (("Espresso", 3.2), ("Americano", 3.0), ("Flat white", 3.8), ("Latte", 4.0), ("Cappuccino", 3.9), ("Mocha", 4.4), ("Cold brew", 4.2), ("Green tea", 3.4),
+        ("Croissant", 3.5), ("Muffin", 3.2), ("Cheesecake", 5.2), ("Toast", 4.8), ("Bagel", 4.5), ("Sandwich", 6.5), ("Soup of the day", 5.9), ("Cookie", 2.4))
+CHALK_COL = ((236, 236, 228), (240, 214, 120), (150, 210, 235), (240, 160, 170))
+
+
+def menu(n, dark):
+    r = random.Random(4000 + n); w, h = 1500, 800
+    bg = (32, 36, 34) if dark else (238, 234, 224); ink = (236, 236, 228) if dark else (30, 30, 32)
+    im = Image.new("RGB", (w, h), bg); d = ImageDraw.Draw(im)
+    for _ in range(2400):                                           # chalk dust / paper grain
+        x, y = r.randrange(w), r.randrange(h); a = r.randrange(8, 26)
+        d.point((x, y), fill=tuple(min(255, c + a) if dark else max(0, c - a) for c in bg))
+    f_h, f_i = font(BOLD[0], 70), font(FONTS[0], 40)
+    title = r.choice(("COFFEE & TEA", "TODAY'S MENU", "DRINKS", "CAFE MENU", "BAKERY"))
+    d.text((w // 2 - d.textlength(title, font=f_h) / 2, 40), title, font=f_h, fill=r.choice(CHALK_COL) if dark else ink)
+    d.line((140, 135, w - 140, 135), fill=ink, width=3)
+    items = r.sample(MENU[:8], 5) + r.sample(MENU[8:], 5)
+    for col in range(2):
+        x0 = 90 + col * 700
+        d.text((x0, 150), "Drinks" if col == 0 else "Food", font=font(BOLD[0], 38), fill=r.choice(CHALK_COL) if dark else ink)
+        for i, (name, price) in enumerate(items[col * 5:col * 5 + 5]):
+            y = 215 + i * 105
+            d.text((x0, y), name, font=f_i, fill=ink); ptxt = f"{price:.1f}"
+            d.text((x0 + 560 - d.textlength(ptxt, font=f_i), y), ptxt, font=f_i, fill=ink)
+            for xx in range(int(x0 + d.textlength(name, font=f_i)) + 14, int(x0 + 540 - d.textlength(ptxt, font=f_i)), 14):
+                d.point((xx, y + 34), fill=ink)
+    for _ in range(4):                                               # a doodle: cup, steam, star
+        cx, cy = r.randrange(120, w - 120), r.randrange(660, 760)
+        d.ellipse((cx - 14, cy - 14, cx + 14, cy + 14), outline=r.choice(CHALK_COL) if dark else ink, width=3)
+    return finish(im, r)
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     for n in range(1, 9):
@@ -125,4 +157,8 @@ if __name__ == "__main__":
         form(n).save(OUT / f"form_{n:02d}.png")
     for n in range(1, 5):
         nbpage(n).save(OUT / f"nbpage_{n:02d}.png")
+    for n in range(1, 5):
+        menu(n, True).save(OUT / f"menu_dark_{n:02d}.png")
+    for n in range(1, 3):
+        menu(n, False).save(OUT / f"menu_light_{n:02d}.png")
     print("wrote", len(list(OUT.glob("doc_*.png"))), "doc,", len(list(OUT.glob("form_*.png"))), "form,", len(list(OUT.glob("nbpage_*.png"))), "nbpage")

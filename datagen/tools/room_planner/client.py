@@ -284,11 +284,27 @@ def revise_room(room: dict, plan: dict, report: dict, seed: int = 0, images=None
     return _submit(req, "rev-" + hashlib.sha256(blob.encode()).hexdigest()[:24], room, seed)
 
 
+def _clean(plan):
+    """Haiku sometimes returns `furniture` as a JSON-encoded string (or omits lived_in): decode it, drop non-dict rows, default to []
+    (shopL_pharmacy r13 died in realize._in_vocab on it, 2026-10-17). A cached bad reply is repaired on read too."""
+    if not isinstance(plan, dict):
+        return plan
+    for k in ("furniture", "lived_in"):
+        v = plan.get(k)
+        if isinstance(v, str):
+            try:
+                v = json.loads(v)
+            except ValueError:
+                v = []
+        plan[k] = [f for f in v if isinstance(f, dict)] if isinstance(v, list) else []
+    return plan
+
+
 def _submit(req: dict, key: str, room: dict, seed: int, tool: str = "submit_room_plan") -> dict:
     """The API call behind plan_room / revise_room: cached by key, nudged once if it answers in prose, usage logged."""
     path = CACHE / f"{key}.json"
     if path.is_file():
-        return json.loads(path.read_text())["plan"]
+        return _clean(json.loads(path.read_text())["plan"])
     import anthropic                                           # only needed for a live call
     # gzip only: this env's zstd/brotli decoder does not match httpx2's call (TypeError: process() takes no keyword arguments)
     client = anthropic.Anthropic(api_key=_api_key(), max_retries=4, default_headers={"Accept-Encoding": "gzip, deflate"})
@@ -310,4 +326,4 @@ def _submit(req: dict, key: str, room: dict, seed: int, tool: str = "submit_room
     os.replace(tmp, path)
     with open(CACHE / "usage.jsonl", "a") as f:
         f.write(json.dumps(usage) + "\n")
-    return plan
+    return _clean(plan)
