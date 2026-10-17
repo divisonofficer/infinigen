@@ -178,10 +178,11 @@ class RoomRealizer:
             src = "proc:TaskChairFactory"                        # not plastic shell side chairs ('a café, not a meeting room', floor A2 r8)
         if cat == "counter" and _pa.VENUE in ("convenience", "grocery"):   # a shop till, not the café bar (floor I r11, 3 of 3)
             src = "proc:CheckoutCounterFactory"
-        if cat == "break_chair" and self.doc.get("type") == "break-room" and self.doc.get("area_m2", 99) >= 12:   # a dining-height staff table takes
-            src = "proc:CafeChairFactory"                        # chairs, not counter stools (floor I r9: 'bar stools at a low table', 3/3)
-        if cat == "break_table" and self.doc.get("type") == "break-room" and 12 <= self.doc.get("area_m2", 99) < 15:   # (15.7 m2: the
-            # 1.2 m table with 4 chairs -- the round one seated one, 'a kitchenette corner', floor H r40)   # a small staff room's table is a
+        if cat == "break_chair" and _pa.VENUE == "break-room" and self.doc.get("area_m2", 99) < 12:   # stools only at a small pantry's
+            src = "proc:CounterStoolFactory"                     # wall ledge; chairs by default -- the >=12 m2 swap missed office floor A2's
+            # pantry and its standard table got counter stools (r14: 'seats level with the tabletop', 3 of 3; floor I r9 likewise)
+        if cat == "break_table" and self.doc.get("type") == "break-room" and 12 <= self.doc.get("area_m2", 99) < 16:   # (a 1.2 m table
+            # in H's 15.7 m2 room went mid-floor in front of the lockers, layout 6 in r41-r42, 3 of 3 each -- the round one stays)   # a small staff room's table is a
             src = "proc:CafeTableFactory"                        # café round: the 1.2 m table fell back to a wall with one chair (floor G r31)
         if cat == "break_table" and _pa.VENUE == "break-room" and self.doc.get("area_m2", 99) < 12:   # 15.7 m2 staff room needs a table (floor H r7)
             src = "proc:WindowBarFactory"                        # a small pantry gets a wall ledge (pantry r13: stools with no table)
@@ -442,6 +443,8 @@ class RoomRealizer:
         for k in walls:
             if any(fr._place(o, x, y, yaw, self.room, high, front) for x, y, yaw in self._along_wall(k, w, d)
                    if clear_of_windows(k, x, y)):
+                self.obstacles.append(high[-1])                  # its wall span, for what comes after: _place recorded it in the copy
+                # only, and a bookcase then stood in front of the whiteboard (floor A2 r14: layout 5, 3 of 3)
                 o.location.z += z_bottom
                 bpy.context.view_layer.update()
                 self.stats["furniture_added"] += 1

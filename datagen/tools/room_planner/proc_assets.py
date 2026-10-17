@@ -51,6 +51,7 @@ def _boxes(name, parts, mat):
     me.materials.append(mat)
     o = bpy.data.objects.new(name, me)
     bpy.context.scene.collection.objects.link(o)
+    _bevel(o)
     return o
 
 
@@ -282,11 +283,75 @@ def _flat(name, rgb, rough, metallic=0.0, transmission=0.0, wood=False):
     b.inputs["Metallic"].default_value = metallic
     if transmission:
         b.inputs["Transmission Weight"].default_value = transmission
-    if wood:
-        _grain(m, rgb)
-    elif not transmission and os.environ.get("IR_SURFACE_DETAIL") == "1":
-        _detail(m, rgb, rough, metallic, name)
+    if transmission or not SURFACE_DETAIL:
+        if wood:
+            _grain(m, rgb)
+        return m
+    kind = _scan_kind(name, metallic, wood)
+    if not (kind and _scan(m, rgb, rough, kind, name)):          # a scanned surface where one fits, else the procedural detail
+        _grain(m, rgb) if wood else _detail(m, rgb, rough, metallic, name)
     return m
+
+
+# user 2026-10-17 'generated objects look too smooth': flat colours -> scanned PBR (texturecan) luminance on wood / metal / fabric at
+# 60% contrast under our own colour, a procedural detail on the rest, and 3 mm bevels on every procedural mesh. A/B on floor G r36:
+# shader-only noise was invisible at 512 px under the denoiser (mean |d| 0.5 grey levels); scans + bevels read as real oak and
+# brushed steel. IR_SURFACE_DETAIL=0 restores the flat look.
+SURFACE_DETAIL = os.environ.get("IR_SURFACE_DETAIL", "1") != "0"
+SCAN_ROOT = "/bean/ir_pbr_assets/texturecan_environment_merged_v1/texturecan/"
+SCANS = {"wood": ("wood_0002", "wood_0054"),                    # continuous grain: the library's planks/parquet/dark ebony read as
+         "metal": ("metal_0024", "metal_0038", "metal_0058", "metal_0062"),   # floorboards or turned light oak black (A/B pbr1-pbr2)
+         "fabric": ("fabric_0022", "fabrics_0076", "fabrics_0085")}   # brushed/plain metal, plain weaves -- no paint, no patterns
+SCAN_TILE = {"wood": 1.0, "metal": 0.8, "fabric": 0.4}           # metres per tile
+_SCAN_MEAN = {}
+
+
+def _scan_kind(name, metallic, wood):
+    n_ = name.lower()
+    if metallic > 0.5 or any(k in n_ for k in ("steel", "chrome", "metal", "alu")):
+        return "metal"
+    if wood:
+        return "wood"
+    if any(k in n_ for k in ("fabric", "cushion", "upholst", "seat", "banquette", "felt", "towel")):
+        return "fabric"
+    return None
+
+
+def _scan(m, rgb, rough, kind, name):
+    import zlib
+    d = SCAN_ROOT + "texturecan_" + SCANS[kind][zlib.crc32(name.encode()) % len(SCANS[kind])] + "/"
+    if not os.path.isfile(d + "base_color.jpg"):
+        return False
+    nt = m.node_tree; N, L = nt.nodes, nt.links; b = N["Principled BSDF"]
+    tc = N.new("ShaderNodeTexCoord"); mp = N.new("ShaderNodeMapping"); s_ = 1.0 / SCAN_TILE[kind]
+    mp.inputs["Scale"].default_value = (s_, s_, s_); L.new(tc.outputs["Object"], mp.inputs["Vector"])
+    def tex(f, color):
+        im = bpy.data.images.load(d + f, check_existing=True); im.colorspace_settings.name = "sRGB" if color else "Non-Color"
+        if (d + f) not in _SCAN_MEAN:
+            import numpy as np
+            px = np.array(im.pixels[:], dtype=np.float32).reshape(-1, im.channels)[::97, :3]
+            _SCAN_MEAN[d + f] = float((px @ np.array([0.2126, 0.7152, 0.0722], np.float32)).mean()) or 1.0
+        t = N.new("ShaderNodeTexImage"); t.image = im; t.projection = "BOX"; t.projection_blend = 0.3
+        L.new(mp.outputs["Vector"], t.inputs["Vector"]); return t, _SCAN_MEAN[d + f]
+    bc, mean = tex("base_color.jpg", True)
+    bw = N.new("ShaderNodeRGBToBW"); L.new(bc.outputs["Color"], bw.inputs["Color"])
+    k_ = N.new("ShaderNodeMath"); k_.operation = "MULTIPLY_ADD"; k_.inputs[1].default_value = 0.6 / mean; k_.inputs[2].default_value = 0.4
+    L.new(bw.outputs["Val"], k_.inputs[0])                        # 0.4 + 0.6 lum/mean: the grain at 60% contrast, mean 1
+    cc = N.new("ShaderNodeCombineColor"); [L.new(k_.outputs["Value"], cc.inputs[i]) for i in range(3)]
+    mul = N.new("ShaderNodeMix"); mul.data_type = "RGBA"; mul.blend_type = "MULTIPLY"; mul.inputs["Factor"].default_value = 1.0
+    mul.inputs[6].default_value = (*rgb, 1); L.new(cc.outputs["Color"], mul.inputs[7]); L.new(mul.outputs[2], b.inputs["Base Color"])
+    rt, rmean = tex("roughness.jpg", False)
+    rm = N.new("ShaderNodeMath"); rm.operation = "MULTIPLY"; rm.use_clamp = True; rm.inputs[1].default_value = rough / rmean
+    L.new(rt.outputs["Color"], rm.inputs[0]); L.new(rm.outputs["Value"], b.inputs["Roughness"])
+    nm, _ = tex("normal_gl.png", False); nn = N.new("ShaderNodeNormalMap")
+    L.new(nm.outputs["Color"], nn.inputs["Color"]); L.new(nn.outputs["Normal"], b.inputs["Normal"])
+    return True
+
+
+def _bevel(o):
+    """3 mm rounded edges: razor-sharp box edges are the CG tell next to flat colours (user 2026-10-17)."""
+    if SURFACE_DETAIL:
+        md = o.modifiers.new("ir_bevel", "BEVEL"); md.width = 0.003; md.segments = 2; md.limit_method = "ANGLE"
 
 
 def _detail(m, rgb, rough, metallic, name):
@@ -384,6 +449,7 @@ def _parts_object(name, groups):
         me.materials.append(mat)
     o = bpy.data.objects.new(name, me)
     bpy.context.scene.collection.objects.link(o)
+    _bevel(o)
     return o
 
 
@@ -1520,6 +1586,7 @@ def _prims(name, groups):
         me.materials.append(mat)
     o = bpy.data.objects.new(name, me)
     bpy.context.scene.collection.objects.link(o)
+    _bevel(o)
     return o
 
 

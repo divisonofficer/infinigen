@@ -113,7 +113,8 @@ def main() -> int:
                 plan["furniture"][1] = {**plan["furniture"][1], "near_to": None, "away_from": "wc"}   # the basin faces the cubicle: near
                 # it, it took the 0.45 m gap beside the stall and read as 'a basin inside the stall' (floor J r25, 3 of 3)   # with urinals the WC is a cubicle: open beside
                 # them it read as 'a toilet standing in the open next to the urinals' (floor J r23, 3 of 3)
-                plan["furniture"] += [{"id": "urinals", "category": "urinal", "relation": "against_wall", "away_from": "wc"}]   # the second
+                plan["furniture"] += [{"id": "urinals", "category": "urinal", "relation": "against_wall", "away_from": "wc",
+                                       "avoid_windows": True}]   # not under the street window (floor H r42, 3 of 3)   # the second
                 # restroom is the gents': two urinals fill its bare far wall and the pair stop being copies (floor H r31, 3 of 3)
             if room_venues and any(v in ("cafe",) for v in room_venues.values()):   # a café WC's potted plant on the floor (floor G r29:
                 plan["lived_in"] += [{"category": "small_plant", "on": "floor"}]      # 'only the roll and soap show use', use 6, 2 of 3)

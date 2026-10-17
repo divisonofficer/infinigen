@@ -44,7 +44,7 @@ FURNITURE = {
     "meeting_table":  {"src": "proc:ConferenceTableFactory",   "size": [2.4, 1.1, 0.75], "rooms": ["meeting-room", "office"]},   # open office: inside glass_meeting_room only (critic r3)
     "filing_cabinet": {"src": "proc:FilingCabinetFactory",      "size": [0.5, 0.6, 1.0], "rooms": ["office", "open-office", "clinic-reception", "exam-room"]},
     "break_table":    {"src": "proc:BreakTableFactory", "size": [1.6, 0.9, 0.75], "rooms": ["break-room", "cafe"]},
-    "break_chair":    {"src": "proc:CounterStoolFactory",     "size": [0.45, 0.5, 0.85], "rooms": ["break-room"]},
+    "break_chair":    {"src": "proc:CafeChairFactory",     "size": [0.45, 0.5, 0.85], "rooms": ["break-room"]},
     # cafe / grocery store (single-room layouts relabelled with plan_scene --venue)
     "counter":        {"src": "proc:CafeCounterFactory", "size": [2.4, 0.65, 1.0], "rooms": ["cafe", "grocery", "convenience", "boutique"]},
     "backbar_shelf":  {"src": "proc:BackBarShelfFactory", "size": [2.0, 0.28, 2.2], "rooms": ["cafe", "pharmacy"]},
