@@ -35,12 +35,20 @@ def _math(nt, op, a, b=None, clamp=False):
 
 
 def weather_one(m, strength=1.0):
-    nt = m.node_tree
-    b = next((x for x in nt.nodes if x.type == "BSDF_PRINCIPLED"), None)
-    if b is None or b.get("weathered"):
+    """Weather every Principled BSDF of material (or node group) m: Infinigen builds most wall, floor and ceiling shaders inside
+    node groups, which the first version of this pass never reached."""
+    nt = m.node_tree if hasattr(m, "node_tree") else m
+    n = 0
+    for b in [x for x in nt.nodes if x.type == "BSDF_PRINCIPLED"]:
+        n += _weather_principled(nt, b, m.name, strength)
+    return n
+
+
+def _weather_principled(nt, b, name, strength):
+    if b.get("weathered"):
         return False
     if b.inputs["Transmission Weight"].default_value > 0.2 or b.inputs["Emission Strength"].default_value > 0 or \
-            b.inputs["Alpha"].default_value < 0.99 or any(k in m.name.lower() for k in SKIP_NAMES):
+            b.inputs["Alpha"].default_value < 0.99 or any(k in name.lower() for k in SKIP_NAMES):
         return False
     L = nt.links
     tc = nt.nodes.new("ShaderNodeTexCoord")
@@ -87,7 +95,10 @@ def weather_materials(strength=1.0):
     for m in list(bpy.data.materials):
         if m.use_nodes and m.users and not m.library:
             n += weather_one(m, strength)
-    print(f"WEATHERED {n} of {len(bpy.data.materials)} materials", flush=True)
+    for g in list(bpy.data.node_groups):                       # Principled nodes inside shader node groups
+        if g.bl_idname == "ShaderNodeTree" and g.users and not g.library:
+            n += weather_one(g, strength)
+    print(f"WEATHERED {n} Principled nodes ({len(bpy.data.materials)} materials, {len(bpy.data.node_groups)} groups)", flush=True)
     return n
 
 
