@@ -156,9 +156,12 @@ class CafeStockFactory:
                                                                       (cup, tubes), (sl, [("box", (0.05, 0, 0.42), (0.1, 0.42, 0.01), (0, 0, 0))])])
         kraft = _flat("ir_bean_bag", (0.45, 0.3, 0.18), 0.75); blk = _flat("ir_ink", (0.05, 0.05, 0.06), 0.6)
         band = _flat(f"ir_bean_band_{r.randrange(3)}", r.choice(((0.85, 0.75, 0.55), (0.7, 0.15, 0.1), (0.15, 0.3, 0.2))), 0.6)
-        return _prims(f"CafeStockFactory({i}).spawn_asset({i})", [(kraft, [("rbox", (0, 0, 0.16), (0.16, 0.26, 0.32), (0, 0, 0))]),
-                                                                  (band, [("box", (0.081, 0, 0.15), (0.004, 0.2, 0.12), (0, 0, 0))]),
-                                                                  (blk, [("cyl", (0.082, 0, 0.25), (0.018, 0.018, 0.004), (0, math.pi / 2, 0))])])
+        bags = [("box", (0, y, 0.15), (0.12, 0.17, 0.3), (0, 0, 0)) for y in (-0.1, 0.1)] + \
+               [("box", (0, y, 0.315), (0.04, 0.17, 0.03), (0, 0, 0)) for y in (-0.1, 0.1)]   # flat-bottom bags with a folded top, two
+        # side by side: one bevelled box read as 'soft beige blobs, pillows' (floor G r35)
+        labels = [("box", (0.061, y, 0.14), (0.004, 0.13, 0.12), (0, 0, 0)) for y in (-0.1, 0.1)]
+        valves = [("cyl", (0.062, y, 0.24), (0.016, 0.016, 0.004), (0, math.pi / 2, 0)) for y in (-0.1, 0.1)]
+        return _prims(f"CafeStockFactory({i}).spawn_asset({i})", [(kraft, bags), (band, labels), (blk, valves)])
 
 
 class PalletFactory:

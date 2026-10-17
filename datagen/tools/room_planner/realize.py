@@ -933,7 +933,9 @@ class RoomRealizer:
                     box = (min(q.x for q in pts_), max(q.x for q in pts_), min(q.y for q in pts_), max(q.y for q in pts_))
                     return not any(fr._overlap(box, b, 0.0) for b in self.obstacles)
                 # 0.8 m first, then 0.45 m, then any wall: a strict-only filter dropped the lockers of a 14 m2 staff room (floor G r23)
-                spots = [sp for sp in spots if clear_front(sp, 0.8)] or [sp for sp in spots if clear_front(sp, 0.45)] or spots
+                spots = [sp for sp in spots if clear_front(sp, 0.8)] or [sp for sp in spots if clear_front(sp, 0.45)] or \
+                    ([] if self.doc.get("type") == "break-room" and self.doc.get("area_m2", 0) < 16 else spots)   # a small staff room
+                # rather loses its lockers (its coat hooks stay) than sets them against the table (floor G r34-r35, layout 6, 3 of 3 each)
             pose = it.get("pose", "aligned")
             if pose == "aligned" and it["category"] in SEATS:
                 pose = "natural"                                 # user 2026-10-16: chairs in neat rows look staged
@@ -1507,7 +1509,14 @@ class RoomRealizer:
             o, front = self._make("cafe_table")
             yaw = self.rng.uniform(0, math.pi / 2)                # any angle: a grid of square tables read as a conference room (r2)
             cand = [(cx + dx, cy + dy) for dx in (0, 0.4, -0.4, 0.8, -0.8) for dy in (0, 0.4, -0.4, 0.8, -0.8)]   # cafe r3: +0 groups
+            gx0, gx1 = ox + r["x_range"][0] + 0.6, ox + r["x_range"][1] - 0.6
+            gy0, gy1 = oy + r["y_range"][0] + 0.6, oy + r["y_range"][1] - 0.6
+            cand += sorted(((gx0 + 0.5 * i, gy0 + 0.5 * j) for i in range(max(0, int((gx1 - gx0) / 0.5)) + 1)
+                            for j in range(max(0, int((gy1 - gy0) / 0.5)) + 1)), key=lambda p_: (p_[0] - cx) ** 2 + (p_[1] - cy) ** 2)[:80]
+            # + a grid over the region: a large empty band wrapped round the seating has its box centre ON the tables, so every try
+            # failed (floor H r30-r35: 'target 63 seats, 23 now', +0 groups, 'half the hall empty')
             if o is None or not any(fr._place(o, x, y, yaw, self.room, self.obstacles, front) for x, y in cand):
+                _log(f"fill_empty: table at ({cx:.1f},{cy:.1f}) region {r['area_m2']} m2 found no spot")
                 if o is not None:
                     bpy.data.objects.remove(o, do_unlink=True)
                 self.obstacles.append((cx - 0.4, cx + 0.4, cy - 0.4, cy + 0.4, 0, 0))   # move on
@@ -1517,6 +1526,7 @@ class RoomRealizer:
             self.pending_ids = set()
             if not self.furniture({"id": tid + "c", "category": "cafe_chair", "relation": "around", "target": tid, "count": seats}):
                 # a table no chair fits round is an orphan in the walkway (floor H r21-r22: 'a lone table by the entrance', 3 of 3)
+                _log(f"fill_empty: table at ({cx:.1f},{cy:.1f}) placed, no chair fitted")
                 del self.ids[tid]; self.stats["furniture_added"] -= 1; getattr(self, "copies", {}).pop(tid, None)
                 f_ = fr.footprint(o); bpy.data.objects.remove(o, do_unlink=True)
                 self.obstacles.append((f_[0], f_[1], f_[2], f_[3], 0, 0))   # keep the spot (its old box stays too): move on
@@ -2120,6 +2130,10 @@ class RoomRealizer:
             fs = [f for f in fs if f["category"] not in ("pallet", "box_pile", "stool")]   # door path (floor H r11: layout 5, 3/3); no stool
             # without a bench (floor I r11: 'a lone bar stool'); a cart and a ladder stand on a wall (I r11: 'half empty, no hand truck')
             fs = [({**f, "relation": "against_wall", "target": None} if f["category"] in ("utility_cart", "ladder") else f) for f in fs]
+            from room_planner import proc_assets as _pa_f
+            if "cafe" in getattr(_pa_f, "FLOOR_VENUES", ()) and not any(f["category"] == "beverage_fridge" for f in fs):
+                fs.append({"id": "stock_fridge", "category": "beverage_fridge", "relation": "against_wall", "forced": True})   # a café's
+                # milk and syrups need a fridge: 'two racks and bare walls, nothing a café stockroom needs' (floor G r35, 3 of 3)
             if not any(f["category"] == "utility_cart" for f in fs):   # a cart with the ladder (floor G r16: 'one rack and a step stool')
                 fs.append({"id": "cart_x", "category": "utility_cart", "relation": "against_wall"})
             plan = {**plan, "lived_in": [({**x, "category": "dry_goods"} if x.get("category") == "storage_bin" else x)   # no primary-colour
