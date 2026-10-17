@@ -338,6 +338,10 @@ def main() -> int:
     bpy.context.scene["ir_daylight"] = (L or {}).get("daylight", "high")
     bpy.context.scene["ir_mood"] = spec.get("mood", "bright_daylight") if L else "bright_daylight"
     import os
+    if os.environ.get("IR_ARCH_TEX", "1") != "0":                # scanned texturecan walls / floors in place of Infinigen 2.0's flat `paint`
+        import architecture_textures
+        plans = json.loads(Path(a.plans).read_text())
+        stats["archtex"] = architecture_textures.apply(plans.get("room_venues") or {}, (plans.get("style_spec") or {}).get("venue"))
     if os.environ.get("IR_WEATHER", "1") != "0":                 # wear and grime on every material (user 2026-10-17: 'PBR parameters are flat
         import weather_pass                                      # constants', 'too smooth / too clean'); IR_WEATHER=0 keeps the flat look
         stats["weathered"] = weather_pass.weather_materials(float(os.environ.get("IR_WEATHER_STRENGTH", "1.0")))

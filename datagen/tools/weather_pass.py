@@ -15,6 +15,7 @@ import sys
 
 import bpy
 
+LIGHT = 0.3        # large surfaces (Infinigen 2.0 groups, texturecan architecture): user 2026-10-17 -- scanned textures first, wear only mixed in
 SKIP_NAMES = ("glass", "window", "lamp", "light", "emit", "emission", "screen", "mirror", "sky", "water", "led")
 
 
@@ -47,6 +48,8 @@ def weather_one(m, strength=1.0):
 def _weather_principled(nt, b, name, strength):
     if b.get("weathered"):
         return False
+    if b.get("ir_arch"):                                         # texturecan walls / floors: scanned already, only a light wear on top
+        strength *= LIGHT
     if b.inputs["Transmission Weight"].default_value > 0.2 or b.inputs["Emission Strength"].default_value > 0 or \
             b.inputs["Alpha"].default_value < 0.99 or any(k in name.lower() for k in SKIP_NAMES):
         return False
@@ -107,7 +110,7 @@ def weather_materials(strength=1.0):
             n += weather_one(m, strength)
     for g in list(bpy.data.node_groups):                       # Principled nodes inside shader node groups
         if g.bl_idname == "ShaderNodeTree" and g.users and not g.library:
-            n += weather_one(g, strength)
+            n += weather_one(g, strength * LIGHT)
     print(f"WEATHERED {n} Principled nodes ({len(bpy.data.materials)} materials, {len(bpy.data.node_groups)} groups)", flush=True)
     return n
 

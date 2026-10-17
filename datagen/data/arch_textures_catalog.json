@@ -1,0 +1,3203 @@
+[
+ {
+  "id": "texturecan_bricks_0001",
+  "category": "brick",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.171,
+  "sat": 0.457,
+  "contrast": 0.117,
+  "rough": 0.398,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0001/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0001/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0001/normal_gl.png"
+  },
+  "title": "Glossy Red Brick Texture with Pits"
+ },
+ {
+  "id": "texturecan_bricks_0002",
+  "category": "brick",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.073,
+  "sat": 0.478,
+  "contrast": 0.097,
+  "rough": 0.762,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0002/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0002/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0002/normal_gl.png"
+  },
+  "title": "Red Brick Texture with Irregular Surface"
+ },
+ {
+  "id": "texturecan_bricks_0005",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.204,
+  "sat": 0.646,
+  "contrast": 0.199,
+  "rough": 0.421,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0005/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0005/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0005/normal_gl.png"
+  },
+  "title": "Damaged Red Brick Texture with Cracks"
+ },
+ {
+  "id": "texturecan_bricks_0006",
+  "category": "brick",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.077,
+  "sat": 0.518,
+  "contrast": 0.105,
+  "rough": 0.678,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0006/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0006/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0006/normal_gl.png"
+  },
+  "title": "Broken Red Brick Texture with Cracks"
+ },
+ {
+  "id": "texturecan_bricks_0008",
+  "category": "brick",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.137,
+  "sat": 0.537,
+  "contrast": 0.141,
+  "rough": 0.641,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0008/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0008/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0008/normal_gl.png"
+  },
+  "title": "PBR Red Brick Texture with Trowel Marks"
+ },
+ {
+  "id": "texturecan_bricks_0009",
+  "category": "brick",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.139,
+  "sat": 0.027,
+  "contrast": 0.038,
+  "rough": 0.601,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0009/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0009/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0009/normal_gl.png"
+  },
+  "title": "Extra Long Rectangle Brick Texture in Running Bone Layout"
+ },
+ {
+  "id": "texturecan_bricks_0011",
+  "category": "brick",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.181,
+  "sat": 0.228,
+  "contrast": 0.078,
+  "rough": 0.919,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0011/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0011/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0011/normal_gl.png"
+  },
+  "title": "Red Brick Texture Partially Covered by Cement"
+ },
+ {
+  "id": "texturecan_bricks_0012",
+  "category": "brick",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.301,
+  "sat": 0.07,
+  "contrast": 0.039,
+  "rough": 0.5,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0012/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0012/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0012/normal_gl.png"
+  },
+  "title": "Irregular Brick Texture with Various Colors"
+ },
+ {
+  "id": "texturecan_bricks_0014",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.554,
+  "sat": 0.0,
+  "contrast": 0.007,
+  "rough": 0.672,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0014/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0014/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0014/normal_gl.png"
+  },
+  "title": "White Brick Texture for Wall Decoration"
+ },
+ {
+  "id": "texturecan_bricks_0015",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.226,
+  "sat": 0.171,
+  "contrast": 0.057,
+  "rough": 0.671,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0015/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0015/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0015/normal_gl.png"
+  },
+  "title": "Red Brick Wall Texture Covered by Cement"
+ },
+ {
+  "id": "texturecan_bricks_0016",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.061,
+  "sat": 0.743,
+  "contrast": 0.149,
+  "rough": 0.791,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0016/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0016/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0016/normal_gl.png"
+  },
+  "title": "Angled Red Brick Wall Texture"
+ },
+ {
+  "id": "texturecan_bricks_0017",
+  "category": "brick",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.09,
+  "sat": 0.424,
+  "contrast": 0.109,
+  "rough": 0.72,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0017/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0017/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0017/normal_gl.png"
+  },
+  "title": "Worn Red Bricks in England"
+ },
+ {
+  "id": "texturecan_bricks_0018",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.178,
+  "sat": 0.323,
+  "contrast": 0.127,
+  "rough": 0.756,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0018/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0018/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0018/normal_gl.png"
+  },
+  "title": "Red Brick Wall Partially Plastered"
+ },
+ {
+  "id": "texturecan_bricks_0020",
+  "category": "brick",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.109,
+  "sat": 0.207,
+  "contrast": 0.081,
+  "rough": 0.709,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0020/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0020/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0020/normal_gl.png"
+  },
+  "title": "Worn Brick Wall Texture"
+ },
+ {
+  "id": "texturecan_bricks_0021",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.093,
+  "sat": 0.191,
+  "contrast": 0.077,
+  "rough": 0.611,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0021/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0021/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0021/normal_gl.png"
+  },
+  "title": "Extra Long Stone Wall Cladding"
+ },
+ {
+  "id": "texturecan_bricks_0022",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.077,
+  "sat": 0.086,
+  "contrast": 0.065,
+  "rough": 0.616,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0022/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0022/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_bricks_0022/normal_gl.png"
+  },
+  "title": "Stone Brick Cladding for Decoration"
+ },
+ {
+  "id": "texturecan_concrete_0003",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.152,
+  "sat": 0.298,
+  "contrast": 0.078,
+  "rough": 0.486,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0003/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0003/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0003/normal_gl.png"
+  },
+  "title": "Damaged Green Plaster Wall Texture"
+ },
+ {
+  "id": "texturecan_concrete_0004",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.479,
+  "sat": 0.01,
+  "contrast": 0.042,
+  "rough": 0.609,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0004/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0004/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0004/normal_gl.png"
+  },
+  "title": "Uneven Plaster Wall Texture with Trowel Marks"
+ },
+ {
+  "id": "texturecan_concrete_0008",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.392,
+  "sat": 0.0,
+  "contrast": 0.027,
+  "rough": 0.5,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0008/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0008/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0008/normal_gl.png"
+  },
+  "title": "Tadao Ando Type Concrete Plate Texture"
+ },
+ {
+  "id": "texturecan_concrete_0009",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.409,
+  "sat": 0.006,
+  "contrast": 0.014,
+  "rough": 0.501,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0009/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0009/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0009/normal_gl.png"
+  },
+  "title": "Tadao Ando Vertical Concrete Plate Texture"
+ },
+ {
+  "id": "texturecan_concrete_0010",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.169,
+  "sat": 0.015,
+  "contrast": 0.019,
+  "rough": 0.492,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0010/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0010/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0010/normal_gl.png"
+  },
+  "title": "Raw Concrete Plain Wall Texture"
+ },
+ {
+  "id": "texturecan_concrete_0011",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.333,
+  "sat": 0.171,
+  "contrast": 0.06,
+  "rough": 0.623,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0011/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0011/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0011/normal_gl.png"
+  },
+  "title": "Green Concrete Peeling Wall Texture with Peeled Paint"
+ },
+ {
+  "id": "texturecan_concrete_0012",
+  "category": "concrete",
+  "roles": [
+   "ceiling",
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.912,
+  "sat": 0.024,
+  "contrast": 0.01,
+  "rough": 0.854,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0012/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0012/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0012/normal_gl.png"
+  },
+  "title": "Stucco Plaster with Trowel Marks"
+ },
+ {
+  "id": "texturecan_concrete_0013",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.462,
+  "sat": 0.0,
+  "contrast": 0.048,
+  "rough": 0.537,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0013/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0013/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0013/normal_gl.png"
+  },
+  "title": "Concrete Plates"
+ },
+ {
+  "id": "texturecan_concrete_0014",
+  "category": "concrete",
+  "roles": [
+   "ceiling",
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.295,
+  "sat": 0.0,
+  "contrast": 0.035,
+  "rough": 0.606,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0014/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0014/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0014/normal_gl.png"
+  },
+  "title": "Concrete Texture: Corinthian Columns"
+ },
+ {
+  "id": "texturecan_concrete_0015",
+  "category": "concrete",
+  "roles": [
+   "ceiling",
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.301,
+  "sat": 0.0,
+  "contrast": 0.052,
+  "rough": 0.601,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0015/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0015/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0015/normal_gl.png"
+  },
+  "title": "Concrete Waffle Slabs"
+ },
+ {
+  "id": "texturecan_concrete_0016",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.556,
+  "sat": 0.0,
+  "contrast": 0.011,
+  "rough": 0.735,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0016/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0016/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0016/normal_gl.png"
+  },
+  "title": "Concrete Plaster Wall with Paint Strokes"
+ },
+ {
+  "id": "texturecan_concrete_0017",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.457,
+  "sat": 0.076,
+  "contrast": 0.032,
+  "rough": 0.696,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0017/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0017/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0017/normal_gl.png"
+  },
+  "title": "Concrete Plaster Wall Texture"
+ },
+ {
+  "id": "texturecan_concrete_0018",
+  "category": "tile",
+  "roles": [
+   "ceiling",
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.371,
+  "sat": 0.035,
+  "contrast": 0.04,
+  "rough": 0.593,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0018/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0018/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0018/normal_gl.png"
+  },
+  "title": "Damaged Concrete Plates"
+ },
+ {
+  "id": "texturecan_concrete_0019",
+  "category": "concrete",
+  "roles": [
+   "ceiling",
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.374,
+  "sat": 0.0,
+  "contrast": 0.012,
+  "rough": 0.454,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0019/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0019/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0019/normal_gl.png"
+  },
+  "title": "Raw Concrete Texture"
+ },
+ {
+  "id": "texturecan_concrete_0021",
+  "category": "concrete",
+  "roles": [
+   "ceiling",
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.093,
+  "sat": 0.232,
+  "contrast": 0.053,
+  "rough": 0.608,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0021/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0021/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0021/normal_gl.png"
+  },
+  "title": "Waffle Brown Concrete Slabs"
+ },
+ {
+  "id": "texturecan_concrete_0022",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.171,
+  "sat": 0.471,
+  "contrast": 0.134,
+  "rough": 0.727,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0022/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0022/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0022/normal_gl.png"
+  },
+  "title": "Concrete Wall with Chipped Paint Texture"
+ },
+ {
+  "id": "texturecan_concrete_0023",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.331,
+  "sat": 0.051,
+  "contrast": 0.014,
+  "rough": 0.723,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0023/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0023/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0023/normal_gl.png"
+  },
+  "title": "Gritty Concrete Wall Texture with Wavy Pattern"
+ },
+ {
+  "id": "texturecan_concrete_0024",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.471,
+  "sat": 0.313,
+  "contrast": 0.104,
+  "rough": 0.747,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0024/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0024/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0024/normal_gl.png"
+  },
+  "title": "Sandy Concrete Wall with Star Shaped Ornament"
+ },
+ {
+  "id": "texturecan_concrete_0025",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.31,
+  "sat": 0.405,
+  "contrast": 0.132,
+  "rough": 0.667,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0025/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0025/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0025/normal_gl.png"
+  },
+  "title": "Old Clay Pot Texture"
+ },
+ {
+  "id": "texturecan_concrete_0026",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.023,
+  "sat": 0.046,
+  "contrast": 0.006,
+  "rough": 0.557,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0026/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0026/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0026/normal_gl.png"
+  },
+  "title": "Wall Decor with Geometric Circles and Stripes"
+ },
+ {
+  "id": "texturecan_concrete_0027",
+  "category": "metal",
+  "roles": [
+   "panel",
+   "wall"
+  ],
+  "lum": 0.15,
+  "sat": 0.0,
+  "contrast": 0.029,
+  "rough": 0.532,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0027/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0027/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0027/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0027/metallic.jpg"
+  },
+  "title": "Concrete Wall with Silver Metallic Stripes"
+ },
+ {
+  "id": "texturecan_concrete_0028",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.811,
+  "sat": 0.0,
+  "contrast": 0.003,
+  "rough": 0.657,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0028/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0028/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0028/normal_gl.png"
+  },
+  "title": "White Concrete Wall with Numerous Concave Circles"
+ },
+ {
+  "id": "texturecan_concrete_0030",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.252,
+  "sat": 0.0,
+  "contrast": 0.015,
+  "rough": 0.658,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0030/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0030/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0030/normal_gl.png"
+  },
+  "title": "Concrete Wall Decoration with Geometric Pattern"
+ },
+ {
+  "id": "texturecan_concrete_0031",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.13,
+  "sat": 0.016,
+  "contrast": 0.042,
+  "rough": 0.659,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0031/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0031/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0031/normal_gl.png"
+  },
+  "title": "Concrete Wall of Stacked Rectangular Stones"
+ },
+ {
+  "id": "texturecan_concrete_0032",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.595,
+  "sat": 0.105,
+  "contrast": 0.036,
+  "rough": 0.71,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0032/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0032/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0032/normal_gl.png"
+  },
+  "title": "Beige Concrete Wall with Vertical Wavy Stripes"
+ },
+ {
+  "id": "texturecan_concrete_0033",
+  "category": "concrete",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.761,
+  "sat": 0.0,
+  "contrast": 0.014,
+  "rough": 0.788,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0033/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0033/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0033/normal_gl.png"
+  },
+  "title": "Grey Hexagonal Bump Wall Decoration"
+ },
+ {
+  "id": "texturecan_concrete_0034",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.11,
+  "sat": 0.114,
+  "contrast": 0.074,
+  "rough": 0.727,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0034/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0034/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_concrete_0034/normal_gl.png"
+  },
+  "title": "Yellow and Gray Concrete Tiles with Triangular and Stripy Pattern"
+ },
+ {
+  "id": "texturecan_fabric_0002",
+  "category": "fabric",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.172,
+  "sat": 0.744,
+  "contrast": 0.199,
+  "rough": 0.702,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0002/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0002/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0002/normal_gl.png"
+  },
+  "title": "Carpet Fabric Texture with Classic Pattern"
+ },
+ {
+  "id": "texturecan_fabric_0009",
+  "category": "fabric",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.085,
+  "sat": 0.307,
+  "contrast": 0.051,
+  "rough": 0.71,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0009/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0009/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0009/normal_gl.png"
+  },
+  "title": "Blue Office Carpet Texture"
+ },
+ {
+  "id": "texturecan_fabric_0012",
+  "category": "fabric",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.142,
+  "sat": 0.561,
+  "contrast": 0.174,
+  "rough": 0.508,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0012/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0012/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0012/normal_gl.png"
+  },
+  "title": "Red Carpet with Wool-like Fabric Texture"
+ },
+ {
+  "id": "texturecan_fabric_0022",
+  "category": "fabric",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.44,
+  "sat": 0.148,
+  "contrast": 0.046,
+  "rough": 0.773,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0022/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0022/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0022/normal_gl.png"
+  },
+  "title": "Wool Carpet Texture"
+ },
+ {
+  "id": "texturecan_fabric_0026",
+  "category": "fabric",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.302,
+  "sat": 0.417,
+  "contrast": 0.148,
+  "rough": 0.77,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0026/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0026/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabric_0026/normal_gl.png"
+  },
+  "title": "Carpet or Rug Texture"
+ },
+ {
+  "id": "texturecan_fabrics_0076",
+  "category": "fabric",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.572,
+  "sat": 0.125,
+  "contrast": 0.043,
+  "rough": 0.747,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabrics_0076/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabrics_0076/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabrics_0076/normal_gl.png"
+  },
+  "title": "Beige Rug or Carpet Texture"
+ },
+ {
+  "id": "texturecan_fabrics_0077",
+  "category": "fabric",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.451,
+  "sat": 0.253,
+  "contrast": 0.106,
+  "rough": 0.738,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabrics_0077/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabrics_0077/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabrics_0077/normal_gl.png"
+  },
+  "title": "Beige Rug Texture (Carpet) with Orange Diamond Pattern"
+ },
+ {
+  "id": "texturecan_fabrics_0078",
+  "category": "fabric",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.418,
+  "sat": 0.119,
+  "contrast": 0.13,
+  "rough": 0.722,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabrics_0078/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabrics_0078/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabrics_0078/normal_gl.png"
+  },
+  "title": "Beige Rug (Carpet) with Brown Zigzag Diamond Pattern"
+ },
+ {
+  "id": "texturecan_fabrics_0085",
+  "category": "fabric",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.046,
+  "sat": 0.651,
+  "contrast": 0.086,
+  "rough": 0.785,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabrics_0085/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabrics_0085/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_fabrics_0085/normal_gl.png"
+  },
+  "title": "Blue Pile Carpet with Thick Strands"
+ },
+ {
+  "id": "texturecan_marble_0001",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.38,
+  "sat": 0.092,
+  "contrast": 0.345,
+  "rough": 0.511,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0001/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0001/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0001/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0001/metallic.jpg"
+  },
+  "title": "Black and White Checkers with Marble Texture"
+ },
+ {
+  "id": "texturecan_marble_0002",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.175,
+  "sat": 0.673,
+  "contrast": 0.191,
+  "rough": 0.288,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0002/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0002/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0002/normal_gl.png"
+  },
+  "title": "Classical Orange Marble Texture with White Stripes"
+ },
+ {
+  "id": "texturecan_marble_0003",
+  "category": "marble",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.474,
+  "sat": 0.094,
+  "contrast": 0.123,
+  "rough": 0.187,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0003/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0003/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0003/normal_gl.png"
+  },
+  "title": "Terrazzo or Marble Texture with Various Colors"
+ },
+ {
+  "id": "texturecan_marble_0004",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.324,
+  "sat": 0.167,
+  "contrast": 0.057,
+  "rough": 0.475,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0004/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0004/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0004/normal_gl.png"
+  },
+  "title": "Green Terrazzo Tile Texture with Black and White Flakes"
+ },
+ {
+  "id": "texturecan_marble_0005",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.139,
+  "sat": 0.071,
+  "contrast": 0.143,
+  "rough": 0.232,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0005/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0005/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0005/normal_gl.jpg"
+  },
+  "title": "Black Terrazzo Tile Texture with Pink Fragments"
+ },
+ {
+  "id": "texturecan_marble_0006",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.229,
+  "sat": 0.421,
+  "contrast": 0.146,
+  "rough": 0.188,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0006/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0006/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0006/normal_gl.png"
+  },
+  "title": "Red or Pink Terrazzo Tile Texture with Black and White Fragments"
+ },
+ {
+  "id": "texturecan_marble_0014",
+  "category": "rock",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.078,
+  "sat": 0.266,
+  "contrast": 0.075,
+  "rough": 0.248,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0014/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0014/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0014/normal_gl.png"
+  },
+  "title": "Green Jade Texture with Marble Patterns"
+ },
+ {
+  "id": "texturecan_marble_0016",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.293,
+  "sat": 0.569,
+  "contrast": 0.185,
+  "rough": 0.291,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0016/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0016/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_marble_0016/normal_gl.png"
+  },
+  "title": "Orange Marble Tile Texture"
+ },
+ {
+  "id": "texturecan_metal_0015",
+  "category": "metal",
+  "roles": [
+   "panel",
+   "wall"
+  ],
+  "lum": 0.096,
+  "sat": 0.961,
+  "contrast": 0.259,
+  "rough": 0.391,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0015/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0015/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0015/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0015/metallic.jpg"
+  },
+  "title": "Metal Plate Covered by Scratched Paint Texture"
+ },
+ {
+  "id": "texturecan_metal_0024",
+  "category": "metal",
+  "roles": [
+   "panel",
+   "wall"
+  ],
+  "lum": 0.429,
+  "sat": 0.0,
+  "contrast": 0.006,
+  "rough": 0.287,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0024/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0024/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0024/normal_gl.png"
+  },
+  "title": "Corrugated Metal Sheet"
+ },
+ {
+  "id": "texturecan_metal_0038",
+  "category": "metal",
+  "roles": [
+   "panel",
+   "wall"
+  ],
+  "lum": 0.566,
+  "sat": 0.025,
+  "contrast": 0.008,
+  "rough": 0.3,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0038/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0038/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0038/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0038/metallic.jpg"
+  },
+  "title": "Radially Polished Metal"
+ },
+ {
+  "id": "texturecan_metal_0039",
+  "category": "metal",
+  "roles": [
+   "panel",
+   "wall"
+  ],
+  "lum": 0.779,
+  "sat": 0.412,
+  "contrast": 0.174,
+  "rough": 0.3,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0039/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0039/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0039/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0039/metallic.jpg"
+  },
+  "title": "Radially Brushed Gold Texture"
+ },
+ {
+  "id": "texturecan_metal_0058",
+  "category": "metal",
+  "roles": [
+   "panel",
+   "wall"
+  ],
+  "lum": 0.63,
+  "sat": 0.014,
+  "contrast": 0.01,
+  "rough": 0.257,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0058/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0058/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0058/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0058/metallic.jpg"
+  },
+  "title": "Polished Aluminium Metal Sheet"
+ },
+ {
+  "id": "texturecan_metal_0060",
+  "category": "metal",
+  "roles": [
+   "panel",
+   "wall"
+  ],
+  "lum": 0.564,
+  "sat": 0.025,
+  "contrast": 0.012,
+  "rough": 0.353,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0060/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0060/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0060/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0060/metallic.jpg"
+  },
+  "title": "Wavy Corrugated Metal Plate with Rivets"
+ },
+ {
+  "id": "texturecan_metal_0061",
+  "category": "metal",
+  "roles": [
+   "panel",
+   "wall"
+  ],
+  "lum": 0.56,
+  "sat": 0.024,
+  "contrast": 0.016,
+  "rough": 0.568,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0061/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0061/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0061/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0061/metallic.jpg"
+  },
+  "title": "Painted Corrugated Metal Plate with Bolt Nuts"
+ },
+ {
+  "id": "texturecan_metal_0062",
+  "category": "metal",
+  "roles": [
+   "panel",
+   "wall"
+  ],
+  "lum": 0.356,
+  "sat": 0.012,
+  "contrast": 0.014,
+  "rough": 0.248,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0062/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0062/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0062/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0062/metallic.jpg"
+  },
+  "title": "Burnished Metal Texture with Polished Lines"
+ },
+ {
+  "id": "texturecan_metal_0068",
+  "category": "metal",
+  "roles": [
+   "panel",
+   "wall"
+  ],
+  "lum": 0.08,
+  "sat": 0.504,
+  "contrast": 0.1,
+  "rough": 0.386,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0068/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0068/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0068/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0068/metallic.jpg"
+  },
+  "title": "Vein-Like Brass Metallic Wall Decoration"
+ },
+ {
+  "id": "texturecan_metal_0080",
+  "category": "metal",
+  "roles": [
+   "panel",
+   "wall"
+  ],
+  "lum": 0.059,
+  "sat": 0.129,
+  "contrast": 0.113,
+  "rough": 0.69,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0080/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0080/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0080/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0080/metallic.jpg"
+  },
+  "title": "Black Wall with Golden Metallic Vein Network Pattern"
+ },
+ {
+  "id": "texturecan_metal_0083",
+  "category": "metal",
+  "roles": [
+   "panel",
+   "wall"
+  ],
+  "lum": 0.163,
+  "sat": 0.0,
+  "contrast": 0.015,
+  "rough": 0.35,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0083/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0083/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0083/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_metal_0083/metallic.jpg"
+  },
+  "title": "Woven Steel Metal"
+ },
+ {
+  "id": "texturecan_rock_0001",
+  "category": "rock",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.133,
+  "sat": 0.034,
+  "contrast": 0.067,
+  "rough": 0.627,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0001/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0001/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0001/normal_gl.png"
+  },
+  "title": "Rock Texture with Sharp Edges"
+ },
+ {
+  "id": "texturecan_rock_0002",
+  "category": "rock",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.123,
+  "sat": 0.034,
+  "contrast": 0.05,
+  "rough": 0.626,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0002/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0002/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0002/normal_gl.png"
+  },
+  "title": "Rock Texture with Sharp Edges"
+ },
+ {
+  "id": "texturecan_rock_0003",
+  "category": "rock",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.322,
+  "sat": 0.311,
+  "contrast": 0.1,
+  "rough": 0.596,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0003/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0003/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0003/normal_gl.png"
+  },
+  "title": "Bumpy and Sandy Cliff Rock Texture"
+ },
+ {
+  "id": "texturecan_rock_0005",
+  "category": "rock",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.201,
+  "sat": 0.04,
+  "contrast": 0.035,
+  "rough": 0.71,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0005/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0005/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0005/normal_gl.png"
+  },
+  "title": "Rock Texture"
+ },
+ {
+  "id": "texturecan_rock_0008",
+  "category": "rock",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.651,
+  "sat": 0.118,
+  "contrast": 0.222,
+  "rough": 0.551,
+  "size_m": 1.5,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0008/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0008/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_rock_0008/normal_gl.png"
+  },
+  "title": "Snowy Rocks Texture"
+ },
+ {
+  "id": "texturecan_tiles_0001",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.539,
+  "sat": 0.007,
+  "contrast": 0.079,
+  "rough": 0.337,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0001/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0001/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0001/normal_gl.png"
+  },
+  "title": "Broken White Bathroom Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0002",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.745,
+  "sat": 0.0,
+  "contrast": 0.029,
+  "rough": 0.429,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0002/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0002/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0002/normal_gl.png"
+  },
+  "title": "White Bathroom Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0003",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.087,
+  "sat": 0.733,
+  "contrast": 0.215,
+  "rough": 0.24,
+  "size_m": 0.6,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0003/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0003/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0003/normal_gl.png"
+  },
+  "title": "Small Red Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0005",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.168,
+  "sat": 0.234,
+  "contrast": 0.086,
+  "rough": 0.501,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0005/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0005/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0005/normal_gl.png"
+  },
+  "title": "Brown Tile Texture with Scratches"
+ },
+ {
+  "id": "texturecan_tiles_0006",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.137,
+  "sat": 0.074,
+  "contrast": 0.033,
+  "rough": 0.355,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0006/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0006/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0006/normal_gl.png"
+  },
+  "title": "Shiny Green Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0007",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.529,
+  "sat": 0.008,
+  "contrast": 0.18,
+  "rough": 0.317,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0007/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0007/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0007/normal_gl.png"
+  },
+  "title": "Old-fashioned Black and White Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0008",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.477,
+  "sat": 0.005,
+  "contrast": 0.245,
+  "rough": 0.491,
+  "size_m": 0.6,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0008/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0008/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0008/normal_gl.png"
+  },
+  "title": "Hexagonal Black and White Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0010",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.412,
+  "sat": 0.42,
+  "contrast": 0.312,
+  "rough": 0.269,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0010/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0010/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0010/normal_gl.png"
+  },
+  "title": "Blue and White Porcelain Texture"
+ },
+ {
+  "id": "texturecan_tiles_0012",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.227,
+  "sat": 0.069,
+  "contrast": 0.066,
+  "rough": 0.544,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0012/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0012/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0012/normal_gl.png"
+  },
+  "title": "Aged Porcelain Tile Texture with Chinese Style Pattern"
+ },
+ {
+  "id": "texturecan_tiles_0013",
+  "category": "tile",
+  "roles": [
+   "ceiling"
+  ],
+  "lum": 0.889,
+  "sat": 0.002,
+  "contrast": 0.028,
+  "rough": 0.721,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0013/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0013/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0013/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0013/metallic.jpg"
+  },
+  "title": "Office Ceiling Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0015",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.366,
+  "sat": 0.208,
+  "contrast": 0.162,
+  "rough": 0.388,
+  "size_m": 0.6,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0015/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0015/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0015/normal_gl.png",
+   "metallic": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0015/metallic.jpg"
+  },
+  "title": "Colorful Mosaic Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0018",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.539,
+  "sat": 0.085,
+  "contrast": 0.209,
+  "rough": 0.504,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0018/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0018/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0018/normal_gl.png"
+  },
+  "title": "Old and Worn Tiles with Star-shaped Patterns"
+ },
+ {
+  "id": "texturecan_tiles_0028",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.382,
+  "sat": 0.0,
+  "contrast": 0.046,
+  "rough": 0.679,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0028/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0028/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0028/normal_gl.png"
+  },
+  "title": "Split Rib Concrete Blocks"
+ },
+ {
+  "id": "texturecan_tiles_0031",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.238,
+  "sat": 0.413,
+  "contrast": 0.122,
+  "rough": 0.486,
+  "size_m": 0.6,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0031/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0031/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0031/normal_gl.png"
+  },
+  "title": "Vertically Stacked Terracotta Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0032",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.526,
+  "sat": 0.001,
+  "contrast": 0.027,
+  "rough": 0.687,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0032/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0032/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0032/normal_gl.png"
+  },
+  "title": "Concrete Block Tile with Hole"
+ },
+ {
+  "id": "texturecan_tiles_0034",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.402,
+  "sat": 0.054,
+  "contrast": 0.018,
+  "rough": 0.795,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0034/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0034/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0034/normal_gl.png"
+  },
+  "title": "Concrete Tiles with Horizontally Cut Bands"
+ },
+ {
+  "id": "texturecan_tiles_0036",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.458,
+  "sat": 0.0,
+  "contrast": 0.028,
+  "rough": 0.605,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0036/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0036/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0036/normal_gl.png"
+  },
+  "title": "Concrete Blocks with Excessive Mortar"
+ },
+ {
+  "id": "texturecan_tiles_0037",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.484,
+  "sat": 0.062,
+  "contrast": 0.102,
+  "rough": 0.534,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0037/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0037/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0037/normal_gl.png"
+  },
+  "title": "Retro Tiles of Hong Kong Old Restaurants"
+ },
+ {
+  "id": "texturecan_tiles_0038",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.275,
+  "sat": 0.073,
+  "contrast": 0.245,
+  "rough": 0.636,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0038/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0038/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0038/normal_gl.png"
+  },
+  "title": "Victorian Style Porcelain Tile with Circles"
+ },
+ {
+  "id": "texturecan_tiles_0039",
+  "category": "tile",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.226,
+  "sat": 0.264,
+  "contrast": 0.11,
+  "rough": 0.523,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0039/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0039/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0039/normal_gl.png"
+  },
+  "title": "Retro Asian Floor Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0040",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.721,
+  "sat": 0.093,
+  "contrast": 0.04,
+  "rough": 0.263,
+  "size_m": 0.6,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0040/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0040/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0040/normal_gl.jpg"
+  },
+  "title": "Hexagonal Teal Porcelain Zellige Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0041",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.142,
+  "sat": 0.542,
+  "contrast": 0.121,
+  "rough": 0.808,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0041/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0041/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0041/normal_gl.png"
+  },
+  "title": "Hand Painted Teal Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0042",
+  "category": "tile",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.31,
+  "sat": 0.001,
+  "contrast": 0.031,
+  "rough": 0.585,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0042/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0042/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0042/normal_gl.png"
+  },
+  "title": "Concrete Industrial Floor Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0043",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.92,
+  "sat": 0.0,
+  "contrast": 0.028,
+  "rough": 0.372,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0043/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0043/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0043/normal_gl.png"
+  },
+  "title": "Black and White Herringbone Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0045",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.838,
+  "sat": 0.029,
+  "contrast": 0.235,
+  "rough": 0.444,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0045/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0045/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0045/normal_gl.png"
+  },
+  "title": "Victorian Octagon Monochrome Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0046",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.319,
+  "sat": 0.37,
+  "contrast": 0.111,
+  "rough": 0.396,
+  "size_m": 0.6,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0046/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0046/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0046/normal_gl.png"
+  },
+  "title": "Earthy Tone Terracotta Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0047",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.647,
+  "sat": 0.089,
+  "contrast": 0.116,
+  "rough": 0.518,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0047/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0047/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0047/normal_gl.png"
+  },
+  "title": "Victorian Pattern Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0053",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.331,
+  "sat": 0.64,
+  "contrast": 0.2,
+  "rough": 0.313,
+  "size_m": 0.6,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0053/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0053/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0053/normal_gl.png"
+  },
+  "title": "Glossy Square Yellow Terracotta Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0054",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.335,
+  "sat": 0.152,
+  "contrast": 0.146,
+  "rough": 0.461,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0054/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0054/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0054/normal_gl.png"
+  },
+  "title": "Old Hong Kong and Macau Restaurant Tiles in 70s"
+ },
+ {
+  "id": "texturecan_tiles_0055",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.291,
+  "sat": 0.378,
+  "contrast": 0.121,
+  "rough": 0.759,
+  "size_m": 0.6,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0055/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0055/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0055/normal_gl.png"
+  },
+  "title": "Square Terracotta Mosaic Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0059",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.452,
+  "sat": 0.002,
+  "contrast": 0.396,
+  "rough": 0.394,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0059/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0059/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0059/normal_gl.png"
+  },
+  "title": "Square Black and White Ceramic Checker Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0060",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.032,
+  "sat": 0.002,
+  "contrast": 0.108,
+  "rough": 0.396,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0060/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0060/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0060/normal_gl.png"
+  },
+  "title": "Square Black Ceramic Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0061",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.303,
+  "sat": 0.433,
+  "contrast": 0.201,
+  "rough": 0.385,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0061/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0061/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0061/normal_gl.png"
+  },
+  "title": "Square Brownish Ceramic Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0062",
+  "category": "tile",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.356,
+  "sat": 0.089,
+  "contrast": 0.152,
+  "rough": 0.454,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0062/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0062/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0062/normal_gl.png"
+  },
+  "title": "Square Geometric Floor Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0071",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.692,
+  "sat": 0.007,
+  "contrast": 0.023,
+  "rough": 0.685,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0071/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0071/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0071/normal_gl.png"
+  },
+  "title": "Basketweave White Ceramic Parquet Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0072",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.27,
+  "sat": 0.629,
+  "contrast": 0.187,
+  "rough": 0.322,
+  "size_m": 0.6,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0072/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0072/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0072/normal_gl.png"
+  },
+  "title": "Hexagonal Orange Porcelain Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0084",
+  "category": "tile",
+  "roles": [
+   "ceiling",
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.849,
+  "sat": 0.0,
+  "contrast": 0.027,
+  "rough": 0.295,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0084/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0084/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0084/normal_gl.png"
+  },
+  "title": "Decorative Ceramic Tiles with 3D Flower Pattern"
+ },
+ {
+  "id": "texturecan_tiles_0085",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.486,
+  "sat": 0.136,
+  "contrast": 0.171,
+  "rough": 0.526,
+  "size_m": 0.6,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0085/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0085/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0085/normal_gl.png"
+  },
+  "title": "Vintage Tile Texture with Hexagonal Pattern for Restaurants"
+ },
+ {
+  "id": "texturecan_tiles_0086",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.61,
+  "sat": 0.029,
+  "contrast": 0.012,
+  "rough": 0.786,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0086/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0086/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0086/normal_gl.png"
+  },
+  "title": "White Triangular Tile Texture with Flower Pattern"
+ },
+ {
+  "id": "texturecan_tiles_0087",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.675,
+  "sat": 0.014,
+  "contrast": 0.009,
+  "rough": 0.716,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0087/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0087/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0087/normal_gl.png"
+  },
+  "title": "Geometric Tile Texture for Wall Decor"
+ },
+ {
+  "id": "texturecan_tiles_0088",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.202,
+  "sat": 0.254,
+  "contrast": 0.231,
+  "rough": 0.754,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0088/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0088/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0088/normal_gl.png"
+  },
+  "title": "Vintage Mediterranean Home Decor Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0089",
+  "category": "tile",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.026,
+  "sat": 0.103,
+  "contrast": 0.022,
+  "rough": 0.723,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0089/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0089/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0089/normal_gl.png"
+  },
+  "title": "Antique Black Clay Flooring Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0090",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.013,
+  "sat": 0.164,
+  "contrast": 0.031,
+  "rough": 0.472,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0090/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0090/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0090/normal_gl.png"
+  },
+  "title": "Retro Star and Cross Shaped Black Kitchen Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0091",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.238,
+  "sat": 0.058,
+  "contrast": 0.066,
+  "rough": 0.666,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0091/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0091/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0091/normal_gl.png"
+  },
+  "title": "Star and Cross Shaped Concrete Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0092",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.896,
+  "sat": 0.0,
+  "contrast": 0.0,
+  "rough": 0.586,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0092/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0092/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0092/normal_gl.png"
+  },
+  "title": "Embossed White Flower Shaped Wall Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0099",
+  "category": "marble",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.196,
+  "sat": 0.401,
+  "contrast": 0.212,
+  "rough": 0.306,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0099/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0099/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0099/normal_gl.png"
+  },
+  "title": "Vintage Marble Floor Texture with Fan-Shaped Pattern"
+ },
+ {
+  "id": "texturecan_tiles_0100",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.17,
+  "sat": 0.213,
+  "contrast": 0.054,
+  "rough": 0.586,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0100/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0100/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0100/normal_gl.png"
+  },
+  "title": "Concrete Wall with Embossed Flowers and Crosses"
+ },
+ {
+  "id": "texturecan_tiles_0102",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.223,
+  "sat": 0.0,
+  "contrast": 0.03,
+  "rough": 0.75,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0102/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0102/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0102/normal_gl.png"
+  },
+  "title": "Y-Shaped Wall Decoration Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0104",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.208,
+  "sat": 0.14,
+  "contrast": 0.056,
+  "rough": 0.608,
+  "size_m": 0.6,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0104/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0104/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0104/normal_gl.png"
+  },
+  "title": "Antique French Terracotta Tile Texture"
+ },
+ {
+  "id": "texturecan_tiles_0105",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.561,
+  "sat": 0.043,
+  "contrast": 0.017,
+  "rough": 0.51,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0105/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0105/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0105/normal_gl.png"
+  },
+  "title": "Leaf Shape Wall Decor Wall Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0107",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.189,
+  "sat": 0.257,
+  "contrast": 0.149,
+  "rough": 0.667,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0107/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0107/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0107/normal_gl.png"
+  },
+  "title": "Leaf-Shaped Wall Decor Texture"
+ },
+ {
+  "id": "texturecan_tiles_0108",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.106,
+  "sat": 0.343,
+  "contrast": 0.166,
+  "rough": 0.417,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0108/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0108/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0108/normal_gl.png"
+  },
+  "title": "Classic Checker Blue Tune Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0109",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.815,
+  "sat": 0.0,
+  "contrast": 0.0,
+  "rough": 0.508,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0109/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0109/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0109/normal_gl.png"
+  },
+  "title": "Waves and Circles Wall Decor Texture"
+ },
+ {
+  "id": "texturecan_tiles_0111",
+  "category": "tile",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.273,
+  "sat": 0.365,
+  "contrast": 0.137,
+  "rough": 0.72,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0111/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0111/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0111/normal_gl.png"
+  },
+  "title": "Moroccan Style Floor Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0117",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.668,
+  "sat": 0.112,
+  "contrast": 0.047,
+  "rough": 0.64,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0117/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0117/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0117/normal_gl.png"
+  },
+  "title": "Bumpy Square Beige Clay Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0119",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.004,
+  "sat": 0.0,
+  "contrast": 0.004,
+  "rough": 0.44,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0119/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0119/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0119/normal_gl.png"
+  },
+  "title": "Pyramid Black Wall Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0120",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.672,
+  "sat": 0.069,
+  "contrast": 0.026,
+  "rough": 0.44,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0120/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0120/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0120/normal_gl.png"
+  },
+  "title": "Pyramid White Wall Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0121",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.654,
+  "sat": 0.0,
+  "contrast": 0.021,
+  "rough": 0.683,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0121/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0121/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0121/normal_gl.png"
+  },
+  "title": "Turning White Tiles Forming Wave Pattern"
+ },
+ {
+  "id": "texturecan_tiles_0125",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.591,
+  "sat": 0.0,
+  "contrast": 0.0,
+  "rough": 0.409,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0125/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0125/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0125/normal_gl.png"
+  },
+  "title": "Triangular White Tilted Tiles for Wall Decoration"
+ },
+ {
+  "id": "texturecan_tiles_0126",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.025,
+  "sat": 0.065,
+  "contrast": 0.029,
+  "rough": 0.514,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0126/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0126/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0126/normal_gl.png"
+  },
+  "title": "Black Concave Wall Tiles with Edge and Surface Wear"
+ },
+ {
+  "id": "texturecan_tiles_0129",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.508,
+  "sat": 0.223,
+  "contrast": 0.125,
+  "rough": 0.726,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0129/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0129/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0129/normal_gl.png"
+  },
+  "title": "Tiny Brown and White Wall Tiles"
+ },
+ {
+  "id": "texturecan_tiles_0131",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.164,
+  "sat": 0.17,
+  "contrast": 0.034,
+  "rough": 0.752,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0131/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0131/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0131/normal_gl.png"
+  },
+  "title": "Beige Decorated Wall Made of Geometric Squares and Stripy Triangles"
+ },
+ {
+  "id": "texturecan_tiles_0132",
+  "category": "tile",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.055,
+  "sat": 0.229,
+  "contrast": 0.029,
+  "rough": 0.586,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0132/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0132/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0132/normal_gl.png"
+  },
+  "title": "Blue Decorated Wall with Geometric Squares and Diagonals"
+ },
+ {
+  "id": "texturecan_tiles_0133",
+  "category": "tile",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.316,
+  "sat": 0.098,
+  "contrast": 0.027,
+  "rough": 0.707,
+  "size_m": 1.2,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0133/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0133/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_tiles_0133/normal_gl.png"
+  },
+  "title": "Seamless Tiles of Parallel Lines and Quarter Circles"
+ },
+ {
+  "id": "texturecan_wood_0002",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.259,
+  "sat": 0.478,
+  "contrast": 0.134,
+  "rough": 0.751,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0002/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0002/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0002/normal_gl.png"
+  },
+  "title": "Light Brown Wood Texture with Scratches"
+ },
+ {
+  "id": "texturecan_wood_0011",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.279,
+  "sat": 0.437,
+  "contrast": 0.13,
+  "rough": 0.731,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0011/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0011/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0011/normal_gl.png"
+  },
+  "title": "Cork Wood Board Made of Wooden Strips"
+ },
+ {
+  "id": "texturecan_wood_0032",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.114,
+  "sat": 0.475,
+  "contrast": 0.101,
+  "rough": 0.574,
+  "size_m": 2.4,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0032/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0032/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0032/normal_gl.png"
+  },
+  "title": "Raw Wood Plank Texture"
+ },
+ {
+  "id": "texturecan_wood_0035",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.019,
+  "sat": 0.333,
+  "contrast": 0.029,
+  "rough": 0.681,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0035/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0035/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0035/normal_gl.png"
+  },
+  "title": "Laminated Wood Texture"
+ },
+ {
+  "id": "texturecan_wood_0037",
+  "category": "wood",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.188,
+  "sat": 0.509,
+  "contrast": 0.121,
+  "rough": 0.451,
+  "size_m": 2.4,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0037/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0037/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0037/normal_gl.png"
+  },
+  "title": "Ash Wood Plank Flooring"
+ },
+ {
+  "id": "texturecan_wood_0038",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.102,
+  "sat": 0.494,
+  "contrast": 0.091,
+  "rough": 0.514,
+  "size_m": 2.4,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0038/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0038/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0038/normal_gl.png"
+  },
+  "title": "Long Dark Ash Wood Planks"
+ },
+ {
+  "id": "texturecan_wood_0039",
+  "category": "wood",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.297,
+  "sat": 0.374,
+  "contrast": 0.105,
+  "rough": 0.36,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0039/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0039/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0039/normal_gl.png"
+  },
+  "title": "Herringbone Maple Wood Floor Tiles"
+ },
+ {
+  "id": "texturecan_wood_0040",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.034,
+  "sat": 0.615,
+  "contrast": 0.079,
+  "rough": 0.366,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0040/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0040/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0040/normal_gl.png"
+  },
+  "title": "Herringbone Dark Ash Wood Tiles"
+ },
+ {
+  "id": "texturecan_wood_0041",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.378,
+  "sat": 0.426,
+  "contrast": 0.139,
+  "rough": 0.331,
+  "size_m": 2.4,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0041/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0041/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0041/normal_gl.png"
+  },
+  "title": "Waxed Beech Wood Plank Tiles"
+ },
+ {
+  "id": "texturecan_wood_0042",
+  "category": "wood",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.394,
+  "sat": 0.426,
+  "contrast": 0.145,
+  "rough": 0.434,
+  "size_m": 2.4,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0042/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0042/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0042/normal_gl.png"
+  },
+  "title": "Chevron Maple Wood Flooring"
+ },
+ {
+  "id": "texturecan_wood_0043",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.022,
+  "sat": 0.444,
+  "contrast": 0.041,
+  "rough": 0.427,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0043/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0043/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0043/normal_gl.png"
+  },
+  "title": "Herringbone Ebony Dark Ash Wood Tiles"
+ },
+ {
+  "id": "texturecan_wood_0045",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.152,
+  "sat": 0.367,
+  "contrast": 0.099,
+  "rough": 0.504,
+  "size_m": 2.4,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0045/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0045/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0045/normal_gl.png"
+  },
+  "title": "Colorful Painted Wood Planks"
+ },
+ {
+  "id": "texturecan_wood_0046",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.203,
+  "sat": 0.232,
+  "contrast": 0.081,
+  "rough": 0.504,
+  "size_m": 2.4,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0046/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0046/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0046/normal_gl.png"
+  },
+  "title": "White Painted Wood Planks"
+ },
+ {
+  "id": "texturecan_wood_0049",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.071,
+  "sat": 0.352,
+  "contrast": 0.06,
+  "rough": 0.449,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0049/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0049/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0049/normal_gl.png"
+  },
+  "title": "Raw Wood with Rough Grains"
+ },
+ {
+  "id": "texturecan_wood_0051",
+  "category": "wood",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.013,
+  "sat": 0.0,
+  "contrast": 0.006,
+  "rough": 0.511,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0051/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0051/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0051/normal_gl.png"
+  },
+  "title": "Triangular Wooden Block for Wall Decor"
+ },
+ {
+  "id": "texturecan_wood_0052",
+  "category": "wood",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.321,
+  "sat": 0.331,
+  "contrast": 0.096,
+  "rough": 0.501,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0052/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0052/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0052/normal_gl.png"
+  },
+  "title": "Natural Wood Triangular Blocky Wall"
+ },
+ {
+  "id": "texturecan_wood_0053",
+  "category": "wood",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.041,
+  "sat": 0.621,
+  "contrast": 0.114,
+  "rough": 0.666,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0053/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0053/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0053/normal_gl.png"
+  },
+  "title": "Wooden Block Wall Texture"
+ },
+ {
+  "id": "texturecan_wood_0054",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.575,
+  "sat": 0.401,
+  "contrast": 0.157,
+  "rough": 0.615,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0054/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0054/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0054/normal_gl.png"
+  },
+  "title": "Pine Wood"
+ },
+ {
+  "id": "texturecan_wood_0055",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.417,
+  "sat": 0.444,
+  "contrast": 0.16,
+  "rough": 0.513,
+  "size_m": 2.4,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0055/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0055/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0055/normal_gl.png"
+  },
+  "title": "Pine Wood Planks"
+ },
+ {
+  "id": "texturecan_wood_0056",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.5,
+  "sat": 0.404,
+  "contrast": 0.147,
+  "rough": 0.519,
+  "size_m": 2.4,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0056/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0056/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0056/normal_gl.png"
+  },
+  "title": "Pine Wood Plank Texture"
+ },
+ {
+  "id": "texturecan_wood_0057",
+  "category": "wood",
+  "roles": [
+   "column",
+   "wall"
+  ],
+  "lum": 0.099,
+  "sat": 0.363,
+  "contrast": 0.077,
+  "rough": 0.602,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0057/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0057/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0057/normal_gl.png"
+  },
+  "title": "Hexagonal Wood Tiles for Wall Decor"
+ },
+ {
+  "id": "texturecan_wood_0058",
+  "category": "wood",
+  "roles": [
+   "floor"
+  ],
+  "lum": 0.122,
+  "sat": 0.466,
+  "contrast": 0.1,
+  "rough": 0.429,
+  "size_m": 2.0,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0058/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0058/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0058/normal_gl.png"
+  },
+  "title": "Parquet Chevron Brown Wood Floor Tiles"
+ },
+ {
+  "id": "texturecan_wood_0061",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.025,
+  "sat": 0.315,
+  "contrast": 0.035,
+  "rough": 0.464,
+  "size_m": 2.4,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0061/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0061/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0061/normal_gl.png"
+  },
+  "title": "Laminated Brown Wood Plank Texture"
+ },
+ {
+  "id": "texturecan_wood_0066",
+  "category": "wood",
+  "roles": [
+   "column",
+   "floor",
+   "wall"
+  ],
+  "lum": 0.026,
+  "sat": 0.503,
+  "contrast": 0.06,
+  "rough": 0.466,
+  "size_m": 2.4,
+  "maps": {
+   "base_color": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0066/base_color.jpg",
+   "roughness": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0066/roughness.jpg",
+   "normal_gl": "/bean/ir_pbr_assets/texturecan_structural_extended_v3/texturecan/texturecan_wood_0066/normal_gl.png"
+  },
+  "title": "Laminated Long Brown Wood Planks"
+ }
+]
