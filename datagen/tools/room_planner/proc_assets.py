@@ -1809,7 +1809,11 @@ class UrinalFactory:
                       ("box", (xb + 0.33, y, 0.62), (0.03, 0.26, 0.3), (0, 0, 0))]
             pipes += [("cyl", (xb + 0.05, y, 1.25), (0.016, 0.016, 0.34), (0, 0, 0)), ("box", (xb + 0.06, y, 1.43), (0.06, 0.08, 0.06), (0, 0, 0))]
         panel = [("box", (xb + 0.21, 0.0, 0.95), (0.4, 0.025, 0.8), (0, 0, 0))]
-        return _prims(f"UrinalFactory({i}).spawn_asset({i})", [(cer, bowls), (chrome, pipes), (div, panel)])
+        back = [("box", (xb + 0.01, 0.0, 0.8), (0.02, 1.6, 1.6), (0, 0, 0))]   # a steel splash panel from the floor: the placer
+        # sets an asset's lowest point on the floor, so without it the wall-hung bowls sank to the floor -- 'white bins piled under the
+        # baby changer' (floor H r32, 2 of 3)
+        steel = _flat("ir_urinal_splash", (0.66, 0.67, 0.69), 0.3, 0.8)
+        return _prims(f"UrinalFactory({i}).spawn_asset({i})", [(cer, bowls), (chrome, pipes), (div, panel), (steel, back)])
 
 
 class RollerShutterFactory:

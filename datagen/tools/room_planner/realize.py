@@ -342,6 +342,11 @@ class RoomRealizer:
                 if doors:                                        # (clinic r3: a dental chair fitted nowhere in a 3.2 m deep room)
                     n_in = min(doors, key=lambda w_: (w_[0] + w_[1] * w_[3] / 2 - self.centre).length)[2]
                     out += [(self.centre.x + n_in.x * k, self.centre.y + n_in.y * k, yaw) for yaw in yaws for k in (0.3, 0.6, 0.9)]
+            gx = [x0 + w / 2 + 0.3 + 0.25 * i for i in range(int(max(0.0, (x1 - x0) - w - 0.6) / 0.25) + 1)]
+            gy = [y0 + w / 2 + 0.3 + 0.25 * i for i in range(int(max(0.0, (y1 - y0) - w - 0.6) / 0.25) + 1)]
+            out += sorted(((x, y, yaws[0]) for x in gx for y in gy), key=lambda s_: (s_[0] - self.centre.x) ** 2 + (s_[1] - self.centre.y) ** 2)
+            # + a grid over the room for the along yaw: in an L-shaped 14 m2 room no small offset of the centre fitted it, so the table
+            # went across and shrank to a desk (floor C r12-r13, 'a desk, not a meeting room', 3 of 3)
             out.sort(key=lambda s_: yaws.index(s_[2]))         # every along-axis spot before any across one: the biased across spots came
             # first, so a meeting table with its door on an end wall went across and shrank to 1.8 m (floor C r12: 'a desk', function 4-5)
             return out
@@ -2431,7 +2436,8 @@ class RoomRealizer:
                     # a big office is a shared one: a second workstation (floor J r12: one desk in 27 m2, 'half empty', 3 of 3)
                     fs += [{"id": "desk_2", "category": "office_desk", "relation": "against_wall", "gap_m": 1.05, "away_from": desk},
                            {"id": "desk_chair_2", "category": "desk_chair", "relation": "behind", "target": "desk_2", "count": 1}]
-                elif self.doc.get("area_m2", 0) >= 18:
+                elif self.doc.get("area_m2", 0) >= 18 and not clinic_fl:   # (a clinic's: no café pedestal table -- 'a café corner,
+                    # not a clinic office', floor D3 r22, 3 of 3)
                     # a manager's office keeps one desk, and its other half a small round meeting table with two chairs ('half the room
                     # empty, everything at one end', floor F3 r16-r17, 3 of 3)
                     fs += [{"id": "office_mt", "category": "cafe_table", "relation": "center", "away_from": desk, "forced": True},

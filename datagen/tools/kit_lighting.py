@@ -121,13 +121,14 @@ def street_backdrop(stats):
     stats["street_backdrops"] = n
 
 
-def service_room_lights(stats):
+def service_room_lights(stats, clinic=False):
     """Ceiling fixtures in restrooms, stockrooms, changing and staff rooms become flush LED panels: the Infinigen ceiling light drew
     'a residential crystal flush-mount' and 'an industrial dome' (floor H r15, 3 of 3). The fixture's own light sources stay."""
     import bmesh
     boxes = []
     for nm, parts in rd._rooms().items():
-        if nm.split("_")[0] in ("restroom", "utility", "closet", "kitchen", "bathroom") and "floor" in parts:
+        if nm.split("_")[0] in ("restroom", "utility", "closet", "kitchen", "bathroom") + (("office",) if clinic else ()) and "floor" in parts:
+            # + a clinic's offices: a black industrial pendant under the grid ceiling read as 'a café or loft' (floor D3 r22, 3 of 3)
             pts = [parts["floor"].matrix_world @ Vector(c) for c in parts["floor"].bound_box]
             boxes.append((min(q.x for q in pts), max(q.x for q in pts), min(q.y for q in pts), max(q.y for q in pts)))
     panel = pa._flat("ir_led_panel", (0.95, 0.95, 0.93), 0.3)
@@ -321,7 +322,7 @@ def main() -> int:
                   kelvin_rgb(4000), 0.3)
         n_svc += 1
     stats["service_lights"] = n_svc
-    service_room_lights(stats)
+    service_room_lights(stats, clinic=spec.get("venue") in ("clinic-reception", "exam-room", "dental-room", "physio-room"))
     street_backdrop(stats)
     # monitor shells in plain dark plastic: an Infinigen monitor variant rendered 'purple speckled, gemstone-like' (floor D3 r12, 3 of 3)
     blk = pa._flat("ir_monitor_plastic", (0.035, 0.035, 0.04), 0.45)

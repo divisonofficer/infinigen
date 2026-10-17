@@ -68,7 +68,7 @@ FURNITURE = {
     "exam_table":     {"src": "proc:ExamTableFactory", "size": [0.65, 1.9, 0.9], "rooms": ["exam-room", "physio-room"]},
     "toilet":         {"src": "proc:ToiletStallFactory", "size": [1.5, 0.95, 1.95], "rooms": ["restroom"]},   # floor scenes: a cubicle
     "wc":             {"src": "inf:ToiletFactory", "size": [0.7, 0.45, 0.8], "rooms": ["restroom"]},   # a single-user restroom: no cubicle
-    "urinal":         {"src": "proc:UrinalFactory", "size": [0.42, 1.2, 1.5], "rooms": ["restroom"]},
+    "urinal":         {"src": "proc:UrinalFactory", "size": [0.42, 1.6, 1.6], "rooms": ["restroom"]},
     "wash_basin":     {"src": "proc:WashBasinFactory", "size": [0.45, 0.6, 1.9], "rooms": ["restroom"]},
     "locker":         {"src": "proc:LockerFactory", "size": [0.5, 1.4, 1.8], "rooms": ["closet", "break-room"]},
     "changing_bench": {"src": "proc:ChangingBenchFactory", "size": [0.35, 1.3, 0.47], "rooms": ["closet"]},
