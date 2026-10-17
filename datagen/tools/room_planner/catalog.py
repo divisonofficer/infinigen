@@ -111,7 +111,7 @@ LIVED_IN = {
     "fruit_bowl":      {"src": "inf:FruitContainerFactory", "on": ["dining_table", "coffee_table", "counter"], "rooms": ["home", "break-room", "cafe"]},
     "table_lamp":      {"src": "abo:TABLE_LAMP", "on": ["side_table", "nightstand", "desk", "sideboard"], "rooms": ["home", "office"]},
     "vase":            {"src": "abo:VASE", "on": ["coffee_table", "sideboard", "dresser", "dining_table"], "rooms": ["home", "cafe"]},
-    "small_plant":     {"src": "abo:PLANTER", "on": ["side_table", "sideboard", "desk", "dresser", "floor"], "rooms": ["home", "office", "open-office", "meeting-room", "break-room", "cafe", "clinic-reception", "boutique"]},
+    "small_plant":     {"src": "abo:PLANTER", "on": ["side_table", "sideboard", "desk", "dresser", "floor"], "rooms": ["home", "office", "open-office", "meeting-room", "break-room", "cafe", "clinic-reception", "boutique", "restroom"]},
     "storage_box":     {"src": "abo:BOX", "on": ["floor", "bookshelf", "dresser"], "rooms": ["home"]},
     "draped_clothes":  {"src": "inf:ShirtFactory", "on": ["armchair", "desk_chair", "bed", "sofa", "floor"]},
     "pants":           {"src": "inf:PantsFactory", "on": ["bed", "armchair", "sofa", "floor"]},
