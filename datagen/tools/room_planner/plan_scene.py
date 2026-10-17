@@ -109,6 +109,8 @@ def main() -> int:
             if room_venues and not clinic and room.get("area_m2", 0) >= 10 and (str(room.get("id", "")).endswith("/1") or
                                                                                 (not cafe_fl and room.get("area_m2", 0) >= 14)):
                 # also a work floor's one big staff restroom: 'one WC in a room for three cubicles' (floor B r10, 3 of 3)
+                plan["furniture"][0] = {**plan["furniture"][0], "category": "toilet"}   # with urinals the WC is a cubicle: open beside
+                # them it read as 'a toilet standing in the open next to the urinals' (floor J r23, 3 of 3)
                 plan["furniture"] += [{"id": "urinals", "category": "urinal", "relation": "against_wall", "away_from": "wc"}]   # the second
                 # restroom is the gents': two urinals fill its bare far wall and the pair stop being copies (floor H r31, 3 of 3)
             if room_venues and any(v in ("cafe",) for v in room_venues.values()):   # a café WC's potted plant on the floor (floor G r29:

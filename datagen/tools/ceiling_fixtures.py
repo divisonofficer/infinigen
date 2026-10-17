@@ -210,7 +210,7 @@ def _over_service(rooms, chosen, rng, stats):
         if room is None or room.wall is None:
             continue
         fb = room.box
-        if (fb[1] - fb[0]) * (fb[3] - fb[2]) < 20.0 and rd._factory(t.name) == "CafeTableFactory":
+        if ((fb[1] - fb[0]) * (fb[3] - fb[2]) < 20.0 or name.startswith(("office", "meeting"))) and rd._factory(t.name) == "CafeTableFactory":
             continue                                             # no café pendant over a small staff room's round table: it hung at head
             # height and 'filled a third of every frame' (floor G r33, 3 of 3)
         ceiling = max((room.wall.matrix_world @ Vector(c)).z for c in room.wall.bound_box)
