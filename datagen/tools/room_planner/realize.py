@@ -206,6 +206,9 @@ class RoomRealizer:
                 fac.style = "bentwood"                           # light_wood read as 'garden or child furniture' (floor H r31, 3 of 3);
                 # flat black bistro backs at the staff table read as 'two computer
                 # monitors on the table' (floor H r24-r25, 3 of 3 each)
+            if cat == "locker" and self.doc.get("type") == "break-room" and 12 <= self.doc.get("area_m2", 0) < 16:
+                fac.n = 2                                        # a small staff room's lockers: two doors, so the bank finds a wall with
+                # its front clear of the table (floor G r34: 'the table pushed against the locker fronts', layout 6, 3 of 3)
             if cat == "waiting_bench" and getattr(_pa, "FLOOR_VENUES", ()):
                 fac.n = 3                                        # floors: 3-seat rows -- 4-5 seat ones found no wall between the doors of a
                 # 51 m2 lobby with doors on three walls, and it rendered with no seats at all (floor F3 r13-r14, 3 of 3)
@@ -1398,7 +1401,9 @@ class RoomRealizer:
         if proc_assets.VENUE == "warehouse":                     # racks until the floor is aisles (warehouse r4: 'a hangar with a few shelves')
             for rid, (o_, _) in list(self.ids.items()):          # planned wall racks are stocked too (floor I r7: two bare racks -- the plan
                 if rd._factory(o_.name) in ("StorageRackFactory", "SupplyShelfFactory") and ":" not in rid and not rid.startswith("aisle_"):   # gave no lived_in)
-                    self.fill({"on": rid, "category": "cardboard_box"}, _cls(catalog.LIVED_IN["cardboard_box"]["src"]))
+                    st_ = "cafe_stock" if "cafe" in getattr(proc_assets, "FLOOR_VENUES", ()) else "cardboard_box"   # a café's back
+                    # stock: this carton fill ran first and left the café items no shelf -- 'toy blocks, nothing says café' (G r34)
+                    self.fill({"on": rid, "category": st_}, _cls(catalog.LIVED_IN[st_]["src"]))
             n0 = len(self.ids)
             if sum(f.get("count", 1) for f in plan.get("furniture", []) if f["category"] == "workbench") >= 2 and \
                     self.doc.get("area_m2", 0) < 120:            # a fulfilment hall has benches AND aisles (floor J r4: 254 m2, 'packing
@@ -1483,11 +1488,13 @@ class RoomRealizer:
         x0_, x1_, y0_, y1_ = self.room.box
         target = dens * (x1_ - x0_) * (y1_ - y0_) / 10.0 if dens else None   # the kit's seat density (non-home 20: 'too sparse')
         if target and self.doc.get("area_m2", 0) > 60:           # a floor's café hall: the user's 'seating, circulation, queue or counter' --
-            target *= 0.5                                        # the full kit density left one-chair aisles (floors G/H r7-r10, layout 5-6, 6 of 6);
+            target *= 0.75 if self.doc.get("area_m2", 0) > 120 else 0.5   # a 164 m2 hall at 0.5 kept every seat in one block, 'half the
+            # hall empty' (floor H r30-r33, 3 of 3 each); the fill takes the largest empty region first                                        # the full kit density left one-chair aisles (floors G/H r7-r10, layout 5-6, 6 of 6);
                                                                  # 0.7 still 'a tight grid, chairs touching' (floor G r11, layout 5, 3 of 3)
-        def seats_now():
-            return sum(1 for o in bpy.data.objects if o.type == "MESH" and any(k_ in o.name for k_ in ("Chair", "Stool", "chair"))
-                       and x0_ <= o.location.x <= x1_ and y0_ <= o.location.y <= y1_)
+        def seats_now():                                         # on this room's floor: the box of an L-shaped hall takes in the
+            return sum(1 for o in bpy.data.objects if o.type == "MESH" and any(k_ in o.name for k_ in ("Chair", "Stool", "chair"))   # staff room
+                       and x0_ <= o.location.x <= x1_ and y0_ <= o.location.y <= y1_ and self.room.on_floor(o.location.x, o.location.y))
+        _log(f"fill_empty: target {target} seats, {seats_now()} now")
         for k in range(16):
             if target is not None and seats_now() >= target:
                 break

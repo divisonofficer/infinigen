@@ -136,7 +136,7 @@ class CafeStockFactory:
         if k == "crates":
             pl = _flat(f"ir_crate_{r.randrange(3)}", r.choice(((0.6, 0.08, 0.06), (0.08, 0.22, 0.5), (0.12, 0.38, 0.18))), 0.5)
             milk = _flat("ir_milk", (0.93, 0.93, 0.9), 0.3); cap = _flat("ir_milk_cap", (0.1, 0.35, 0.75), 0.4)
-            n = r.randint(1, 3); c, b, cp = [], [], []
+            n = r.randint(1, 2); c, b, cp = [], [], []   # <= 2 high: three (0.87 m) fitted no shelf level (G r33-r34)
             for j in range(n):
                 z = j * 0.29
                 c += [("box", (0, 0, z + 0.01), (0.36, 0.36, 0.02), (0, 0, 0))] + \
