@@ -29,8 +29,14 @@ FLOOR_POOLS = {"carpet": ("fabrics_0076", "fabric_0022"), "polished": ("concrete
                "work": ("concrete_0018", "concrete_0010", "concrete_0023"),
                # polished dark-red granite of the underground bookstore (ROOM_BOOKSTORE=1): orange marble 0002 (0016: small tiles, blown highlights; tiles_0099: fan pattern), tinted maroon, low roughness
                "granite_red": ("marble_0002",)}
-GRANITE_TINT, GRANITE_ROUGH, GRANITE_CONTRAST = (0.27, 0.065, 0.05), 0.12, 0.8
+MUSEUM_POOL = ("marble_0011",)                                        # science museum (ROOM_MUSEUM=1): pale marble, tinted travertine (marble_0011 is not in arch_textures/catalog.json)
+GRANITE_TINT, GRANITE_ROUGH, GRANITE_CONTRAST = (0.2, 0.06, 0.04), 0.2, 0.8    # bookstore VLM v2: more red-brown
+# flagship: dark veined marble (VLM: 'dark marble floor' missing, everything beige)
+FLAGSHIP_FLOOR_TINT, FLAGSHIP_FLOOR_ROUGH, FLAGSHIP_FLOOR_CONTRAST = (0.07, 0.07, 0.075), 0.22, 0.9    # bookstore r1 rendered salmon with (0.27, 0.065, 0.05): darker
 # polished grey stone floor of the rooftop restaurant (ROOM_ROOFTOP=1): the orange marble sets tinted neutral grey (the café wood pool used to win)
+# dark glossy epoxy / concrete floor of the wine pub (ROOM_WINEPUB=1 on 'cafe')
+EPOXY_POOL = ("concrete_0018", "concrete_0010")
+EPOXY_TINT, EPOXY_ROUGH, EPOXY_CONTRAST = (0.05, 0.05, 0.055), 0.12, 0.5
 STONE_GREY_POOL = ("marble_0002", "marble_0016")
 STONE_GREY_TINT, STONE_GREY_ROUGH, STONE_GREY_CONTRAST = (0.34, 0.35, 0.37), 0.2, 0.7
 CLINIC = {"clinic-reception", "exam-room", "dental-room", "physio-room", "pharmacy"}
@@ -118,7 +124,7 @@ def floor_pool(room_type, venue):
     return None                                                 # office-like: carpet / polished concrete by room hash
 
 
-def apply(room_venues=None, style_venue=None):
+def apply(room_venues=None, style_venue=None, kit_floor=None):
     room_venues = room_venues or {}
     done = {"wall": 0, "floor": 0}
     for o in list(bpy.data.objects):
@@ -145,19 +151,39 @@ def apply(room_venues=None, style_venue=None):
                 t = tex(WALL[_h(room, "wall") % len(WALL)])
                 if t is None:
                     continue
-                name = f"ir_arch_{t['id']}_wall_{'%02x%02x%02x' % tuple(int(c * 255) for c in col)}"
-                slot.material = make_material(name, t, tint=col, rough0=rough0)
+                lobby = os.environ.get("ROOM_CLINIC_LOBBY") == "1" and venue == "clinic-reception"
+                clean = venue in CLINIC or venue in {"office", "open-office", "meeting-room", "boutique", "convenience", "grocery"} or style_venue in CLINIC
+                if lobby:                                                       # warm cream plaster: the kit colour as it is, almost no scan mottling
+                    name = f"ir_arch_{t['id']}_wall_{'%02x%02x%02x' % tuple(int(c * 255) for c in col)}_lobby"
+                    slot.material = make_material(name, t, tint=col, rough0=0.75, contrast=0.1)
+                    continue
+                if clean and os.environ.get("IR_CLEAN_WALLS", "1") != "0":     # references: bright, clean walls; ours were mottled grey
+                    col = tuple(min(1.0, c + (1.0 - c) * 0.3) for c in col)
+                name = f"ir_arch_{t['id']}_wall_{'%02x%02x%02x' % tuple(int(c * 255) for c in col)}" + ("_clean" if clean else "")
+                slot.material = make_material(name, t, tint=col, rough0=rough0, contrast=0.28 if clean and os.environ.get("IR_CLEAN_WALLS", "1") != "0" else 0.55)
             else:
                 granite = os.environ.get("ROOM_BOOKSTORE") == "1" and venue in SHOP
                 stone = os.environ.get("ROOM_ROOFTOP") == "1" and venue == "cafe"
-                pool = STONE_GREY_POOL if stone else FLOOR_POOLS["granite_red"] if granite else floor_pool(rtype, venue)
+                epoxy = os.environ.get("ROOM_WINEPUB") == "1" and venue == "cafe"
+                kit_concrete = kit_floor == "concrete" and venue == "cafe" and rtype in ("break-room", "kitchen")   # the café hall follows its kit: polished concrete, not parquet
+                museum = os.environ.get("ROOM_MUSEUM") == "1" and venue in SHOP
+                fdark = os.environ.get("ROOM_FLAGSHIP") == "1" and venue in SHOP and not granite and not epoxy
+                pool = MUSEUM_POOL if museum else EPOXY_POOL if epoxy else STONE_GREY_POOL if (stone or fdark) else FLOOR_POOLS["granite_red"] if granite else FLOOR_POOLS["polished"] if kit_concrete else floor_pool(rtype, venue)
                 if pool is None:
                     pool = FLOOR_POOLS["carpet"] if _h(room, "floor") % 10 < 7 else FLOOR_POOLS["polished"]
                 t = tex(pool[_h(room, "floor") % len(pool)])
                 if t is None:
                     continue
-                if stone:
+                if museum:                                                # pale polished travertine (museum r6 VLM: floor read as plain tiles)
+                    slot.material = make_material(f"ir_arch_{t['id']}_floor_travertine", t, tint=(0.85, 0.79, 0.66), rough0=0.25, contrast=0.6)
+                elif epoxy:
+                    slot.material = make_material(f"ir_arch_{t['id']}_floor_epoxy", t, tint=EPOXY_TINT, rough0=EPOXY_ROUGH, contrast=EPOXY_CONTRAST)
+                elif fdark:
+                    slot.material = make_material(f"ir_arch_{t['id']}_floor_darkmarble", t, tint=FLAGSHIP_FLOOR_TINT, rough0=FLAGSHIP_FLOOR_ROUGH, contrast=FLAGSHIP_FLOOR_CONTRAST)
+                elif stone:
                     slot.material = make_material(f"ir_arch_{t['id']}_floor_greystone", t, tint=STONE_GREY_TINT, rough0=STONE_GREY_ROUGH, contrast=STONE_GREY_CONTRAST)
+                elif kit_concrete:                                        # polished warm concrete (industrial brick reference: tan-brown, glossy, mottled)
+                    slot.material = make_material(f"ir_arch_{t['id']}_floor_polished", t, tint=(0.55, 0.43, 0.32), rough0=0.28, contrast=0.55)
                 elif granite:
                     slot.material = make_material(f"ir_arch_{t['id']}_floor_redgranite", t, tint=GRANITE_TINT, rough0=GRANITE_ROUGH, contrast=GRANITE_CONTRAST)
                 else:

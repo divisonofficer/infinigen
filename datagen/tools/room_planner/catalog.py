@@ -67,6 +67,11 @@ FURNITURE = {
     "waiting_bench":  {"src": "proc:WaitingBenchFactory", "size": [2.2, 0.6, 0.85], "rooms": ["clinic-reception", "pharmacy"]},   # not exam rooms:
                                                                                      # a 3-seat beam bench read as a second waiting room (floor D3 r2)
     "exam_table":     {"src": "proc:ExamTableFactory", "size": [0.65, 1.9, 0.9], "rooms": ["exam-room", "physio-room"]},
+    "supply_cart":    {"src": "proc:ExamSupplyCartFactory", "size": [0.5, 0.8, 1.0], "rooms": ["exam-room"]},          # generated prop (data/venue_refs/generated_props)
+    "rolling_stool":  {"src": "proc:RollingStoolFactory", "size": [0.55, 0.55, 0.55], "rooms": ["exam-room"]},
+    "wall_diagnostic": {"src": "proc:WallDiagnosticSetFactory", "size": [0.1, 0.5, 0.5], "rooms": ["exam-room"]},
+    "wall_monitor":   {"src": "proc:WallMonitorFactory", "size": [0.06, 0.54, 0.34], "rooms": ["dental-room", "exam-room"]},     # generated prop
+    "lounge_sofa":    {"src": "proc:VelvetSofaFactory", "size": [0.9, 2.0, 0.8], "rooms": ["open-office", "office"]},            # generated prop
     "toilet":         {"src": "proc:ToiletStallFactory", "size": [1.5, 0.95, 1.95], "rooms": ["restroom"]},   # floor scenes: a cubicle
     "wc":             {"src": "inf:ToiletFactory", "size": [0.7, 0.45, 0.8], "rooms": ["restroom"]},   # a single-user restroom: no cubicle
     "urinal":         {"src": "proc:UrinalFactory", "size": [0.42, 1.6, 1.6], "rooms": ["restroom"]},
@@ -101,7 +106,7 @@ FURNITURE = {
     "section_sign":    {"src": "proc:SectionSignFactory", "size": [0.26, 0.37, 1.3], "rooms": []},
     "stepped_plinth": {"src": "proc:SteppedPlinthFactory", "size": [1.2, 1.8, 0.44], "rooms": []},
     # rooftop fine-dining restaurant (docs/rooftop_fine_dining_design_proposal.md): realize._fill_rooftop places them when ROOM_ROOFTOP=1
-    "rt_banquette":   {"src": "proc:BanquetteFactory", "size": [3.0, 0.6, 1.0], "rooms": []},
+    "rt_banquette":   {"src": "proc:CreamBanquetteFactory", "size": [3.0, 0.6, 1.0], "rooms": []},   # cream leather + orange cushions (VLM gap)
     "rt_booth":       {"src": "proc:VelvetBoothFactory", "size": [0.8, 2.2, 1.05], "rooms": []},
     "rt_table_low":   {"src": "proc:MarbleTableLowFactory", "size": [0.7, 1.2, 0.75], "rooms": []},
     "rt_table_high":  {"src": "proc:MarbleTableHighFactory", "size": [0.7, 0.7, 1.05], "rooms": []},
@@ -113,6 +118,35 @@ FURNITURE = {
     "rt_floor_ac":    {"src": "proc:FloorAcFactory", "size": [0.35, 0.5, 1.9], "rooms": []},
     "rt_heater":      {"src": "proc:PatioHeaterFactory", "size": [0.64, 0.64, 2.1], "rooms": []},
     "rt_setting":     {"src": "proc:FineDiningSettingFactory", "size": [0.34, 0.4, 0.17], "rooms": []},
+    # underground wine pub (docs/wine_pub_underground_design_proposal.md): realize._fill_winepub places them when ROOM_WINEPUB=1
+    "wp_column":      {"src": "proc:MirrorPillarFactory", "size": [0.7, 0.7, 3.2], "rooms": []},
+    "wp_table":       {"src": "proc:WhiteMarbleRoundTableFactory", "size": [0.7, 0.7, 0.74], "rooms": []},
+    "wp_chair":       {"src": "proc:VelvetShellChairFactory", "size": [0.55, 0.55, 0.8], "rooms": []},
+    "wp_bar":         {"src": "proc:BarCounterBlackFactory", "size": [0.68, 3.6, 1.05], "rooms": []},
+    "wp_shelf":       {"src": "proc:BottleShelfFactory", "size": [0.4, 1.5, 1.9], "rooms": []},
+    "wp_bottle_row":  {"src": "proc:BottleRowFactory", "size": [0.14, 2.4, 0.36], "rooms": []},
+    "wp_mirror_wall": {"src": "proc:WrinkledMirrorWallFactory", "size": [0.07, 2.4, 2.3], "rooms": []},
+    # warm clinic reception lobby (ROOM_CLINIC_LOBBY=1, venue stays clinic-reception): realize._fill_clinic_lobby places them
+    "cl_wood_wall":   {"src": "proc:WoodPanelWallFactory", "size": [0.2, 3.6, 2.5], "rooms": []},
+    "cl_desk":        {"src": "proc:OakLouverDeskFactory", "size": [0.9, 3.2, 1.05], "rooms": []},
+    "cl_sofa":        {"src": "proc:BeigeSofaFactory", "size": [0.9, 2.0, 0.85], "rooms": []},
+    "cl_armchair":    {"src": "proc:OakArmchairFactory", "size": [0.85, 0.8, 0.83], "rooms": []},
+    "cl_table":       {"src": "proc:RoundOakCoffeeTableFactory", "size": [1.0, 1.0, 0.43], "rooms": []},
+    "cl_rug":         {"src": "proc:JuteRugFactory", "size": [1.7, 2.4, 0.012], "rooms": []},
+    "cl_art":         {"src": "proc:FramedBotanicalArtFactory", "size": [0.06, 0.9, 1.2], "rooms": []},
+    "rt_timber":      {"src": "proc:TimberColumnFactory", "size": [0.6, 0.6, 3.2], "rooms": []},
+    "book_pop":       {"src": "proc:PopStandFactory", "size": [0.5, 0.6, 1.55], "rooms": []},
+    "fl_wood_wall":   {"src": "proc:FlagshipWoodWallFactory", "size": [0.2, 3.6, 2.5], "rooms": []},
+    # science museum (docs/space_museum_design_proposal.md): realize._fill_museum places them when ROOM_MUSEUM=1
+    "mu_elements":    {"src": "proc:ElementWallFactory", "size": [0.25, 5.0, 2.8], "rooms": []},
+    "mu_bench":       {"src": "proc:MarbleBenchFactory", "size": [0.5, 1.6, 0.46], "rooms": []},
+    "mu_rail":        {"src": "proc:RotundaRailFactory", "size": [4.2, 4.2, 1.04], "rooms": []},
+    "mu_ring":        {"src": "proc:GlowRingFactory", "size": [3.6, 3.6, 0.04], "rooms": []},
+    "mu_pendulum":    {"src": "proc:PendulumFactory", "size": [0.3, 0.3, 6.0], "rooms": []},
+    "mu_nebula":      {"src": "proc:NebulaWallPanelFactory", "size": [0.1, 3.3, 2.2], "rooms": []},
+    "mu_pic_blue":    {"src": "proc:PictureFrameNebulaBlueFactory", "size": [0.08, 0.7, 0.85], "rooms": []},
+    "mu_pic_ring":    {"src": "proc:PictureFrameNebulaRingFactory", "size": [0.08, 0.7, 0.85], "rooms": []},
+    "mu_pic_earth":   {"src": "proc:PictureFrameEarthFactory", "size": [0.08, 1.1, 0.72], "rooms": []},
     "stone_table":    {"src": "proc:StoneSlabTableFactory", "size": [2.2, 1.1, 0.78], "rooms": []},
     "wall_rail":      {"src": "proc:WallRailFlatFactory", "size": [3.0, 0.16, 0.1], "rooms": []},
     "lattice_screen": {"src": "proc:SteelLatticeScreenFactory", "size": [1.9, 0.45, 2.6], "rooms": []},

@@ -56,13 +56,20 @@ def _log(msg):
     print(f"[realize {time.time() - T0:7.1f}s] {msg}", flush=True)
 
 
+#: modules holding the proc: factories that are not in proc_assets (searched in order); every new scene mode appends its module here, nowhere else
+PROP_MODULES = ["proc_bookstore", "proc_boutique_flagship", "proc_rooftop", "proc_winepub", "proc_clinic_lobby", "proc_museum", "proc_generated"]
+
+
 def _cls(src):
     kind, name = src.split(":")
     if kind == "proc":
         from room_planner import proc_assets
-        if not hasattr(proc_assets, name):                       # bookstore / flagship props live in their own modules
-            from room_planner import proc_bookstore, proc_boutique_flagship, proc_rooftop
-            return getattr(next(m for m in (proc_bookstore, proc_boutique_flagship, proc_rooftop) if hasattr(m, name)), name)
+        if not hasattr(proc_assets, name):                       # props of the scene modes live in their own modules: add a new module to PROP_MODULES only
+            for modname in PROP_MODULES:
+                mod = importlib.import_module("room_planner." + modname)
+                if hasattr(mod, name):
+                    return getattr(mod, name)
+            raise AttributeError(f"no prop module defines {name}: {PROP_MODULES}")
         return getattr(proc_assets, name)
     if kind == "abo":
         import abo_assets as abo
@@ -134,7 +141,16 @@ BOOKSTORE = os.environ.get("ROOM_BOOKSTORE") == "1"      # underground bookstore
 ROOFTOP = os.environ.get("ROOM_ROOFTOP") == "1"          # rooftop fine-dining restaurant (cafe venue): _fill_rooftop replaces fill_empty
 ROOFTOP_CATS = {"banquette": "rt_banquette", "velvet_booth": "rt_booth", "marble_table_low": "rt_table_low", "marble_table_high": "rt_table_high",
                 "marble_table_round": "rt_table_round", "cube_ottoman": "rt_ottoman", "mirror_column": "rt_mirror_column", "floor_ac": "rt_floor_ac",
-                "patio_heater": "rt_heater", "counter": "counter"}
+                "patio_heater": "rt_heater", "counter": "counter", "timber_column": "rt_timber"}
+CLINIC_LOBBY = os.environ.get("ROOM_CLINIC_LOBBY") == "1"   # warm clinic reception lobby (venue 'clinic-reception'): _fill_clinic_lobby goes first in run()
+LOBBY_CATS = {"wood_wall": "cl_wood_wall", "oak_desk": "cl_desk", "beige_sofa": "cl_sofa", "oak_armchair": "cl_armchair", "round_table": "cl_table", "jute_rug": "cl_rug",
+              "wall_art": "cl_art", "floor_plant": "floor_plant"}
+MUSEUM = os.environ.get("ROOM_MUSEUM") == "1"           # science museum (venue 'boutique'): _fill_museum goes first in run()
+MUSEUM_CATS = {"rail_ring": "mu_rail", "glow_ring": "mu_ring", "pendulum": "mu_pendulum", "element_wall": "mu_elements", "nebula_panel": "mu_nebula",
+               "marble_bench": "mu_bench", "pic_blue": "mu_pic_blue", "pic_ring": "mu_pic_ring", "pic_earth": "mu_pic_earth"}
+WINEPUB = os.environ.get("ROOM_WINEPUB") == "1"          # underground wine pub (cafe venue): _fill_winepub replaces the cafe fill
+WINEPUB_CATS = {"bar_counter": "wp_bar", "bottle_shelf": "wp_shelf", "bottle_row": "wp_bottle_row", "round_table": "wp_table", "velvet_chair": "wp_chair",
+                "mirror_wall": "wp_mirror_wall", "mirror_column": "wp_column"}
 ROOFTOP_CHANDELIERS = ("PH_Chandelier_01", "PH_Chandelier_02", "PH_Chandelier_03", "PH_chinese_chandelier")
 REAL_FURNITURE = {"desk_chair": "officechair", "conference_chair": "officechair", "meeting_table": "conftable"}   # category -> furnish_rooms ABO pool
 LABELS = Path("/jarvis/project/robomituba/data/venue_refs/product_labels")
@@ -896,7 +912,8 @@ class RoomRealizer:
         C = self.ids[ctr["id"]][0]
         Lc = C.dimensions[1] / max(C.scale.y, 1e-6)
         top = max((C.matrix_world.inverted() @ (C.matrix_world @ Vector(q))).z for q in C.bound_box)
-        for cat, y in (("espresso_machine", -Lc / 2 + 0.45), ("pastry_case", Lc / 2 - 0.45)):
+        mid_ = max(0.0, Lc / 2 - 2.0) if Lc > 3.6 else 0.0      # a long counter (kit counter_len_m): the machine and the case move in from the ends so one view sees both (S8 v10)
+        for cat, y in (("espresso_machine", -Lc / 2 + 0.45 + mid_), ("pastry_case", Lc / 2 - 0.45 - mid_)):
             o = self.spawn(_cls(catalog.LIVED_IN[cat]["src"]))
             if o is None:
                 continue
@@ -947,7 +964,7 @@ class RoomRealizer:
         self.ids.setdefault(it["id"], self.ids[ctr["id"]])
         return True
 
-    WALL_MOUNTED = {"whiteboard": 0.9, "wall_display": 0.9, "menu_board": 1.5, "wall_rail": 1.65}
+    WALL_MOUNTED = {"whiteboard": 0.9, "wall_display": 0.9, "menu_board": 1.5, "wall_rail": 1.65, "wall_diagnostic": 1.3, "wall_monitor": 1.4}
     HUNG = ("privacy_curtain",)
 
     def furniture(self, it) -> bool | None:
@@ -1472,7 +1489,7 @@ class RoomRealizer:
         """Cafes only: no large empty floor (user 2026-10-16: a busy cafe's usable floor is all seating, circulation, queue or
         counter). The largest empty region >= 3 m2 gets a cafe table with 2 (4 if >= 6 m2) chairs around it, until none is left;
         door zones and the counter front are already obstacles. A spot that fails is blocked so the next try moves on."""
-        if ROOFTOP:                                              # the layout already ran first in run(); the standard cafe fill must not add to it
+        if ROOFTOP or WINEPUB:                                   # the layout already ran first in run(); the standard cafe fill must not add to it
             return 0
         from room_planner import proc_assets
         if proc_assets.VENUE in ("clinic-reception", "exam-room", "dental-room", "physio-room") or self.doc.get("type") in ("restroom", "hallway", "closet") or \
@@ -1889,6 +1906,93 @@ class RoomRealizer:
         cols = [fr.footprint(o)[:4] for o in bpy.data.objects if o.type == "MESH" and ("Column" in o.name or "Pilaster" in o.name)]
         return doors, cols
 
+    def _fill_clinic_lobby(self, plan):
+        """Clinic reception lobby (ROOM_CLINIC_LOBBY=1): room_planner/clinic_lobby_layout places the oak wall, louver desk, seating group on a jute rug, plants and art."""
+        from room_planner import clinic_lobby_layout as cll
+        x0, x1, y0, y1 = self.room.box
+        doors, cols = self._hall_keepouts()
+        lay = cll.layout(x0, x1, y0, y1, self.rng.randrange(1 << 20), obstacles=cols, doors=doors)
+        placed, failed, by_cat = 0, {}, {}
+        for e in lay["items"]:
+            o, front = self._make(LOBBY_CATS[e["cat"]])
+            if o is None:
+                failed.setdefault(e["cat"], {}).setdefault("spawn_failed", 0)
+                failed[e["cat"]]["spawn_failed"] += 1
+                continue
+            if e.get("direct"):                                   # the rug lies under the seating group: no footprint check
+                o.rotation_mode = "XYZ"; o.rotation_euler = (0, 0, e["yaw"]); o.location = (e["x"], e["y"], self.room.z + 0.002)
+                placed += 1; by_cat[e["cat"]] = by_cat.get(e["cat"], 0) + 1
+            elif fr._place(o, e["x"], e["y"], e["yaw"], self.room, self.obstacles, front):
+                o.location.z += e.get("lift", 0.0)
+                placed += 1; self.stats["furniture_added"] += 1; by_cat[e["cat"]] = by_cat.get(e["cat"], 0) + 1
+            else:
+                why = self._why_not_placed({**e, "cat": e["cat"]}, doors, cll)
+                failed.setdefault(e["cat"], {}).setdefault(why, 0)
+                failed[e["cat"]][why] += 1
+                bpy.data.objects.remove(o, do_unlink=True)
+        self.stats["clinic_lobby"] = {"placed": placed, "wanted": len(lay["items"]), "by_cat": by_cat, "failed": failed, "far_wall": lay["far_wall"]["normal"], "doors": [[round(d[0], 1), round(d[1], 1)] for d in doors]}
+        return placed
+
+    def _fill_museum(self, plan):
+        """Science museum (ROOM_MUSEUM=1): room_planner/museum_layout places the rotunda's parapet ring, lit scale ring and pendulum (hung from the dome crown), the element
+        showcase wall with the nebula panel and marble benches, and the lit pictures; the dome shell itself comes from museum_shell via the 'museum' archetype."""
+        from room_planner import museum_layout as ml
+        x0, x1, y0, y1 = self.room.box
+        lay = ml.layout(x0, x1, y0, y1, self.rng.randrange(1 << 20))
+        zc = max((self.room.wall.matrix_world @ Vector(c)).z for c in self.room.wall.bound_box)
+        placed, failed, by_cat = 0, {}, {}
+        for e in lay["items"]:
+            o, front = self._make(MUSEUM_CATS[e["cat"]])
+            if o is None:
+                failed.setdefault(e["cat"], {}).setdefault("spawn_failed", 0)
+                failed[e["cat"]]["spawn_failed"] += 1
+                continue
+            if e.get("direct"):                                   # ring / pendulum: placed at the rotunda centre, no footprint check
+                o.rotation_mode = "XYZ"; o.rotation_euler = (0, 0, e["yaw"])
+                o.location = (e["x"], e["y"], (zc - 0.3) if e.get("hang") else self.room.z + 0.002 + e.get("lift", 0.0))
+                placed += 1; by_cat[e["cat"]] = by_cat.get(e["cat"], 0) + 1
+            elif fr._place(o, e["x"], e["y"], e["yaw"], self.room, self.obstacles, front):
+                o.location.z += e.get("lift", 0.0)
+                placed += 1; self.stats["furniture_added"] += 1; by_cat[e["cat"]] = by_cat.get(e["cat"], 0) + 1
+            else:
+                why = self._why_not_placed({**e}, [], ml)
+                failed.setdefault(e["cat"], {}).setdefault(why, 0)
+                failed[e["cat"]][why] += 1
+                bpy.data.objects.remove(o, do_unlink=True)
+        self.stats["museum"] = {"placed": placed, "wanted": len(lay["items"]), "by_cat": by_cat, "failed": failed, "rotunda": lay["rotunda"]}
+        return placed
+
+    def _fill_winepub(self, plan):
+        """Wine pub (ROOM_WINEPUB=1): room_planner/winepub_layout places the bar, bottle shelves, floor-edge bottle rows, round marble tables with velvet chairs and
+        the mirror wall; mirror ball and silver spheres hang from the soffit (winepub_ceiling supplies the ceiling itself)."""
+        from room_planner import winepub_layout as wl, proc_winepub as wp
+        x0, x1, y0, y1 = self.room.box
+        doors, cols = self._hall_keepouts()
+        lay = wl.layout(x0, x1, y0, y1, self.rng.randrange(1 << 20), obstacles=cols, doors=doors)
+        placed, failed, bar_placed = 0, {}, False
+        for e in lay["items"]:
+            o, front = self._make(WINEPUB_CATS[e["cat"]])
+            if o is None:
+                failed.setdefault(e["cat"], {}).setdefault("spawn_failed", 0)
+                failed[e["cat"]]["spawn_failed"] += 1
+                continue
+            if fr._place(o, e["x"], e["y"], e["yaw"], self.room, self.obstacles, front):
+                placed += 1; self.stats["furniture_added"] += 1
+                bar_placed = bar_placed or e["cat"] == "bar_counter"
+            else:
+                why = self._why_not_placed(e, doors, wl)
+                failed.setdefault(e["cat"], {}).setdefault(why, 0)
+                failed[e["cat"]][why] += 1
+                bpy.data.objects.remove(o, do_unlink=True)
+        zc = max((self.room.wall.matrix_world @ Vector(c)).z for c in self.room.wall.bound_box)
+        hung = 0
+        for c in lay["ceiling"]:
+            cls = wp.MirrorBallFactory if c["cat"] == "mirror_ball" else wp.SilverSphereClusterFactory
+            o = cls(self.rng.randrange(1 << 20)).spawn_asset(hung)
+            o.location = (c["x"], c["y"], zc - 0.35); hung += 1
+        self.stats["winepub"] = {"placed": placed, "wanted": len(lay["items"]), "ceiling_items": hung, "failed": failed, "bar_placed": bar_placed}
+        return placed
+
     def _fill_rooftop(self, plan):
         """Rooftop fine-dining restaurant (ROOM_ROOFTOP=1): room_planner/rooftop_layout places banquettes, velvet booths, marble tables with
         stools, mirror columns, air conditioners and heaters; a table setting on every table; Poly Haven chandeliers (needs the Poly Haven
@@ -1971,6 +2075,7 @@ class RoomRealizer:
                 why = self._why_not_placed(e, doors)
                 failed.setdefault(e["cat"], {}).setdefault(why, 0)
                 failed[e["cat"]][why] += 1
+                failed[e["cat"]].setdefault("at", []).append([round(e["x"] - x0, 1), round(e["y"] - y0, 1)])   # room-frame position of each refusal
                 bpy.data.objects.remove(o, do_unlink=True)
         self.stats["flagship_layout"] = {"placed": placed, "wanted": len(lay["items"]), "failed": failed, "counter_placed": counter_placed}
         return placed
@@ -1981,23 +2086,30 @@ class RoomRealizer:
         x0, x1, y0, y1 = self.room.box
         doors, cols = self._hall_keepouts()
         lay = bl.layout(x0, x1, y0, y1, self.rng.randrange(1 << 20), obstacles=cols, doors=doors)
-        placed = 0
-        for key, cat in (("wall_shelves", "book_wall_shelf"), ("islands", "book_island"), ("popups", "book_island"), ("signs", "section_sign")):
+        placed, failed, wanted = 0, {}, 0
+        for key, cat in (("wall_shelves", "book_wall_shelf"), ("islands", "book_island"), ("popups", "book_island"), ("signs", "section_sign"), ("pop_stands", "book_pop")):
             for e in lay[key]:
+                wanted += 1
                 o, front = self._make(cat)
                 if o is None:
+                    failed.setdefault(cat, {}).setdefault("spawn_failed", 0)
+                    failed[cat]["spawn_failed"] += 1
                     continue
                 if fr._place(o, e["x"], e["y"], e["yaw"], self.room, self.obstacles, front):
                     placed += 1; self.stats["furniture_added"] += 1
                 else:
+                    why = self._why_not_placed({**e, "cat": cat}, doors, bl)
+                    failed.setdefault(cat, {}).setdefault(why, 0)
+                    failed[cat][why] += 1
+                    failed[cat].setdefault("at", []).append([round(e["x"] - x0, 1), round(e["y"] - y0, 1)])
                     bpy.data.objects.remove(o, do_unlink=True)
-        self.stats["bookstore"] = {"placed": placed, "zones": sorted({e["zone"] for k in ("islands", "wall_shelves") for e in lay[k]})}
+        self.stats["bookstore"] = {"placed": placed, "wanted": wanted, "failed": failed, "zones": sorted({e["zone"] for k in ("islands", "wall_shelves") for e in lay[k]})}
         return placed
 
     def _fill_boutique(self, plan):
         """Boutique floor: the largest empty region >= 3 m2 gets a display table or a clothing rack (alternating), until none is left."""
-        if BOOKSTORE:
-            return self._fill_bookstore(plan)
+        if BOOKSTORE or MUSEUM:                                  # already placed first in run()
+            return 0
         if FLAGSHIP and self.doc.get("area_m2", 0) > 150:        # already placed first in run()
             return 0
         ox, oy = self.doc["_origin"]
@@ -2399,6 +2511,24 @@ class RoomRealizer:
                       "pharmacy": [("reception_desk", "against_wall"), ("backbar_shelf", "against_wall")]}
 
     def run(self, plan):
+        if MUSEUM:                                               # the museum layout goes first; the plan's plain display tables / counters etc. are dropped
+            self._fill_museum(plan)
+            drop = {"display_table", "clothing_rack", "fitting_room", "wall_gondola", "mirror", "counter", "armchair", "rug"}
+            plan = {**plan, "furniture": [f for f in plan.get("furniture", []) if f["category"] not in drop]}
+        if CLINIC_LOBBY and self.doc.get("type") == "clinic-reception":   # the lobby layout goes first; the plan's benches / desk / chair / sofa group are dropped
+            self._fill_clinic_lobby(plan)
+            drop = {"waiting_bench", "reception_desk", "desk_chair", "filing_cabinet", "sofa", "armchair", "coffee_table", "rug", "floor_plant"}
+            plan = {**plan, "furniture": [f for f in plan.get("furniture", []) if f["category"] not in drop]}
+        if BOOKSTORE:                                            # the book layout goes first; the plan's plain display tables / fitting rooms / gondolas are dropped
+            self._fill_bookstore(plan)                           # (bookstore r1: 16 of ~45 placed, the planner's own bare tables took the floor)
+            drop = {"display_table", "fitting_room", "wall_gondola", "mirror"}
+            plan = {**plan, "furniture": [f for f in plan.get("furniture", []) if f["category"] not in drop]}
+        if WINEPUB:                                              # the deterministic layout goes first, the plan's standard cafe seating is dropped
+            self._fill_winepub(plan)
+            drop = {"cafe_table", "cafe_chair", "banquette_row", "bar_stool", "window_bar", "break_table", "backbar_shelf"}
+            if self.stats.get("winepub", {}).get("bar_placed"):
+                drop |= {"counter", "coffee_bar"}
+            plan = {**plan, "furniture": [f for f in plan.get("furniture", []) if f["category"] not in drop]}
         if FLAGSHIP and self.doc.get("area_m2", 0) > 150:        # the deterministic hall layout goes first (flagship r6: 14 of 36 placed, 18 refused as
             self._fill_flagship(plan)                            # 'obstacle' = the planner's own 12-16 pieces); the plan then fills around it
             drop = {"clothing_rack", "display_table", "mirror", "fitting_room", "wall_gondola"}
@@ -2417,7 +2547,7 @@ class RoomRealizer:
             plan = {**plan, "furniture": [{"id": "req_" + need[0], "category": need[0], "relation": need[1]}] + plan.get("furniture", [])}
             self.stats["zones_forced"] = self.stats.get("zones_forced", 0) + 1
             _log(f"required zone {need[0]} added")
-        for cat, rel in self.REQUIRED_ITEMS.get(self.doc.get("type", ""), []):   # the pieces that make the room what it is
+        for cat, rel in ([] if ((CLINIC_LOBBY and self.doc.get("type") == "clinic-reception") or MUSEUM or BOOKSTORE or ROOFTOP or WINEPUB) else self.REQUIRED_ITEMS.get(self.doc.get("type", ""), [])):   # the pieces that make the room what it is (the lobby brings its own desk and seating; D3 r28: the required reception_desk + waiting_bench came back)
             have = [f for f in plan.get("furniture", []) if f["category"] == cat]
             if rel == "near_door" and have:                      # the checkout stands by the door whatever the plan said
                 plan = {**plan, "furniture": [({**f, "relation": "near_door", "target": None} if f is have[0] else f) for f in plan["furniture"]]}
@@ -2731,6 +2861,11 @@ class RoomRealizer:
             new = self.revise(plan, rep)
             if new:
                 new = self._in_vocab(new)
+                _dm = ({"display_table", "clothing_rack", "fitting_room", "wall_gondola", "mirror", "counter", "armchair", "rug"} if MUSEUM else
+                       {"waiting_bench", "reception_desk", "desk_chair", "filing_cabinet", "sofa", "armchair", "coffee_table", "rug", "floor_plant"}
+                       if (CLINIC_LOBBY and self.doc.get("type") == "clinic-reception") else set())
+                if _dm:                                          # the LLM revision re-adds what the mode's layout already owns (museum r7: a clothing rack in the strip)
+                    new = {**new, "furniture": [f for f in new.get("furniture", []) if f["category"] not in _dm]}
                 if self.doc.get("type") == "open-office":       # the grid owns the pods
                     new = {**new, "furniture": [f for f in new.get("furniture", []) if f["category"] != "workstation_pod"]}
                 if self.doc.get("type") == "warehouse":

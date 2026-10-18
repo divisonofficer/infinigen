@@ -2,9 +2,9 @@
  "brief": "A bright, daylit clinical exam room. The doctor's desk zone sits on the left under a large window, with a monitor, a mesh task chair and a plant on the desk. A blue guest chair stands in the foreground. The exam table sits against a pale-blue feature wall in the centre, framed by ceiling-track privacy curtains, with a step stool and a wall-mounted otoscope set. A white cabinet run with a sink, a dispenser, a sharps bin and supplies lines the right wall. A steel supply trolley stands by the window. Flat, even, cool-white light comes from recessed ceiling panels and the window. The mood is clean, calm and reassuring.",
  "wall": "paint",
  "wall_srgb": [
-  0.93,
   0.95,
-  0.96
+  0.94,
+  0.9
  ],
  "floor": "concrete",
  "floor_tone": "pale",
@@ -75,13 +75,28 @@
    "category": "medical_cabinet",
    "count": 2,
    "where": "right wall: wall cabinets plus base cabinets with sink; steel supply trolley by the window"
+  },
+  {
+   "category": "supply_cart",
+   "count": 1,
+   "where": "by the window, steel trolley with supplies"
+  },
+  {
+   "category": "rolling_stool",
+   "count": 1,
+   "where": "beside the exam table"
+  },
+  {
+   "category": "wall_diagnostic",
+   "count": 1,
+   "where": "on the blue wall above the exam table"
   }
  ],
  "not_reproducible": "The view outside the window (trees and a building), the computer monitor and keyboard, wall-mounted diagnostic instruments, the hand-hygiene dispensers, the sharps bin, the supplies on the trolley and the sink tap.",
  "wall_rgb": [
-  0.8481,
   0.89,
-  0.9114
+  0.8689,
+  0.7874
  ],
  "floor_rgb": [
   0.5382,
@@ -96,5 +111,35 @@
  "images": [
   "/jarvis/project/robomituba/data/venue_refs/exam_room_gen/view1.png",
   "/jarvis/project/robomituba/data/venue_refs/exam_room_gen/view2.png"
+ ],
+ "feature_srgb": [
+  0.62,
+  0.77,
+  0.89
+ ],
+ "feature_rgb": [
+  0.3424,
+  0.5542,
+  0.7678
+ ],
+ "curtain_srgb": [
+  0.56,
+  0.69,
+  0.87
+ ],
+ "curtain_rgb": [
+  0.2738,
+  0.4339,
+  0.7293
+ ],
+ "upholstery_srgb": [
+  0.2,
+  0.35,
+  0.6
+ ],
+ "upholstery_rgb": [
+  0.0331,
+  0.1005,
+  0.3185
  ]
 }

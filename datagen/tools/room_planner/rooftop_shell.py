@@ -34,10 +34,10 @@ def make_skyline_png(path=SKYLINE, w=4096, h=640, seed=7):
     from PIL import Image, ImageDraw
     rng = random.Random(seed)
     im = Image.new("RGB", (w, h)); d = ImageDraw.Draw(im)
-    for y in range(h):                                       # dusk gradient: pale teal at the top to warm grey at the horizon
-        t = y / h
-        d.line((0, y, w, y), fill=(int(110 + 90 * t), int(150 + 60 * t), int(190 + 20 * t)))
-    for layer, (base, col, hmax) in enumerate(((h - 40, (98, 116, 138), 110), (h - 10, (62, 78, 100), 150), (h, (40, 50, 68), 190))):
+    for y in range(h):                                       # sunset gradient: deep blue-violet top, warm orange-pink glow at the horizon
+        t = (y / h) ** 1.4
+        d.line((0, y, w, y), fill=(int(70 + 185 * t), int(60 + 120 * t), int(120 + 40 * t - 60 * t * t)))
+    for layer, (base, col, hmax) in enumerate(((h - 40, (150, 110, 110), 110), (h - 10, (96, 70, 84), 150), (h, (52, 40, 58), 190))):
         x = 0
         while x < w:
             bw = rng.randint(40, 130); bh = rng.randint(60, hmax)
@@ -67,7 +67,7 @@ def _quads(name, quads, mat):
 
 
 #: how much direct light the roof panels let through (RGB): a dusk-blue grey, so the room is lit by the chandeliers and warm fill, not by daylight
-ROOF_ATTEN = (0.15, 0.17, 0.26)
+ROOF_ATTEN = (0.55, 0.36, 0.2)
 
 
 def shadow_pass(m, atten=(1.0, 1.0, 1.0)):
@@ -129,7 +129,7 @@ def shell_services(L, S, z_eave, z_ridge, at, name, rng, stats, room=None, truss
     pa = fl._pa()
     steel = fl._flat("ir_rt_steel_white", (0.9, 0.9, 0.88), 0.5)
     roof = _glass("ir_rt_roof_poly", rough=0.35, tint=(0.86, 0.88, 0.86), transmission=0.55, atten=ROOF_ATTEN)
-    pane = _glass("ir_rt_glass", rough=0.0, atten=(0.6, 0.7, 0.85))
+    pane = _glass("ir_rt_glass", rough=0.0, atten=(0.9, 0.72, 0.55))
     mull = fl._flat("ir_rt_mullion", (0.92, 0.92, 0.9), 0.45)
     z0 = z_eave - 0.15
     if room:                                                   # the Infinigen room's flat ceiling goes: the trusses and roof panels are the ceiling

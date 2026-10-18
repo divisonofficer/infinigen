@@ -232,3 +232,39 @@ class BarStoolWhiteFactory(BarStoolFactory):
 class BarStoolGoldFactory(BarStoolFactory):
     def __init__(self, seed):
         super().__init__(seed, "gold")
+
+
+class CreamBanquetteFactory:
+    """Cream leather banquette (rooftop VLM gap: 'cream sofa with orange cushions'): proc_assets.BanquetteFactory in cream, plus 2-3 orange cushions leaning on its back."""
+    def __new__(cls, seed):
+        pa = fl._pa()
+        inst = pa.BanquetteFactory(seed)
+        inst.c = (0.86, 0.83, 0.72)
+        inst._cream_seed = seed
+        base_spawn = inst.spawn_asset
+
+        def spawn(i, _b=base_spawn, _inst=inst):
+            o = _b(i)
+            r = random.Random(_inst._cream_seed * 3 + i)
+            orange = fl._flat("ir_rt_cushion_orange", (0.8, 0.32, 0.08), 0.85)
+            n = r.randint(2, 3); L = _inst.L
+            parts = [("box", -0.1, -L / 2 + 0.5 + k * (L - 1.0) / max(1, n - 1) + r.uniform(-0.05, 0.05), 0.68, 0.1, 0.42, 0.38, r.uniform(-0.15, 0.15)) for k in range(n)]
+            cush = mesh_object("rt_cushions", [(orange, parts)], bevel=False)
+            return pa._join_cloth(o, [cush])
+        inst.spawn_asset = spawn
+        return inst
+
+
+class TimberColumnFactory:
+    """Column wrapped in vertical timber slats (rooftop VLM: 'timber slat columns'): 0.6 x 0.6 x 3.2 m, 20 slats per side on a dark core, brass base ring."""
+    def __init__(self, seed):
+        self.seed = seed
+
+    def spawn_asset(self, i):
+        oak = fl._flat("ir_rt_timber_slat", (0.55, 0.36, 0.2), 0.45, wood=True); core = fl._flat("ir_rt_timber_core", (0.08, 0.06, 0.04), 0.7)
+        brass = fl._flat("ir_rt_brass_ring", (0.8, 0.62, 0.25), 0.3, 1.0); H = 3.2; n = 12; w = 0.6 / n
+        slats = []
+        for k in range(n):
+            o = -0.3 + (k + 0.5) * w
+            slats += [("box", 0.3, o, H / 2, 0.04, w * 0.7, H), ("box", -0.3, o, H / 2, 0.04, w * 0.7, H), ("box", o, 0.3, H / 2, w * 0.7, 0.04, H), ("box", o, -0.3, H / 2, w * 0.7, 0.04, H)]
+        return mesh_object(f"TimberColumnFactory({self.seed}).spawn_asset({i})", [(core, [("box", 0, 0, H / 2, 0.58, 0.58, H)]), (oak, slats), (brass, [("box", 0, 0, 0.04, 0.66, 0.66, 0.08), ("box", 0, 0, H - 0.04, 0.66, 0.66, 0.08)])], bevel=False)

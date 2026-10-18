@@ -14,6 +14,8 @@ import math
 import random
 
 ISLAND_L, ISLAND_D, SHELF_W, SHELF_D = 2.4, 1.0, 2.4, 0.35
+DOOR_CLEAR = 2.2                                                  # used by realize._why_not_placed
+SIZE = {"book_island": (ISLAND_D, ISLAND_L), "book_wall_shelf": (SHELF_D, SHELF_W), "section_sign": (0.26, 0.37), "pop_stand": (0.5, 0.6)}
 AISLE, GAP, CROSS_EVERY, ENTRANCE = 1.7, 0.6, 4, 4.5
 ZONES = ("A", "B", "C", "D")
 
@@ -33,7 +35,7 @@ def layout(x0, x1, y0, y1, seed=0, obstacles=(), doors=()):
     def shelf_yaw(nu, nv):                                    # inward normal (in u, v) -> yaw of a piece whose front is +X
         nx, ny = (nu, nv) if long_x else (nv, nu)
         return math.atan2(ny, nx)
-    for v, nv in ((SHELF_D / 2, 1), (S - SHELF_D / 2, -1)):
+    for v, nv in ((SHELF_D / 2 + 0.14, 1), (S - SHELF_D / 2 - 0.14, -1)):     # 0.14 m off the wall: shelves 0.2 m from it were refused 'off_floor'
         u = ENTRANCE
         while u + SHELF_W <= L - SHELF_D:
             cx, cy = world(u + SHELF_W / 2, v)
@@ -41,11 +43,11 @@ def layout(x0, x1, y0, y1, seed=0, obstacles=(), doors=()):
             u += SHELF_W
     v = SHELF_D + 0.0
     while v + SHELF_W <= S - SHELF_D:                         # back wall
-        cx, cy = world(L - SHELF_D / 2, v + SHELF_W / 2)
+        cx, cy = world(L - SHELF_D / 2 - 0.14, v + SHELF_W / 2)
         out["wall_shelves"].append({"x": cx, "y": cy, "yaw": shelf_yaw(-1, 0), "cat": "book_wall_shelf", "zone": "B"})
         v += SHELF_W
     # island rows
-    clear = SHELF_D + AISLE
+    clear = SHELF_D + 0.14 + AISLE + 0.3        # the first island row clears the wall shelves' footprint (bookstore r2: 5 'obstacle')
     v_lo, v_hi = clear, S - clear
     pitch = ISLAND_D + AISLE
     nrows = max(0, int((v_hi - v_lo + AISLE) // pitch))
@@ -77,12 +79,18 @@ def layout(x0, x1, y0, y1, seed=0, obstacles=(), doors=()):
             u += ISLAND_L + GAP
     rng.shuffle(out["popups"])
     out["popups"] = out["popups"][: max(2, len(out["popups"]) * 2 // 3)]
+    # promotion stands: a row across the open entrance zone (the first 4 m) and one at the head of every second island row
+    out["pop_stands"] = []
+    for k in range(max(2, int((S - 2.0) / 3.0))):
+        cx, cy = world(ENTRANCE - 1.1, 1.5 + k * 3.0)
+        if cy is not None and 1.5 + k * 3.0 < S - 1.0:
+            out["pop_stands"].append({"x": cx, "y": cy, "yaw": shelf_yaw(1, 0), "cat": "pop_stand", "zone": "A"})
     # keep doors and columns clear: drop what stands within DOOR_CLEAR of a door or on an obstacle footprint (x0, x1, y0, y1), padded
     def clear(e):
         if any(abs(e["x"] - dx) < 2.2 and abs(e["y"] - dy) < 2.2 for dx, dy in doors):
             return False
         return not any(o[0] - 0.8 < e["x"] < o[1] + 0.8 and o[2] - 0.8 < e["y"] < o[3] + 0.8 for o in obstacles)
-    for key in ("islands", "wall_shelves", "signs", "popups"):
+    for key in ("islands", "wall_shelves", "signs", "popups", "pop_stands"):
         out[key] = [e for e in out[key] if clear(e)]
     return out
 

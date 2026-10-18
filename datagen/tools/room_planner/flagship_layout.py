@@ -16,8 +16,8 @@ import math
 import random
 
 AISLE, DOOR_CLEAR, EDGE, ENTRANCE = 1.4, 2.8, 0.4, 4.0
-SIZE = {"wall_rail": (0.16, 3.0), "clothing_rack": (0.5, 1.6), "stone_table": (1.1, 2.2), "stepped_plinth": (1.2, 1.8), "lattice_screen": (0.45, 1.9),
-        "counter": (0.65, 2.4), "fitting_room": (1.1, 1.25)}          # (depth along the front axis, length across it) in metres
+SIZE = {"wall_rail": (0.16, 3.0), "clothing_rack": (0.64, 1.75), "stone_table": (1.1, 2.2), "stepped_plinth": (1.2, 1.8), "lattice_screen": (0.45, 1.9),
+        "counter": (0.65, 2.4), "fitting_room": (1.1, 1.25), "fl_wood_wall": (0.2, 3.6)}          # (depth along the front axis, length across it) in metres
 
 
 class _Hall:
@@ -90,6 +90,11 @@ def layout(x0, x1, y0, y1, seed=0, obstacles=(), doors=()):
         cx, cy = world(cu, S / 2 + off)
         if H.add("counter", cx, cy, face(-1, 0), aisle=0.8):
             break
+    # 2b. warm oak panel wall(s) on the back short wall (u = L), flush: the reference's teak zone
+    nw = max(1, min(3, int((S - 1.0) // 3.7)))
+    for k in range(nw):
+        vv = S / 2 + (k - (nw - 1) / 2) * 3.7
+        H.add("fl_wood_wall", *world(L - 0.24, vv), face(-1, 0), aisle=0.05, edge=0.0, wall=True)
     # 3. wall rails along both long walls
     for v, nv in ((SIZE["wall_rail"][0] / 2 + 0.12, 1), (S - SIZE["wall_rail"][0] / 2 - 0.12, -1)):     # 0.1 m off the wall: the room mesh is not exactly at the box edge
         u = ENTRANCE - 0.5
@@ -108,9 +113,9 @@ def layout(x0, x1, y0, y1, seed=0, obstacles=(), doors=()):
         u = ENTRANCE + 1.5
         if kind == "R":                                            # two clothing racks back to back, a gap every now and then
             while u + 1.6 <= L - 2.0:
-                a = H.add("clothing_rack", *world(u + 0.8, vc + 0.27), face(0, 1), aisle=AISLE)
-                b = H.add("clothing_rack", *world(u + 0.8, vc - 0.27), face(0, -1), aisle=0.0) if a else False
-                u += 1.6 + (1.6 if rng.random() < 0.3 else 0.05)
+                a = H.add("clothing_rack", *world(u + 0.9, vc + 0.34), face(0, 1), aisle=AISLE)     # measured with cloth: 0.62 deep, 1.33 long (L 1.2)
+                b = H.add("clothing_rack", *world(u + 0.9, vc - 0.34), face(0, -1), aisle=0.0) if a else False   # back to back needs 0.68, not 0.54
+                u += 1.9 + (1.6 if rng.random() < 0.3 else 0.05)
         else:                                                      # tables lengthwise, loosely jittered, a 1.6-2.2 m cross aisle between them
             while u + 2.2 <= L - 2.0:
                 yaw_t = 0.0 if long_x else math.pi / 2             # (front axis x; length along local y): lengthwise needs yaw +-pi/2 when u is x
@@ -136,7 +141,7 @@ if __name__ == "__main__":
     p = layout(0, W, 0, D, 1, obstacles=[(W / 3 - 0.2, W / 3 + 0.2, D / 2 - 0.2, D / 2 + 0.2)], doors=[(0.0, D / 2)])
     print(dict(collections.Counter(e["cat"] for e in p["items"])), "long axis", p["long_axis"], f"area {W * D:.0f} m2")
     g = [["." for _ in range(int(W * 2))] for _ in range(int(D * 2))]
-    ch = {"wall_rail": "=", "clothing_rack": "r", "stone_table": "T", "stepped_plinth": "P", "lattice_screen": "L", "counter": "C", "fitting_room": "F"}
+    ch = {"fl_wood_wall": "W", "wall_rail": "=", "clothing_rack": "r", "stone_table": "T", "stepped_plinth": "P", "lattice_screen": "L", "counter": "C", "fitting_room": "F"}
     for e in p["items"]:
         if 0 <= int(e["y"] * 2) < len(g) and 0 <= int(e["x"] * 2) < len(g[0]):
             g[int(e["y"] * 2)][int(e["x"] * 2)] = ch[e["cat"]]

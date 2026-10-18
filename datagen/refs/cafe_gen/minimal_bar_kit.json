@@ -1,0 +1,131 @@
+{
+ "brief": "A bright, airy corner cafe with a full-height black-framed glass facade and glass door that floods the polished concrete floor with dappled tree-shadow light. A long sage-green fluted counter with a pale white stone top runs along the right side, topped with a chrome espresso machine, grinder, pastry case and POS. Behind it, a white vertical-tile wall carries three light oak open shelves with cups, bottles, coffee jars and bags, trailing plants and a large blank menu board. A slim oak window bar with two round wooden stools sits against the glass. The front-left seating zone has small round light-oak café tables with black pedestal bases and light-oak chairs with cream upholstered seats. Tables hold coffee cups, croissants, small vases with greenery, and a notebook. Large olive trees and leafy floor plants soften the corners. White dome pendants and white track spots give a soft, fresh, Scandinavian-organic mood.",
+ "concept": "Scandinavian-organic daylit cafe: pale oak, sage fluting, white tile and greenery under big windows and soft white pendants, all kept light, natural and calm.",
+ "wall": "paint",
+ "wall_srgb": [
+  0.95,
+  0.92,
+  0.86
+ ],
+ "floor": "concrete",
+ "floor_srgb": [
+  0.8,
+  0.79,
+  0.77
+ ],
+ "floor_tone": "pale",
+ "counter_front": "sage_fluted",
+ "counter_top": "white_stone",
+ "backbar": "oak_slat",
+ "fixture": "pendant",
+ "architecture": {
+  "ceiling": "plaster_white",
+  "ducts_visible": false,
+  "feature_wall": "tile",
+  "other_walls": "paint_light"
+ },
+ "lighting": {
+  "color_temp_k": 3000,
+  "ambient": "medium",
+  "daylight": "high",
+  "key_fixture": "pendant_row",
+  "accents": []
+ },
+ "density": {
+  "seats_per_10m2": 4,
+  "props_per_table": 3,
+  "plants": 2
+ },
+ "mood": "bright_daylight",
+ "table_top": "light_wood",
+ "chair_style": "light_wood",
+ "decor": [
+  "potted_plants",
+  "framed_art"
+ ],
+ "metal_finish": "black",
+ "must_have": [
+  {
+   "category": "coffee_bar",
+   "count": 1,
+   "where": "espresso machine and grinder on counter"
+  },
+  {
+   "category": "menu_board",
+   "count": 1,
+   "where": "large framed board on tile wall"
+  },
+  {
+   "category": "window_bar",
+   "count": 1,
+   "where": "oak ledge along the glass facade"
+  },
+  {
+   "category": "bar_stool",
+   "count": 2,
+   "where": "at the window bar"
+  },
+  {
+   "category": "cafe_table",
+   "count": 4,
+   "where": "round tables in daylit front-left zone"
+  },
+  {
+   "category": "cafe_chair",
+   "count": 10,
+   "where": "light-oak chairs with cream seats around round tables"
+  },
+  {
+   "category": "floor_plant",
+   "count": 3,
+   "where": "olive trees and leafy plants by the window and left wall"
+  }
+ ],
+ "relations": [
+  "Large black-framed glazing + pale polished concrete + white walls = high daylight bounce, so artificial light can stay low-key and warm white",
+  "Light oak chairs, tables, shelves and stools + cream upholstery repeat one warm wood tone that balances the cool sage counter and chrome machines",
+  "Sage fluted counter is the single colour accent; everything else is neutral, so greenery and plants reinforce it",
+  "Sparse, well-spaced round tables + open floor = calm, airy mood rather than intimate density",
+  "White dome pendants and track spots over the counter give task light while keeping the ceiling clean and uncluttered"
+ ],
+ "not_reproducible": "People, street trees and brick buildings outside, dappled sunlight shadows, food and pastries, coffee cups, trailing live plants, the espresso machine details, and blank menu board text.",
+ "wall_rgb": [
+  0.89,
+  0.8276,
+  0.7106
+ ],
+ "floor_rgb": [
+  0.6038,
+  0.587,
+  0.5542
+ ],
+ "reference_ids": [
+  "5bc5049fa06ac868",
+  "9b1669f974b5836d",
+  "506fc91dea5cc8ac"
+ ],
+ "venue": "cafe",
+ "images": [
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/minimal_bar/view1.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/minimal_bar/view2.png",
+  "/jarvis/project/robomituba/data/venue_refs/cafe_gen/minimal_bar/view3.png"
+ ],
+ "provenance_note": "Built from 3 Codex imagegen views (cafe_gen/minimal_bar/view1-3.png): synthetic design references from a text brief, not real multi-view observations; camera/dimensions not exact.",
+ "upholstery_srgb": [
+  0.85,
+  0.82,
+  0.76
+ ],
+ "upholstery_rgb": [
+  0.6921,
+  0.6383,
+  0.5382
+ ],
+ "pendant_shade": "white_enamel_dome",
+ "counter_len_m": [
+  5.0,
+  6.5
+ ],
+ "espresso_finish": "steel",
+ "dome_scale": 0.55
+}

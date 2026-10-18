@@ -1,0 +1,60 @@
+{
+ "name": "WallMonitor",
+ "notes": "wall-mounted dental imaging monitor 0.52 x 0.32 m; back at x=0, bottom near z=0 (mount lift added by realize)",
+ "parts": [
+  {
+   "material": {
+    "name": "black",
+    "rgb": [
+     0.02,
+     0.02,
+     0.025
+    ],
+    "rough": 0.4
+   },
+   "prims": [
+    [
+     "box",
+     0.02,
+     0,
+     0.18,
+     0.04,
+     0.54,
+     0.34
+    ],
+    [
+     "box",
+     0.01,
+     0,
+     0.0,
+     0.02,
+     0.06,
+     0.04
+    ]
+   ]
+  },
+  {
+   "material": {
+    "name": "screen",
+    "rgb": [
+     0.55,
+     0.78,
+     1.0
+    ],
+    "rough": 0.3,
+    "emit": 2.2
+   },
+   "prims": [
+    [
+     "box",
+     0.045,
+     0,
+     0.18,
+     0.005,
+     0.5,
+     0.3
+    ]
+   ]
+  }
+ ]
+}

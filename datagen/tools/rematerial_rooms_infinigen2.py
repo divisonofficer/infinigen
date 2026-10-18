@@ -229,6 +229,8 @@ def kit_finish(name, st):
     dark = st.get("mood") == "dark_moody" or st.get("floor_tone") == "dark"
     if name == "paint_dark":
         return _paint(st.get("wall_rgb") if st.get("wall_rgb") and sum(st["wall_rgb"]) < 0.6 else (0.045, 0.04, 0.035))
+    if name == "paint_feature" and st.get("feature_rgb"):       # a painted accent wall in its own colour (exam room S18: pale-blue wall behind the table)
+        return _paint(st["feature_rgb"])
     if name in ("paint_light", "shelving"):
         return _paint(st.get("wall_rgb") if st.get("wall_rgb") and sum(st["wall_rgb"]) >= 0.6 else (0.85, 0.83, 0.78))
     if name == "wood_panel":
@@ -356,7 +358,8 @@ if a.style:
             for k_ in ("other_walls", "feature_wall"):
                 if _st["architecture"].get(k_) in ("paint_light", "paint_dark", "shelving"):
                     _st["architecture"][k_] = "concrete"
-        if _st.get("venue") in ("clinic-reception", "exam-room", "dental-room", "physio-room") and _st.get("wall_rgb"):
+        if _st.get("venue") in ("clinic-reception", "exam-room", "dental-room", "physio-room") and _st.get("wall_rgb") and \
+                not (os.environ.get("ROOM_CLINIC_LOBBY") == "1" and _st.get("venue") == "clinic-reception"):   # the lobby keeps the kit's warm cream
             # walls cooled 85% toward a clinical pale grey-white (clinic r23: the reference's warm tan read as a hotel lobby, 3 of 3).
             # Here, before kit_finish: it bakes the colour into the paint function when called (r24/r25 overrode it after: no effect)
             _st["wall_rgb"] = [round(0.15 * c + 0.85 * w, 4) for c, w in zip(_st["wall_rgb"], (0.74, 0.79, 0.82))]

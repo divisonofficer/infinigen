@@ -354,13 +354,23 @@ SCANS = {"wood": (_TC + "wood_0002", _TC + "wood_0054"),       # continuous grai
                                                                  # ones striped a blue locker -- user mark 'too much texture', 2026-10-17)
          "card": (_TS + "paper_0008",),                         # kraft board: 228 plain cartons in floors I/J (census 10-17)
          "plastic": (_TS + "plastic_0003", _TS + "plastic_0005", _TS + "plastic_0007", _TS + "plastic_0021")}
-SCAN_TILE = {"wood": 1.0, "metal": 0.8, "fabric": 0.4, "card": 0.6, "plastic": 0.5, "laminate": 0.9, "paint": 1.2}   # metres per tile
-SCAN_CONTRAST = {"laminate": 0.4, "paint": 0.22}                # share of the scan's luminance variation kept (default 0.6)
+# stone (user 2026-10-17: 'find stone in TextureCan'): the staging set already holds all 18 marble and 8 rock sets; nothing more to download
+SCANS["stone"] = (_TS + "rock_0005", _TS + "marble_0011", _TS + "marble_0010")          # grey slab rock, travertine, speckled granite
+SCANS["marble_black"] = (_TS + "marble_0007", _TS + "marble_0012")                      # black marble with white veins (podiums, black tops)
+SCANS["marble_white"] = (_TS + "marble_0008",)                                           # white marble (white stone tops)
+SCAN_TILE = {"stone": 0.8, "marble_black": 1.0, "marble_white": 1.0, "wood": 1.0, "metal": 0.8, "fabric": 0.4, "card": 0.6, "plastic": 0.5, "laminate": 0.9, "paint": 1.2}   # metres per tile
+SCAN_CONTRAST = {"stone": 0.55, "marble_black": 0.9, "marble_white": 0.8, "laminate": 0.4, "paint": 0.22}                # share of the scan's luminance variation kept (default 0.6)
 _SCAN_MEAN = {}
 
 
 def _scan_kind(name, metallic, wood):
     n_ = name.lower()
+    if "black_stone" in n_ or "black_marble" in n_ or "marble_black" in n_:
+        return "marble_black"
+    if "white_stone" in n_ or "white_marble" in n_:
+        return "marble_white"
+    if any(k in n_ for k in ("slab", "limestone", "ir_stone", "plinth", "travertine")):
+        return "stone"
     if not wood and any(k in n_ for k in ("desk_top", "conf_top", "disp_top", "checkout_top", "counter_top", "work_top", "table_top")) and "stone" not in n_:
         return "laminate"
     if any(k in n_ for k in ("locker", "pantry_cab", "office_shelf", "desk_panel", "reception_front", "cabinet", "ac_white")):
@@ -618,7 +628,7 @@ class CafeCounterFactory:
     """A service counter (front +X like Infinigen): body with a slatted or tiled front, an overhanging top; 1.8-3.2 m long."""
     def __init__(self, seed):
         r = random.Random(seed)
-        self.L = r.uniform(1.8, 3.2)
+        self.L = r.uniform(*STYLE["counter_len_m"]) if STYLE.get("counter_len_m") else r.uniform(1.8, 3.2)   # the kit's counter length range (S8: a long ribbed counter)
         self.front = STYLE.get("counter_front") or r.choice(sorted(COUNTER_FRONTS))
         self.top = STYLE.get("counter_top") or r.choice(sorted(COUNTER_TOPS))
         self.slats = any(k in self.front for k in ("slat", "fluted", "panel"))
@@ -877,7 +887,7 @@ class EspressoMachineFactory:
         # body, coloured side panels, a cup-warmer rail with white cups on top, group heads and portafilters on the barista side
         r = random.Random(self.seed)
         steel = _flat("ir_steel", (0.62, 0.62, 0.64), 0.2, 1.0); black = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
-        side = _flat(f"ir_espresso_side_{self.seed % 3}", r.choice(((0.45, 0.05, 0.04), (0.04, 0.04, 0.045), (0.8, 0.76, 0.66))), 0.3, 0.3)
+        side = steel if STYLE.get("espresso_finish") == "steel" else _flat(f"ir_espresso_side_{self.seed % 3}", r.choice(((0.45, 0.05, 0.04), (0.04, 0.04, 0.045), (0.8, 0.76, 0.66))), 0.3, 0.3)   # kit: stainless sides
         cup = _flat("ir_plate_white", (0.9, 0.9, 0.88), 0.25)
         cups = [("cyl", (-0.12 + 0.12 * (k // 4), -0.24 + 0.16 * (k % 4), 0.475), (0.035, 0.03, 0.065), (0, 0, 0)) for k in range(8)]
         return _prims(f"EspressoMachineFactory({i}).spawn_asset({i})",
@@ -900,15 +910,16 @@ class CakeDomeFactory:
     def spawn_asset(self, i):
         import bmesh
         r = self.r
+        k = STYLE.get("dome_scale") or 1.0                       # baked into the geometry: the activity placer rebuilds matrix_world from a rotation and drops any object scale (S8 v12)
         cake = _flat(f"ir_cake_{i % 4}", [(0.55, 0.35, 0.2), (0.85, 0.75, 0.6), (0.4, 0.2, 0.15), (0.9, 0.6, 0.65)][i % 4], 0.7)
         plate = _flat("ir_plate_white", (0.9, 0.9, 0.88), 0.25)
         glass = _flat("ir_dome_glass", (0.95, 0.95, 0.95), 0.02, transmission=1.0)
         o = _parts_object(f"CakeDomeFactory({i}).spawn_asset({i})",
-                          [(plate, [(0, 0, 0.05, 0.08, 0.08, 0.1), (0, 0, 0.105, 0.3, 0.3, 0.01)]),
-                           (cake, [(0, 0, 0.16, 0.2, 0.2, r.uniform(0.07, 0.12))])])
-        bm = bmesh.new(); bmesh.ops.create_uvsphere(bm, u_segments=24, v_segments=12, radius=0.15)
+                          [(plate, [(0, 0, 0.05 * k, 0.08 * k, 0.08 * k, 0.1 * k), (0, 0, 0.105 * k, 0.3 * k, 0.3 * k, 0.01 * k)]),
+                           (cake, [(0, 0, 0.16 * k, 0.2 * k, 0.2 * k, r.uniform(0.07, 0.12) * k)])])
+        bm = bmesh.new(); bmesh.ops.create_uvsphere(bm, u_segments=24, v_segments=12, radius=0.15 * k)
         bmesh.ops.delete(bm, geom=[v for v in bm.verts if v.co.z < -0.001], context="VERTS")
-        bmesh.ops.translate(bm, vec=(0, 0, 0.11), verts=bm.verts)
+        bmesh.ops.translate(bm, vec=(0, 0, 0.11 * k), verts=bm.verts)
         me = bpy.data.meshes.new(f"dome{i}"); bm.to_mesh(me); bm.free(); me.materials.append(glass)
         d = bpy.data.objects.new(f"dome{i}", me); bpy.context.scene.collection.objects.link(d); d.parent = o
         return o
@@ -1555,10 +1566,13 @@ class RegisterFactory:
 class GrinderFactory:
     """Coffee grinder (front +X): a body, a dark bean hopper on top, a spout."""
     def __init__(self, seed):
-        self.c = random.Random(seed).choice(((0.03, 0.03, 0.03), (0.62, 0.62, 0.64), (0.85, 0.85, 0.83)))
+        self.c = (0.55, 0.56, 0.58) if STYLE.get("espresso_finish") == "steel" else random.Random(seed).choice(((0.03, 0.03, 0.03), (0.62, 0.62, 0.64), (0.85, 0.85, 0.83)))   # kit: stainless, like the machine
 
     def spawn_asset(self, i):
-        body = _flat(f"ir_grinder_{int(self.c[0] * 100)}", self.c, 0.3, 0.6); hop = _flat("ir_hopper", (0.12, 0.08, 0.05), 0.15)
+        if STYLE.get("espresso_finish") == "steel":              # the espresso machine's own stainless and black: a scanned-metal body on a 0.2 m box tiled as a rolled sheet (S8 v12)
+            body = _flat("ir_steel", (0.62, 0.62, 0.64), 0.2, 1.0); hop = _flat("ir_black_metal", (0.03, 0.03, 0.03), 0.4, 1.0)
+        else:
+            body = _flat(f"ir_grinder_{int(self.c[0] * 100)}", self.c, 0.3, 0.6); hop = _flat("ir_hopper", (0.12, 0.08, 0.05), 0.15)
         return _parts_object(f"GrinderFactory({i}).spawn_asset({i})",
                              [(body, [(0, 0, 0.17, 0.2, 0.16, 0.34), (0.11, 0, 0.12, 0.05, 0.05, 0.04)]),
                               (hop, [(0, 0, 0.42, 0.14, 0.14, 0.16)])])
@@ -2184,6 +2198,8 @@ class PrivacyCurtainFactory:
     def __init__(self, seed, L=2.6, D=1.6):                       # longer than a 2.27 m couch: a 2.2 m run's return crossed its head end
         r = random.Random(seed)
         self.L, self.D = L, D; self.c = r.choice(((0.55, 0.7, 0.72), (0.7, 0.75, 0.82), (0.82, 0.82, 0.8)))
+        if STYLE.get("curtain_rgb"):                                  # the reference's curtain colour (exam room S18: blue)
+            self.c = tuple(STYLE["curtain_rgb"])
 
     def spawn_asset(self, i):
         L, D = self.L, self.D

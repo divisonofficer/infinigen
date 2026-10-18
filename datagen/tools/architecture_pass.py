@@ -35,6 +35,7 @@ from room_planner import proc_assets as pa  # noqa: E402
 #: per-element odds by archetype (user 2026-10-16: one fixed kit made every cafe the same shell; thick columns read as a car park)
 ARCHETYPES = {
     "modern":     dict(pilaster=.6, beam=.5, column=.5, soffit=.7, duct=.2, pipe=.15, track=.8, ac=.6, sprinkler=.8),
+    "minimal":    dict(pilaster=0, beam=0, column=0, soffit=0, duct=0, pipe=0, track=.8, ac=.6, sprinkler=.8),   # S8 minimal bar: no beams/columns/soffit (reviewers: awkward ceiling structure)
     "industrial": dict(pilaster=.7, beam=.8, column=.6, soffit=.4, duct=.8, pipe=.7, track=.7, ac=.3, sprinkler=.8),
     "warm":       dict(pilaster=.4, beam=.3, column=.3, soffit=.6, duct=.05, pipe=.05, track=.4, ac=.4, sprinkler=.6),
     "bakery":     dict(pilaster=.3, beam=.2, column=.2, soffit=.8, duct=.1, pipe=.05, track=.5, ac=.5, sprinkler=.7),
@@ -43,6 +44,8 @@ ARCHETYPES = {
     "exposed_flagship": dict(pilaster=0, beam=0, column=.5, soffit=0, duct=0, pipe=0, track=0, ac=0, sprinkler=.6, flagship=1),   # big boutique: room_planner/flagship_ceiling.py
     "bookstore": dict(pilaster=0, beam=0, column=.6, soffit=0, duct=0, pipe=0, track=0, ac=.3, sprinkler=.9, bookstore=1),   # room_planner/bookstore_ceiling.py
     "rooftop": dict(pilaster=0, beam=0, column=.5, soffit=0, duct=0, pipe=0, track=0, ac=0, sprinkler=0, rooftop=1),   # room_planner/rooftop_shell.py
+    "winepub": dict(pilaster=0, beam=0, column=0, soffit=0, duct=0, pipe=0, track=0, ac=0, sprinkler=0, winepub=1),   # room_planner/winepub_ceiling.py
+    "museum": dict(pilaster=0, beam=0, column=0, soffit=0, duct=0, pipe=0, track=0, ac=0, sprinkler=0, museum=1),   # room_planner/museum_shell.py (octagonal domed rotunda)
     "warehouse":  dict(pilaster=.3, beam=0, column=.5, soffit=0, duct=.4, pipe=.8, track=0, ac=0, sprinkler=1, warehouse=1),
     "default":    dict(pilaster=.6, beam=.6, column=.6, soffit=.6, duct=.35, pipe=.3, track=.7, ac=.45, sprinkler=.8),
 }
@@ -288,9 +291,18 @@ def build(room, rng, pal, stats, seed, track=True, archetype="default"):
     if has.get("bookstore"):
         from room_planner import bookstore_ceiling
         bookstore_ceiling.bookstore_services(L, S, zc, at, name, rng, stats)
+    if has.get("museum"):
+        from room_planner import museum_shell
+        museum_shell.shell_services(L, S, zc, at, name, rng, stats, room=getattr(room, "name", None))
+    if has.get("winepub"):
+        from room_planner import winepub_ceiling
+        winepub_ceiling.winepub_services(L, S, zc, at, name, rng, stats)
     if has.get("rooftop"):
         from room_planner import rooftop_shell
         rooftop_shell.shell_services(L, S, zc, zc + 1.8, at, name, rng, stats, room=getattr(room, "name", None))
+    if __import__("os").environ.get("ROOM_BIGGLASS") in ("street", "skyline", "garden"):         # floor-to-ceiling glass wall + exterior card + sun (room_planner/big_glass.py)
+        from room_planner import big_glass
+        big_glass.apply(L, S, zc, at, name, rng, stats, room=getattr(room, "name", None))
     cx, cy = at(L * rng.uniform(0.6, 0.8), S * 0.2)
     if has["ac"]:
         _box(name("AcCassette"), [(cx, cy, zc - 0.04, 0.84, 0.84, 0.06), (cx, cy, zc - 0.09, 0.62, 0.62, 0.04)],

@@ -238,3 +238,25 @@ class SectionSignFactory:
             bpy.context.view_layer.objects.active = o; bpy.ops.object.join()
             o = bpy.context.view_layer.objects.active
         return o
+
+
+class PopStandFactory:
+    """Promotion floor stand (bookstore VLM: 'POP signs and props are thin'): a 0.5 x 0.6 x 1.55 m 3-tier cardboard-style display with face-out books on every tier and a tall
+    colourful header board (3 colours by seed) on top. One mesh, atlas covers."""
+    def __init__(self, seed):
+        r = random.Random(seed); self.atlas = r.randrange(meta()["n_atlases"]); self.seed = seed
+        self.c = r.choice(((0.9, 0.25, 0.2), (0.15, 0.45, 0.75), (0.95, 0.75, 0.15)))
+
+    def spawn_asset(self, i):
+        pa = _pa(); r = random.Random(self.seed * 53 + i)
+        body = pa._flat("ir_pop_body", (0.85, 0.82, 0.76), 0.7); head = pa._flat(f"ir_pop_head_{int(self.c[0] * 100)}_{int(self.c[1] * 100)}", self.c, 0.5)
+        parts = [(-0.2, 0.0, 0.78, 0.04, 0.6, 1.56)] + [(0.0, 0.0, 0.1 + k * 0.45, 0.5, 0.6, 0.03) for k in range(3)]
+        bm = bmesh.new(); bm.loops.layers.uv.verify(); uvl = bm.loops.layers.uv.active
+        n = 0
+        for k in range(3):
+            for q in range(4):
+                add_book(bm, uvl, (0.12 + r.uniform(-0.01, 0.01), -0.22 + q * 0.145, 0.1 + k * 0.45 + 0.17 + 0.015), (0.03, 0.125, 0.19 + r.uniform(-0.01, 0.02)), "face_out", r.randrange(meta()["n_covers"]), yaw=r.uniform(-0.06, 0.06))
+                n += 1
+        o = _object(f"PopStandFactory({self.seed}).spawn_asset({i})", [(body, parts), (head, [(-0.18, 0, 1.5, 0.04, 0.62, 0.3)])], bm, atlas_material(self.atlas))
+        o["book_count"] = n
+        return o

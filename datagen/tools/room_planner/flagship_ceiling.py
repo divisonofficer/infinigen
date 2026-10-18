@@ -41,10 +41,10 @@ def flagship_services(L, S, zc, at, name, rng, stats, spot_every=1.6, spot_w=12.
     if beams:
         fl.mesh_object(name("CeilingBeam"), [(conc, beams)], bevel=False)
     # white rectangular ducts + pipe bundles beside them
-    vd = [S * rng.uniform(0.22, 0.32), S * rng.uniform(0.55, 0.68)]
+    vd = [S * 0.2, S * 0.5, S * 0.8]
     ducts, pipes = [], []
     for v in vd:
-        ducts.append(run(v, z_duct, 0.6, 0.42 * k))
+        ducts.append(run(v, z_duct - 0.1, 1.0, 0.7 * k))                # big white rectangular ducts, visible in the wides (VLM: 'ducts missing')
         for j in range(rng.choice((3, 4, 5))):
             (x0, y0), (x1, y1) = at(0.2, v + 0.45 + j * 0.09), at(L - 0.2, v + 0.45 + j * 0.09)
             pipes.append(("cyl", (x0, y0, zc - 0.1 - 0.02 * j), (x1, y1, zc - 0.1 - 0.02 * j), rng.uniform(0.028, 0.045), 10))

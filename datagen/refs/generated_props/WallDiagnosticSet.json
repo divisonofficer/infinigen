@@ -1,0 +1,107 @@
+{
+ "name": "WallDiagnosticSet",
+ "notes": "wall-mounted otoscope/ophthalmoscope station: white plastic panel with two dark handsets hanging; back at x=0, bottom at z=0 (mount lift added by realize)",
+ "parts": [
+  {
+   "material": {
+    "name": "white",
+    "rgb": [
+     0.92,
+     0.92,
+     0.9
+    ],
+    "rough": 0.4
+   },
+   "prims": [
+    [
+     "box",
+     0.02,
+     0,
+     0.41,
+     0.04,
+     0.5,
+     0.22
+    ],
+    [
+     "box",
+     0.05,
+     -0.1,
+     0.5,
+     0.04,
+     0.12,
+     0.04
+    ],
+    [
+     "box",
+     0.05,
+     0.1,
+     0.5,
+     0.04,
+     0.12,
+     0.04
+    ]
+   ]
+  },
+  {
+   "material": {
+    "name": "dark",
+    "rgb": [
+     0.03,
+     0.03,
+     0.035
+    ],
+    "rough": 0.4
+   },
+   "prims": [
+    [
+     "cyl",
+     [
+      0.07,
+      -0.1,
+      0.47
+     ],
+     [
+      0.07,
+      -0.1,
+      0.1
+     ],
+     0.018,
+     10
+    ],
+    [
+     "cyl",
+     [
+      0.07,
+      0.1,
+      0.47
+     ],
+     [
+      0.07,
+      0.1,
+      0.1
+     ],
+     0.018,
+     10
+    ],
+    [
+     "box",
+     0.07,
+     -0.1,
+     0.09,
+     0.05,
+     0.05,
+     0.04
+    ],
+    [
+     "box",
+     0.07,
+     0.1,
+     0.09,
+     0.05,
+     0.05,
+     0.04
+    ]
+   ]
+  }
+ ]
+}

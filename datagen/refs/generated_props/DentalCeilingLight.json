@@ -1,0 +1,106 @@
+{
+ "name": "DentalCeilingLight",
+ "notes": "ceiling-mounted dental operatory light: plate at z=0 (the ceiling), two arms, a lamp head with a lit underside; origin at the ceiling attach point, the head hangs 0.9 m along +Y and ~0.75 m down",
+ "parts": [
+  {
+   "material": {
+    "name": "white",
+    "rgb": [
+     0.92,
+     0.92,
+     0.9
+    ],
+    "rough": 0.35
+   },
+   "prims": [
+    [
+     "cyl",
+     [
+      0,
+      0,
+      -0.03
+     ],
+     [
+      0,
+      0,
+      0
+     ],
+     0.16,
+     20
+    ],
+    [
+     "cyl",
+     [
+      0,
+      0,
+      -0.03
+     ],
+     [
+      0,
+      0.45,
+      -0.4
+     ],
+     0.03,
+     10
+    ],
+    [
+     "cyl",
+     [
+      0,
+      0.45,
+      -0.4
+     ],
+     [
+      0,
+      0.9,
+      -0.72
+     ],
+     0.028,
+     10
+    ],
+    [
+     "box",
+     0,
+     0.9,
+     -0.78,
+     0.5,
+     0.34,
+     0.08
+    ],
+    [
+     "sph",
+     [
+      0,
+      0.45,
+      -0.4
+     ],
+     0.05,
+     1
+    ]
+   ]
+  },
+  {
+   "material": {
+    "name": "lamp",
+    "rgb": [
+     1,
+     0.97,
+     0.9
+    ],
+    "rough": 0.4,
+    "emit": 5.0
+   },
+   "prims": [
+    [
+     "box",
+     0,
+     0.9,
+     -0.83,
+     0.42,
+     0.28,
+     0.01
+    ]
+   ]
+  }
+ ]
+}

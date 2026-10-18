@@ -18,7 +18,7 @@ import random
 
 AISLE, DOOR_CLEAR, EDGE, ENTRANCE = 1.3, 2.4, 0.3, 3.0
 SIZE = {"banquette": (0.6, 2.4), "marble_table_low": (0.7, 1.2), "marble_table_high": (0.7, 0.7), "marble_table_round": (0.7, 0.7),
-        "bar_stool": (0.42, 0.42), "cube_ottoman": (0.5, 0.5), "velvet_booth": (0.8, 2.2), "mirror_column": (0.7, 0.7), "floor_ac": (0.35, 0.5),
+        "bar_stool": (0.42, 0.42), "cube_ottoman": (0.5, 0.5), "velvet_booth": (0.8, 2.2), "mirror_column": (0.7, 0.7), "timber_column": (0.6, 0.6), "floor_ac": (0.35, 0.5),
         "patio_heater": (0.64, 0.64), "counter": (0.65, 3.0)}
 
 
@@ -69,9 +69,12 @@ def layout(x0, x1, y0, y1, seed=0, obstacles=(), doors=()):
     for u in (1.4, L - 1.2):
         H.add("floor_ac", *world(u, 0.26), towards_glass, aisle=0.2, edge=0.04)
     H.add("counter", *world(L - 0.5, S / 2), face(-1, 0), aisle=0.5, edge=0.04, length=3.6)
-    for uc in (ENTRANCE + 5.0, ENTRANCE + 12.0, ENTRANCE + 19.0):
+    for uc in (ENTRANCE + 6.5,):
         if uc < L - 2.0:
             H.add("mirror_column", *world(uc, S * 0.5), towards_wall, aisle=0.6)
+    for k, uc in enumerate((ENTRANCE + 3.2, ENTRANCE + 8.8, ENTRANCE + 14.4)):      # timber slat columns first (before the seating takes the floor)
+        if uc < L - 2.0:
+            H.add("timber_column", *world(uc, S * (0.5 if k % 2 == 0 else 0.6)), towards_wall, aisle=0.4)
     settings = []
 
     def setting(u, v, nv, z):                                  # a table setting facing along +-v (nv = +1 faces the glass)
@@ -105,15 +108,23 @@ def layout(x0, x1, y0, y1, seed=0, obstacles=(), doors=()):
             for du in (-0.45, 0.45):
                 H.add("cube_ottoman", *world(u + L_b / 2 + du, 2.15), towards_wall, aisle=0.1)
         u += L_b + 0.5
-    # middle: velvet booths facing each other across low tables
+    # middle: ONE row of navy velvet booths facing low tables (a third of the seating), cream banquettes in the second row facing the booths, timber columns
     for r, vb in enumerate((S * 0.30, S * 0.30 + 3.6)):
-        u = ENTRANCE + 1.2
+        u = ENTRANCE + 1.2; k = 0
         while u + 2.2 < L - 3.0:
-            ok = H.add("velvet_booth", *world(u + 1.1, vb), towards_wall if r == 1 else towards_glass, aisle=0.3)
-            if ok and r == 0 and H.add("marble_table_low", *world(u + 1.1, vb + 1.35), towards_glass, aisle=0.1):
-                for du in (-0.35, 0.35):
-                    setting(u + 1.1 + du, vb + 1.35 - 0.14, -1, 0.75); setting(u + 1.1 + du, vb + 1.35 + 0.14, 1, 0.75)
-            u += 2.2 + rng.choice((0.4, 0.4, 0.8))
+            if r == 0:
+                ok = H.add("velvet_booth", *world(u + 1.1, vb), towards_glass if False else towards_glass, aisle=0.3)
+                if ok and H.add("marble_table_low", *world(u + 1.1, vb + 1.35), towards_glass, aisle=0.1):
+                    for du in (-0.35, 0.35):
+                        setting(u + 1.1 + du, vb + 1.35 - 0.14, -1, 0.75); setting(u + 1.1 + du, vb + 1.35 + 0.14, 1, 0.75)
+                u += 2.2 + (2.4 if k % 2 == 0 else 0.4)                        # every other slot stays open: booths are about a third of the seats
+            else:
+                L_b = 2.4
+                if H.add("banquette", *world(u + L_b / 2, vb), towards_wall, aisle=0.3, length=L_b):
+                    for du in (-0.45, 0.45):
+                        H.add("cube_ottoman", *world(u + L_b / 2 + du, vb - 1.0), towards_glass, aisle=0.1)
+                u += L_b + 0.9
+            k += 1
     chand = [{"x": round(world(u, S / 2)[0], 2), "y": round(world(u, S / 2)[1], 2), "z": 3.4} for u in
              [ENTRANCE + 2.0 + k * 5.0 for k in range(int(max(0, L - ENTRANCE - 3.0) / 5.0) + 1)]]
     # table settings: the caller puts them on every marble table (2 on a low table, 1-2 on a high one)
@@ -128,7 +139,7 @@ if __name__ == "__main__":
     print(dict(collections.Counter(e["cat"] for e in p["items"])), "chandeliers", len(p["chandeliers"]), "settings", len(p["settings"]), f"area {W * D:.0f} m2")
     g = [["." for _ in range(int(W * 2))] for _ in range(int(D * 2))]
     ch = {"banquette": "B", "marble_table_low": "t", "marble_table_high": "h", "marble_table_round": "o", "bar_stool": "s", "cube_ottoman": "q",
-          "velvet_booth": "V", "mirror_column": "M", "floor_ac": "A", "patio_heater": "H", "counter": "C"}
+          "velvet_booth": "V", "mirror_column": "M", "timber_column": "T", "floor_ac": "A", "patio_heater": "H", "counter": "C"}
     for e in p["items"]:
         yy, xx = int(e["y"] * 2), int(e["x"] * 2)
         if 0 <= yy < len(g) and 0 <= xx < len(g[0]):

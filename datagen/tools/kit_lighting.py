@@ -342,10 +342,22 @@ def main() -> int:
     import os
     import fix_print_uvs                                         # printed boards / screens / papers built before the UV fix (proc_assets._face_uvs)
     stats["print_uvs_fixed"] = fix_print_uvs.fix()
+    if os.environ.get("ROOM_CLINIC_LOBBY") == "1" and a.plans:  # warm clinic lobby: plaster ceiling with a cove, 3 pendants, the office grid / tubes removed
+        try:
+            import clinic_lobby_ceiling
+            stats["clinic_lobby_ceiling"] = clinic_lobby_ceiling.apply(json.loads(Path(a.plans).read_text()))
+        except Exception as ex:                                  # noqa: BLE001 -- a failed ceiling must not fail the scene
+            stats["clinic_lobby_ceiling_error"] = str(ex)[:100]
+    if any(os.environ.get(k) for k in ("ROOM_BIGGLASS", "ROOM_FEATURE_WALL", "ROOM_TILE_WALL", "ROOM_SMOOTH_FLOOR", "ROOM_WHITE_CEILING", "ROOM_FLAT_WALLS", "ROOM_DENTAL_LIGHT")) and a.plans:   # post-realize: floating wall items in the glass opening, accent wall behind the exam table
+        try:
+            import late_walls
+            stats["late_walls"] = late_walls.apply(json.loads(Path(a.plans).read_text()))
+        except Exception as ex:                                  # noqa: BLE001 -- a failed finishing pass must not fail the scene
+            stats["late_walls_error"] = str(ex)[:100]
     if os.environ.get("IR_ARCH_TEX", "1") != "0":                # scanned texturecan walls / floors in place of Infinigen 2.0's flat `paint`
         import architecture_textures
         plans = json.loads(Path(a.plans).read_text())
-        stats["archtex"] = architecture_textures.apply(plans.get("room_venues") or {}, (plans.get("style_spec") or {}).get("venue"))
+        stats["archtex"] = architecture_textures.apply(plans.get("room_venues") or {}, (plans.get("style_spec") or {}).get("venue"), (plans.get("style_spec") or {}).get("floor"))
     if os.environ.get("IR_WEATHER", "1") != "0":                 # wear and grime on every material (user 2026-10-17: 'PBR parameters are flat
         import weather_pass                                      # constants', 'too smooth / too clean'); IR_WEATHER=0 keeps the flat look
         venue = (json.loads(Path(a.plans).read_text()).get("style_spec") or {}).get("venue") if a.plans else None

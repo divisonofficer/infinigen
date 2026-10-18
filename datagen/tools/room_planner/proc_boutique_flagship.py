@@ -11,6 +11,7 @@ Poly budget: table ~0.4k tris, rail ~0.1k, screen ~5.5k (3 layers per swatch). `
 from __future__ import annotations
 
 import math
+import os
 import random
 
 import bmesh
@@ -48,6 +49,10 @@ def mesh_object(name, groups, bevel=True):
                 if jr.random() < chip and top:                     # bevel chip: one top corner knocked down and in
                     v = jr.choice(top); v.co.z -= jr.uniform(0.012, 0.032); v.co.x -= math.copysign(jr.uniform(0.008, 0.02), v.co.x); v.co.y -= math.copysign(jr.uniform(0.008, 0.02), v.co.y)
                 mid = (cx, cy, cz)
+            elif p[0] == "sph":                                    # ("sph", (x, y, z), radius, subdivisions): an icosphere
+                _, c0, rad, sub = p
+                r = bmesh.ops.create_icosphere(bm, subdivisions=sub, radius=rad, calc_uvs=True)
+                mid = Vector(c0)
             else:
                 _, p0, p1, rad, n = p
                 v = Vector(p1) - Vector(p0)
@@ -80,6 +85,48 @@ def _flat(name, rgb, rough, metallic=0.0, kind=None, wood=False):
     return pa._flat(name, rgb, rough, metallic, 0.0, wood)
 
 
+#: stock (flagship r7: 'wall rails bare, stone tables empty'): cheap box garments and folded stacks, one material per colour. Off with ROOM_FLAGSHIP_STOCK=0.
+STOCK = os.environ.get("ROOM_FLAGSHIP_STOCK", "1") != "0"
+PALETTE = {"camel": (0.55, 0.4, 0.25), "olive": (0.3, 0.33, 0.2), "charcoal": (0.12, 0.12, 0.13), "denim": (0.15, 0.22, 0.38),
+           "cream": (0.8, 0.75, 0.65), "rust": (0.5, 0.2, 0.1), "denim_light": (0.3, 0.4, 0.55), "black": (0.05, 0.05, 0.055)}
+
+
+def _stock_mats():
+    return {k: _flat(f"ir_gar_fabric_{k}", c, 0.85) for k, c in PALETTE.items()}
+
+
+def _hung_garment(rng, y, mats, out, hang):
+    """One garment hanging from a rail bar (z = 0 is the bar): turned ~35 deg so the front shows; body + shoulder line + two sleeves + hanger."""
+    yaw = rng.uniform(0.45, 0.7) * rng.choice((1, -1)); h = rng.uniform(0.6, 0.95); w = rng.uniform(0.38, 0.46); t = rng.uniform(0.05, 0.08)
+    c = rng.choice(("camel", "olive", "charcoal", "denim", "cream", "rust", "denim_light", "black"))
+    x = 0.16 + rng.uniform(-0.01, 0.01); dz = -0.06 - h / 2
+    sn, cs = math.sin(yaw), math.cos(yaw)
+    parts = out.setdefault(c, [])
+    parts.append(("box", x, y, dz, t, w, h, yaw))
+    parts.append(("box", x, y, -0.07, t * 1.15, w * 1.02, 0.05, yaw))
+    for sgn in (1, -1):
+        dy = sgn * (w / 2 + 0.015)
+        parts.append(("box", x - dy * sn, y + dy * cs, -0.06 - 0.2, 0.05, 0.09, 0.4, yaw + sgn * 0.12))
+    hang.append(("box", x, y, -0.025, 0.012, 0.4, 0.012, yaw))
+
+
+def _folded_stacks(rng, cx0, cy0, w_top, l_top, z_top, mats, out):
+    """Stacks of folded knit / denim on a table top (a 2 x n grid, 5-9 layers each)."""
+    n = max(2, int((l_top - 0.4) / 0.5)); rows = 2 if w_top > 0.9 else 1
+    for a in range(rows):
+        for b in range(n):
+            if rng.random() < 0.1:
+                continue
+            c = rng.choice(("denim", "denim_light", "camel", "cream", "charcoal", "olive", "rust"))
+            x = cx0 + ((a - (rows - 1) / 2) * 0.34 if rows > 1 else 0.0) + rng.uniform(-0.02, 0.02)
+            y = cy0 - l_top / 2 + 0.3 + b * (l_top - 0.6) / max(1, n - 1) + rng.uniform(-0.02, 0.02)
+            yaw = rng.uniform(-0.08, 0.08); z = z_top
+            for _ in range(rng.randint(5, 9)):
+                th = rng.uniform(0.032, 0.05)
+                out.setdefault(c, []).append(("box", x + rng.uniform(-0.006, 0.006), y + rng.uniform(-0.006, 0.006), z + th / 2, 0.32, 0.4, th, yaw + rng.uniform(-0.03, 0.03)))
+                z += th
+
+
 class StoneSlabTableFactory:
     """Display table of stacked rough-cut slabs (front +X): L x D x H = 1.8-2.6 x 1.0-1.2 x 0.75-0.8 m, split into 2-3 blocks 1 cm
     apart, ~12 layers per block, each layer jittered a little in plan and thickness; a lighter dressed top."""
@@ -102,7 +149,17 @@ class StoneSlabTableFactory:
                 sides.append(("jbox", r.uniform(-0.02, 0.02), cy + r.uniform(-0.015, 0.015), 0.02 + k * t + tk / 2,
                               self.D - r.uniform(0, 0.05), bl - r.uniform(0, 0.04), tk, 0.012, 0.18, r.randrange(1 << 30)))
             tops.append(("jbox", 0, cy, self.H - 0.02, self.D + 0.02, bl + 0.01, 0.04, 0.006, 0.35, r.randrange(1 << 30)))
-        return mesh_object(f"StoneSlabTableFactory({self.seed}).spawn_asset({i})", [(side, sides), (top, tops)])
+        groups = [(side, sides), (top, tops)]
+        if STOCK:
+            mats = _stock_mats(); st = {}
+            _folded_stacks(r, 0.0, 0.0, self.D, self.L, self.H, mats, st)
+            groups += [(mats[c], parts) for c, parts in st.items()]
+        return mesh_object(f"StoneSlabTableFactory({self.seed}).spawn_asset({i})", groups)
+
+
+#: hero rails (orchester, flagship r8): 4-6 cloth-simulated Infinigen shirts on the first CLOTH_RAILS rails of a scene; ROOM_FLAGSHIP_CLOTH=0 disables
+CLOTH_RAILS = int(os.environ.get("ROOM_FLAGSHIP_CLOTH_RAILS", "4")) if os.environ.get("ROOM_FLAGSHIP_CLOTH", "1") != "0" else 0
+_HERO = [0]
 
 
 class WallRailFlatFactory:
@@ -110,6 +167,38 @@ class WallRailFlatFactory:
     on brackets every ~1.2 m, blackened steel."""
     def __init__(self, seed):
         self.L = random.Random(seed).choice((2.4, 3.0, 3.6)); self.seed = seed
+
+    def _hero_cloth(self, L, off, i):
+        """The rail bar + hangers as one object, joined with 4-6 baked cloth shirts (no CLOTH modifier is left); None on any failure."""
+        try:
+            pa = _pa(); r = random.Random(self.seed * 29 + i)
+            n = r.randint(4, 6); yaw0 = r.uniform(0.35, 0.6) * r.choice((1, -1)); shirts = []
+            for k in range(n):
+                sh = pa._cloth("shirt", "ShirtFactory", r.randrange(10 ** 6))
+                if sh is None:
+                    for x in shirts:
+                        bpy.data.objects.remove(x, do_unlink=True)
+                    return None
+                top = max(v.co.y for v in sh.data.vertices)
+                y = -L / 2 + 0.25 + (k + 0.5) * (L - 0.5) / n
+                sh.rotation_euler = (math.pi / 2, 0, yaw0 + r.uniform(-0.05, 0.05)); sh.location = (off, y, -0.07 - top)
+                shirts.append(sh)
+            wall = bpy.data.objects.new("ir_drape_wall", bpy.data.meshes.new("ir_drape_wall"))    # a thin vertical collider at the wall (x = 0)
+            bm = bmesh.new(); bmesh.ops.create_grid(bm, x_segments=1, y_segments=1, size=3.0); bm.to_mesh(wall.data); bm.free()
+            wall.rotation_euler = (0, math.pi / 2, 0); wall.location = (0.0, 0.0, -0.8)
+            pa._drape(shirts, pin_fn=lambda z, zmax: z > zmax - 0.09, colliders=[wall], frames=30)
+            steel = _flat("ir_rail_steel", (0.11, 0.1, 0.09), 0.5, 0.9); black = _flat("ir_gar_fabric_black", PALETTE["black"], 0.85)
+            prims = [("box", off, 0, 0.02, 0.008, L, 0.04)]
+            nb = max(2, round(L / 1.2) + 1)
+            for k in range(nb):
+                yb = -L / 2 + 0.05 + k * (L - 0.1) / (nb - 1)
+                prims += [("box", 0.004, yb, 0.02, 0.008, 0.05, 0.1), ("box", off / 2, yb, 0.012, off, 0.018, 0.024)]
+            hang = [("box", off, sh.location.y, -0.035, 0.012, 0.4, 0.012, sh.rotation_euler[2]) for sh in shirts]
+            base = mesh_object(f"WallRailFlatFactory({self.seed}).spawn_asset({i})", [(steel, prims), (black, hang)])
+            return pa._join_cloth(base, shirts)
+        except Exception as ex:                                   # noqa: BLE001 -- the box garments are the fallback, a scene never fails on cloth
+            print(f"[flagship] hero cloth rail failed: {ex!r}"[:200])
+            return None
 
     def spawn_asset(self, i):
         steel = _flat("ir_rail_steel", (0.11, 0.1, 0.09), 0.5, 0.9)
@@ -119,7 +208,19 @@ class WallRailFlatFactory:
         for k in range(nb):
             y = -L / 2 + 0.05 + k * (L - 0.1) / (nb - 1)
             prims += [("box", 0.004, y, 0.02, 0.008, 0.05, 0.1), ("box", off / 2, y, 0.012, off, 0.018, 0.024)]
-        return mesh_object(f"WallRailFlatFactory({self.seed}).spawn_asset({i})", [(steel, prims)])
+        groups = [(steel, prims)]
+        if STOCK and CLOTH_RAILS and _HERO[0] < CLOTH_RAILS:             # the first rails of a scene are hero rails: Infinigen shirts, cloth-simulated
+            _HERO[0] += 1
+            hero = self._hero_cloth(L, off, i)
+            if hero is not None:
+                return hero
+        if STOCK:
+            r = random.Random(self.seed * 23 + i); mats = _stock_mats(); gar, hang = {}, []
+            n = int((L - 0.2) / 0.29)
+            for k in range(n):
+                _hung_garment(r, -L / 2 + 0.15 + (k + 0.5) * (L - 0.3) / n, mats, gar, hang)
+            groups += [(mats[c], parts) for c, parts in gar.items()] + [(mats["black"], hang)]
+        return mesh_object(f"WallRailFlatFactory({self.seed}).spawn_asset({i})", groups)
 
 
 class SteelLatticeScreenFactory:
@@ -164,3 +265,14 @@ class SteppedPlinthFactory:
         for k, (d, w, h) in enumerate(((1.2, 1.8, 0.16), (0.9, 1.4, 0.30), (0.6, 1.0, 0.44))):
             parts.append(("jbox", -0.05 * k + r.uniform(-0.01, 0.01), r.uniform(-0.01, 0.01), h / 2, d, w, h, 0.008, 0.2, r.randrange(1 << 30)))
         return mesh_object(f"SteppedPlinthFactory({self.seed}).spawn_asset({i})", [(stone, parts)])
+
+
+def _lobby_wood_wall():
+    from room_planner.proc_clinic_lobby import WoodPanelWallFactory
+    return WoodPanelWallFactory
+
+
+class FlagshipWoodWallFactory:
+    """The warm oak panel wall of the flagship (VLM: 'warm oak-panel wall missing'): proc_clinic_lobby.WoodPanelWallFactory, 3.6 m wide, back at x = 0."""
+    def __new__(cls, seed):
+        return _lobby_wood_wall()(seed)

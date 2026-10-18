@@ -21,6 +21,11 @@
    "category": "medical_cabinet",
    "count": 3,
    "where": "continuous white base and wall cabinets with sink on the left wall, plus a mobile drawer unit on the right"
+  },
+  {
+   "category": "wall_monitor",
+   "count": 1,
+   "where": "on the wall beside the dental chair"
   }
  ],
  "concept": "A sterile, daylit clinical room in white, pale grey and a single teal accent. Upholstery, trays and stool share the teal, and the clean cool light makes every surface read as hygienic.",
@@ -53,11 +58,11 @@
  },
  "mood": "bright_daylight",
  "floor_srgb": [
-  0.72,
-  0.72,
-  0.73
+  0.58,
+  0.59,
+  0.6
  ],
- "floor_tone": "pale",
+ "floor_tone": "medium",
  "table_top": "light_wood",
  "chair_style": "upholstered",
  "decor": [
@@ -77,9 +82,9 @@
   0.9331
  ],
  "floor_rgb": [
-  0.477,
-  0.477,
-  0.4919
+  0.2957,
+  0.307,
+  0.3185
  ],
  "reference_ids": [
   "4d9d805d1ee51720",
